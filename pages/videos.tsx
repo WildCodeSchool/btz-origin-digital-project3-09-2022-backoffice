@@ -10,14 +10,11 @@ function videos() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = () => {
-    console.log();
-  };
   return (
     <div className="w-full h-full flex">
       <form
         className="w-1/2 h-full flex flex-col items-center"
-        onSubmit={handleSubmit((data) => console.log(data))}
+        onSubmit={handleSubmit((data) => data)}
       >
         <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
           <label htmlFor="title" className="w-[80%] text-[20px] font-bold">
