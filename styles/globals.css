@@ -3,17 +3,9 @@
 @tailwind utilities;
 
 @layer components {
-  li:focus {
-    @apply border-y-[6px];
-    @apply first:border-t-[6.5px];
-    @apply last:border-b-[6.5px];
-    @apply text-[32px];
-  }
   li:hover {
-    @apply border-y-[6px];
-    @apply first:border-t-[6.5px];
-    @apply last:border-b-[6.5px];
     @apply text-[32px];
     @apply duration-150;
+    @apply bg-bg1;
   }
 }
