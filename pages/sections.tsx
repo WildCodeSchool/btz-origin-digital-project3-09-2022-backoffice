@@ -1,7 +1,7 @@
 import React from "react";
 
-function sections() {
+function Sections() {
   return <div>sections</div>;
 }
 
-export default sections;
+export default Sections;
