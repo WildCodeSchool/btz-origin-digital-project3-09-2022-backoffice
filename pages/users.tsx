@@ -1,17 +1,51 @@
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { IUser } from "../src/interfaces/interfaces";
+import { TnewUser } from "../src/types/types";
 import SearchBar from "../src/components/SearchBar";
 import userFetcher from "../services/userFetcher";
-import axiosInstance from "../services/axiosinstance";
+import plus from "../src/assets/plus.svg";
 
 function Users() {
   const [users, setUsers] = useState<IUser[]>([]);
+  const initialValues: TnewUser = {
+    firstname: "",
+    lastname: "",
+    username: "",
+    email: "",
+    role: "USER",
+    password: "test",
+  };
+  const [inputValue, setInputValue] = useState<TnewUser>(initialValues);
+  const [addUser, setAddUser] = useState(false);
 
   useEffect(() => {
     userFetcher.getUsers().then((response) => {
       setUsers(response);
     });
   }, [users]);
+
+  const handleAddUser = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (event.target.innerHTML === "CANCEL") {
+      setInputValue(initialValues);
+    }
+    setAddUser(() => !addUser);
+  };
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+    setInputValue((prevState) => ({ ...prevState, [name]: value }));
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    userFetcher.createUser(inputValue);
+    if (event.target.innerHTML === "SAVE") {
+      setInputValue(initialValues);
+    }
+    setAddUser(() => !addUser);
+  }
 
   return (
     <div className="w-full bg-lightgrey">
@@ -32,12 +66,12 @@ function Users() {
                 key={user.id}
                 className="h-[50px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
               >
-                <td className="border border-black pl-5 last:rounded-bl-[10px]">
+                <td className="border border-black px-5 last:rounded-bl-[10px]">
                   {user.firstname}
                 </td>
-                <td className="border pl-5">{user.lastname}</td>
-                <td className="border pl-5">{user.username}</td>
-                <td className="border pl-5">{user.email}</td>
+                <td className="border px-5">{user.lastname}</td>
+                <td className="border px-5">{user.username}</td>
+                <td className="border px-5">{user.email}</td>
                 <td className="border text-center">📝</td>
                 <td className="border text-center last:rounded-br-[10px]">
                   <button
@@ -49,9 +83,83 @@ function Users() {
                 </td>
               </tr>
             ))}
+            {addUser && (
+              <tr className="h-[50px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]">
+                <td className="border border-black px-5 last:rounded-bl-[10px]">
+                  <input
+                    id="firstname"
+                    name="firstname"
+                    type="text"
+                    className="w-[100%]"
+                    placeholder="first name"
+                    value={inputValue.firstname}
+                    onChange={handleChange}
+                  />
+                </td>
+                <td className="border px-5">
+                  <input
+                    id="lastname"
+                    name="lastname"
+                    type="text"
+                    className="w-[100%]"
+                    placeholder="last name"
+                    value={inputValue.lastname}
+                    onChange={handleChange}
+                  />
+                </td>
+                <td className="border px-5">
+                  <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    className="w-[100%]"
+                    placeholder="user name"
+                    value={inputValue.username}
+                    onChange={handleChange}
+                  />
+                </td>
+                <td className="border px-5">
+                  <input
+                    id="email"
+                    name="email"
+                    type="text"
+                    className="w-[100%]"
+                    placeholder="email"
+                    value={inputValue.email}
+                    onChange={handleChange}
+                  />
+                </td>
+                <td className="bg-[#299652] border text-center px-5">
+                  <button
+                    type="button"
+                    className="w-[100%] h-[100%] bg-[#299652] font-bold"
+                    onClick={handleSubmit}
+                  >
+                    SAVE
+                  </button>
+                </td>
+                <td className="bg-[#FF0000] border text-center px-5">
+                  <button
+                    type="button"
+                    className="w-[100%] h-[100%] bg-[#FF0000] font-bold"
+                    onClick={handleAddUser}
+                  >
+                    CANCEL
+                  </button>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
+      <button
+        className="mt-[1em] ml-[5%]"
+        type="button"
+        name="cancel"
+        onClick={handleAddUser}
+      >
+        <Image src={plus} alt="logo-plus" />
+      </button>
     </div>
   );
 }

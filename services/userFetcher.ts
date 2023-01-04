@@ -1,4 +1,5 @@
 import { AxiosResponse } from "axios";
+import { TnewUser } from "../src/types/types";
 import { IUser } from "../src/interfaces/interfaces";
 import axiosInstance from "./axiosinstance";
 
@@ -7,12 +8,14 @@ const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 const userFetcher = {
   getUsers: () => axiosInstance.get<IUser[]>(`/users`).then(responseBody),
+
   deleteUserById: (id: string) =>
     axiosInstance
       .delete<IUser>(`/users/${id}`)
       .then(() => console.log("Delete successful")),
-  // post: <T>(url: string, body: {}) =>
-  //   axios.post<T>(url, body).then(responseBody),
+
+  createUser: (data: TnewUser) =>
+    axiosInstance.post<TnewUser>(`/auth/signup`, data),
 };
 
 export default userFetcher;
