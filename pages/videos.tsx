@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import Image from "next/image";
 import cloud from "../src/assets/cloud.svg";
 
-function videos() {
+function Videos() {
   const {
     register,
     handleSubmit,
@@ -119,4 +119,4 @@ function videos() {
   );
 }
 
-export default videos;
+export default Videos;
