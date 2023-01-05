@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FormEvent } from "react";
 import Image from "next/image";
 import { IUser } from "../src/interfaces/interfaces";
 import { TnewUser } from "../src/types/types";
@@ -23,9 +23,10 @@ function Users() {
     userFetcher.getUsers().then((response) => {
       setUsers(response);
     });
-  }, [users]);
+  }, []);
 
-  const handleAddUser = (event: React.MouseEvent<HTMLButtonElement>) => {
+  // reset datas in inputs if clic on CANCEL & hide the input row
+  const handleAddUser = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     if (event.target.innerHTML === "CANCEL") {
       setInputValue(initialValues);
@@ -33,18 +34,21 @@ function Users() {
     setAddUser(() => !addUser);
   };
 
-  function handleChange(event) {
+  // take datas from inputs boxes on change
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
     setInputValue((prevState) => ({ ...prevState, [name]: value }));
   }
 
-  function handleSubmit(event) {
+  // function that add a new user in DB & get users
+  function handleSubmit(event: React.ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
-    userFetcher.createUser(inputValue);
+    userFetcher
+      .createUser(inputValue)
+      .then(() => userFetcher.getUsers().then((data) => setUsers(data)));
     if (event.target.innerHTML === "SAVE") {
       setInputValue(initialValues);
     }
-    setAddUser(() => !addUser);
   }
 
   return (
@@ -61,28 +65,45 @@ function Users() {
             <th className="rounded-tr-[10px]">Delete</th>
           </thead>
           <tbody className="rounded-b-[10px]">
-            {users.map((user) => (
-              <tr
-                key={user.id}
-                className="h-[50px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
-              >
-                <td className="border border-black px-5 last:rounded-bl-[10px]">
-                  {user.firstname}
-                </td>
-                <td className="border px-5">{user.lastname}</td>
-                <td className="border px-5">{user.username}</td>
-                <td className="border px-5">{user.email}</td>
-                <td className="border text-center">📝</td>
-                <td className="border text-center last:rounded-br-[10px]">
-                  <button
-                    type="button"
-                    onClick={() => userFetcher.deleteUserById(user.id)}
-                  >
-                    🗑️
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {users
+              // .filter((user) => {
+              //   if (query === "") {
+              //     return user;
+              //   }
+              //   if (user.lastname.toLowerCase().includes(query.toLowerCase())) {
+              //     return user;
+              //   }
+              // })
+              .map((user) => (
+                <tr
+                  key={user.id}
+                  className="h-[50px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
+                >
+                  <td className="border border-black px-5 last:rounded-bl-[10px]">
+                    {user.firstname}
+                  </td>
+                  <td className="border px-5">{user.lastname}</td>
+                  <td className="border px-5">{user.username}</td>
+                  <td className="border px-5">{user.email}</td>
+                  <td className="border text-center">📝</td>
+                  <td className="border text-center last:rounded-br-[10px]">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        userFetcher
+                          .deleteUserById(user.id)
+                          .then(() =>
+                            userFetcher
+                              .getUsers()
+                              .then((data) => setUsers(data))
+                          )
+                      }
+                    >
+                      🗑️
+                    </button>
+                  </td>
+                </tr>
+              ))}
             {addUser && (
               <tr className="h-[50px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]">
                 <td className="border border-black px-5 last:rounded-bl-[10px]">

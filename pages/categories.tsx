@@ -1,7 +1,7 @@
 import React from "react";
 
-function categories() {
+function Categories() {
   return <div>categories</div>;
 }
 
-export default categories;
+export default Categories;

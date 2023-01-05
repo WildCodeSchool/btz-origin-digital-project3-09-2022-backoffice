@@ -1,19 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import magnifyingGlass from "../assets/Magnifying_glass.svg";
 
 export default function SearchBar() {
+  const [query, setQuery] = useState("");
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = handleSubmit((data) => data);
+  const onChange = handleSubmit((data) => setQuery(data));
+  console.log(query);
 
   return (
     <div className="w-[75%] h-[60px] mt-[3em] ml-[5%] flex justify-between bg-white border border-solid border-black border-1 rounded-[10px] drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
-      <form onSubmit={onSubmit} className="w-[100%] flex align-middle">
+      <form onChange={onChange} className="w-[100%] flex align-middle">
         <input
           {...register("search")}
           placeholder="search"
