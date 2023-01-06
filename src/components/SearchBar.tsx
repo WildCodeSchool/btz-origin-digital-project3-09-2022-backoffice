@@ -11,7 +11,6 @@ export default function SearchBar() {
     formState: { errors },
   } = useForm();
   const onChange = handleSubmit((data) => setQuery(data));
-  console.log(query);
 
   return (
     <div className="w-[75%] h-[60px] mt-[3em] ml-[5%] flex justify-between bg-white border border-solid border-black border-1 rounded-[10px] drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">

@@ -1,9 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
-import cloud from "../src/assets/cloud.svg";
+import cloud from "../../src/assets/cloud.svg";
 
-function Videos() {
+function NewVideo() {
   const {
     register,
     handleSubmit,
@@ -119,4 +119,4 @@ function Videos() {
   );
 }
 
-export default Videos;
+export default NewVideo;

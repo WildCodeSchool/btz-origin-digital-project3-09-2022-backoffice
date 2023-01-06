@@ -5,18 +5,25 @@ import userFetcher from "../../../services/userFetcher";
 
 export default function User() {
   const router = useRouter();
+  console.log(router.query.id);
 
-  const [user, setUser] = useState<TUser[]>({});
+  const [user, setUser] = useState<TUser>({});
 
   useEffect(() => {
-    userFetcher.getUsersById<TUser>(router.query.id).then((response) => {
-      setUser(response);
-    });
-  }, []);
+    if (router.query.id) {
+      userFetcher
+        .getUserById(router.query.id)
+        .then((response) => setUser(response));
+    }
+  }, [router]);
 
   return (
     <div>
+      <h1>{user.firstname}</h1>
+      <h1>{user.lastname}</h1>
       <h1>{user.username}</h1>
+      <h1>{user.email}</h1>
+      <h1>{user.role}</h1>
     </div>
   );
 }
