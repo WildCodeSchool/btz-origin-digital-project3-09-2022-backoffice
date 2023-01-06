@@ -6,20 +6,28 @@ import axiosInstance from "./axiosinstance";
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 const userFetcher = {
-  getUsers: () => axiosInstance.get<TUser[]>(`/users`).then(responseBody),
+  getUsers: async () => axiosInstance.get<TUser[]>(`/users`).then(responseBody),
 
-  getUsersById: (id: string) =>
-    axiosInstance.get<TUser>(`/users/${id}`).then(responseBody),
+  getUsersById: async (id: string) => {
+    try {
+      const resp = await axiosInstance.get<TUser[]>(`/users/${id}`);
+      console.log("resp.data in function:", resp.data);
+      return resp.data;
+    } catch (err) {
+      // Handle Error Here
+      console.error(err);
+    }
+  },
 
-  deleteUserById: (id: string) =>
+  deleteUserById: async (id: string) =>
     axiosInstance
       .delete<TUser>(`/users/${id}`)
       .then(() => console.log("Delete successful")),
 
-  createUser: (data: TnewUser) =>
+  createUser: async (data: TnewUser) =>
     axiosInstance.post<TnewUser>(`/auth/signup`, data),
 
-  updateUser: (id: string, data: TnewUser) =>
+  updateUser: async (id: string, data: TnewUser) =>
     axiosInstance.put<TnewUser>(`/users/${id}`, data),
 };
 

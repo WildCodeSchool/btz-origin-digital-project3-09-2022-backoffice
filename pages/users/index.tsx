@@ -63,7 +63,7 @@ function Users() {
       </div>
       <div className="w-[50px] mt-[1em] ml-[5%]">
         <a href="/users/new-user">
-          <Image cl src={plus} alt="logo-plus" />
+          <Image src={plus} alt="logo-plus" />
         </a>
       </div>
     </div>
