@@ -12,7 +12,7 @@ export default function User() {
   useEffect(() => {
     if (router.query.id) {
       userFetcher
-        .getUsersById(router.query.id)
+        .getUserById(router.query.id)
         .then((response) => setUser(response));
     }
   }, [router]);
