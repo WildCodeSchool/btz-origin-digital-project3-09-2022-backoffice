@@ -14,7 +14,6 @@ const userFetcher = {
   getUserById: async (id: string) => {
     try {
       const resp = await axiosInstance.get<TUser[]>(`/users/${id}`);
-      console.log("resp.data in function:", resp.data);
       return resp.data;
     } catch (err) {
       console.error(err);
