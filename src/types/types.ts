@@ -79,11 +79,11 @@ export type TSectionStatic = {
   updatedAt: Date;
 };
 
-export type TCategory = {
+export type TSection = {
   id: string;
   title: string;
   description: string;
-  category: string;
+  section: string;
   isGrid?: boolean;
   isHero?: boolean;
 };

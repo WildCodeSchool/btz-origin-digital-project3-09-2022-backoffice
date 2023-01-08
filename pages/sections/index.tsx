@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import categoryFetcher from "../../services/categoryFetcher";
+import sectionFetcher from "../../services/sectionFetcher";
 import plus from "../../src/assets/plus.svg";
-import { TAdvertsing, TSectionDynamic } from "../../src/types/types";
+import { TSection } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
 
-function Categories() {
-  const [categories, setCategories] = useState<
-    TAdvertsing[] | TSectionDynamic[] | TSectionDynamic[]
-  >([]);
+function Sections() {
+  const [sections, setSections] = useState<TSection[]>([]);
 
   useEffect(() => {
-    categoryFetcher.getCategories().then((response) => {
-      setCategories(response);
+    sectionFetcher.getSections().then((response) => {
+      setSections(response);
     });
   }, []);
 
@@ -28,17 +26,17 @@ function Categories() {
             <th>Delete</th>
           </thead>
           <tbody className="rounded-b-[10px]">
-            {categories.map((category) => (
+            {sections.map((section) => (
               <tr
-                key={category.id}
+                key={section.id}
                 className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
               >
                 <td className="border border-black px-5 last:rounded-bl-[10px]">
-                  {category.title}
+                  {section.title}
                 </td>
-                <td className="border px-5">{category.description}</td>
+                <td className="border px-5">{section.description}</td>
                 <td className="border text-center">
-                  <a href={`/categories/${category.id}`}>📝</a>
+                  <a href={`/sections/${section.section}/${section.id}`}>📝</a>
                 </td>
                 <td className="border text-center last:rounded-br-[10px]">
                   <button type="button">🗑️</button>
@@ -49,7 +47,7 @@ function Categories() {
         </table>
       </div>
       <div className="w-[50px] mt-[1em] ml-[5%]">
-        <a href="/videos/new-category">
+        <a href="/videos/new-section">
           <Image src={plus} alt="logo-plus" />
         </a>
       </div>
@@ -57,4 +55,4 @@ function Categories() {
   );
 }
 
-export default Categories;
+export default Sections;
