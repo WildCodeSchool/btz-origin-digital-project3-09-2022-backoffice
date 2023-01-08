@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import sectionFetcher from "../../services/sectionFetcher";
-import plus from "../../src/assets/plus.svg";
-import { TSection } from "../../src/types/types";
-import SearchBar from "../../src/components/SearchBar";
-import SectionSelector from "../../src/components/SectionSelector";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import sectionFetcher from "../../../services/sectionFetcher";
+import plus from "../../../src/assets/plus.svg";
+import { TSection } from "../../../src/types/types";
+import SearchBar from "../../../src/components/SearchBar";
+import SectionSelector from "../../../src/components/SectionSelector";
 
-function Sections() {
-  const [sections, setSections] = useState<TSection[]>([]);
+function Section() {
+  const [section, setSection] = useState<TSection[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
-    sectionFetcher.getSections().then((response) => {
-      setSections(response);
-    });
-  }, []);
+    if (router.query.section) {
+      sectionFetcher
+        .getSectionContent(router.query.section)
+        .then((response) => {
+          setSection(response);
+        });
+    }
+  }, [router]);
 
   return (
     <div className="w-full bg-lightgrey">
@@ -28,28 +35,28 @@ function Sections() {
             <th>Delete</th>
           </thead>
           <tbody className="rounded-b-[10px]">
-            {sections.map((section) => (
+            {section.map((item) => (
               <tr
-                key={section.id}
+                key={item.id}
                 className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
               >
                 <td className="border border-black px-5 last:rounded-bl-[10px]">
-                  {section.title}
+                  {item.title}
                 </td>
-                <td className="border px-5">{section.description}</td>
+                <td className="border px-5">{item.description}</td>
                 <td className="border text-center">
-                  <a href={`/sections/${section.section}/${section.id}`}>📝</a>
+                  <a href={`/sections/${item.section}/${item.id}`}>📝</a>
                 </td>
                 <td className="border text-center last:rounded-br-[10px]">
                   <button
                     type="button"
                     onClick={() =>
                       sectionFetcher
-                        .deleteSectionById(section.section, section.id)
+                        .deleteSectionById(item.section, item.id)
                         .then(() =>
                           sectionFetcher
-                            .getSections()
-                            .then((data) => setSections(data))
+                            .getSectionContent(router.query.section)
+                            .then((data) => setSection(data))
                         )
                     }
                   >
@@ -70,4 +77,4 @@ function Sections() {
   );
 }
 
-export default Sections;
+export default Section;

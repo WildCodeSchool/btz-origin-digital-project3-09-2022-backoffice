@@ -52,11 +52,32 @@ const categoryFetcher = {
       console.error(err);
     }
   },
+
+  getSectionContent: async (type: string | string[]) => {
+    try {
+      const sectionContent: TSection[] | null = [];
+      const resp = await axiosInstance.get(`/${type}`);
+      if (resp.data !== null) {
+        resp.data.forEach((element: TAdvertsing) => {
+          sectionContent.push({
+            id: element.id,
+            title: element.title,
+            description: element.description,
+            section: type as string,
+          });
+        });
+      }
+      return sectionContent;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
   getSectionById: async (type: string | string[], id: string | string[]) => {
     try {
-      const resp = await axiosInstance.get(`/${type}/${id}`);
-      console.log(resp.data);
-
+      const resp = await axiosInstance.get<
+        TAdvertsing | TSectionDynamic | TSectionStatic
+      >(`/${type}/${id}`);
       return resp.data;
     } catch (err) {
       console.error(err);
@@ -66,9 +87,9 @@ const categoryFetcher = {
   updateSection: async (id: string, data: TNewVideo) =>
     axiosInstance.put<TNewVideo>(`/sections/${id}`, data),
 
-  deleteSectionById: async (id: string) =>
+  deleteSectionById: async (type: string | string[], id: string | string[]) =>
     axiosInstance
-      .delete<TVideo>(`/sections/${id}`)
+      .delete<TAdvertsing | TSectionDynamic | TSectionStatic>(`/${type}/${id}`)
       .then(() => console.log("Delete successful")),
 };
 

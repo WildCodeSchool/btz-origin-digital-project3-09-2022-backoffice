@@ -26,13 +26,8 @@ export default function SectionItem() {
       <h1>id :{sectionItem.id}</h1>
       <h1>title : {sectionItem.title}</h1>
       <h1>description : {sectionItem.description}</h1>
-      {sectionItem.isHero ? (
-        <h1>Hero {sectionItem.isHero}</h1>
-      ) : sectionItem.isGrid ? (
-        <h1>Grid {sectionItem.isGrid}</h1>
-      ) : (
-        <h1>""</h1>
-      )}
+      {sectionItem.isHero && <h1>Hero {sectionItem.isHero}</h1>}
+      {sectionItem.isGrid && <h1>Grid {sectionItem.isGrid}</h1>}
     </div>
   );
 }
