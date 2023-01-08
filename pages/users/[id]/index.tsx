@@ -5,7 +5,6 @@ import userFetcher from "../../../services/userFetcher";
 
 export default function User() {
   const router = useRouter();
-  console.log(router.query.id);
 
   const [user, setUser] = useState<TUser>({});
 
