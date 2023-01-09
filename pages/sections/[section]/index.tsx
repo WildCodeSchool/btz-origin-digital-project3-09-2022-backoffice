@@ -35,20 +35,20 @@ function Section() {
           </thead>
           <tbody className="rounded-b-[10px]">
             {section
-              .filter(function (item): boolean {
+              .filter((item) => {
                 switch (localStorage.getItem("sectionName")) {
                   case "Hero Slider":
                     if (item.isHero === true) return true;
-                    break;
+                    return false;
                   case "Carrousel Static":
                     if (item.isHero === false) return true;
-                    break;
+                    return false;
                   case "Carrousel Dynamic":
                     if (item.isGrid === false) return true;
-                    break;
+                    return false;
                   case "Grid Dynamic":
                     if (item.isGrid === true) return true;
-                    break;
+                    return false;
                   case "Advertising":
                     return true;
                   default:
