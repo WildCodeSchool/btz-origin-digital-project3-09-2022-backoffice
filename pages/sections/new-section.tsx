@@ -1,8 +1,6 @@
 import React from "react";
 
-type Props = {};
-
-function NewSection({}: Props) {
+function NewSection() {
   return <div>new-section</div>;
 }
 

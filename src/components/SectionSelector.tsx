@@ -1,75 +1,66 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
+import { TSectionSelector } from "../types/types";
 
-function SectionSelector() {
-  const router = useRouter();
-  const [counter, setCounter] = useState(0);
+const items: TSectionSelector[] = [
+  {
+    id: 1,
+    name: "Hero Slider",
+    url: "/sections/static-sections",
+    section: "static-sections",
+    isHero: true,
+  },
+  {
+    id: 2,
+    name: "Carrousel Static",
+    url: "/sections/static-sections",
+    section: "static-sections",
+    isHero: false,
+  },
+  {
+    id: 3,
+    name: "Carrousel Dynamic",
+    url: "/sections/dynamic-sections",
+    section: "dynamic-sections",
+    isGrid: false,
+  },
+  {
+    id: 4,
+    name: "Grid Dynamic",
+    url: "/sections/dynamic-sections",
+    section: "dynamic-sections",
+    isGrid: true,
+  },
+  {
+    id: 5,
+    name: "Advertising",
+    url: "/sections/advertisings",
+    section: "advertisings",
+  },
+];
 
-  useEffect(() => {
-    console.log(router);
-  }, [router]);
+export default function SectionSelector() {
+  const handleClick = (item: TSectionSelector) => {
+    localStorage.setItem("sectionName", item.name);
+    localStorage.setItem("section", item.section);
+  };
   return (
     <div>
       <ul className="w-full flex ml-[5%] m-4 font-bold">
-        <li
-          className={
-            counter === 1
-              ? "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around underline"
-              : "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around hover:underline"
-          }
-        >
-          <Link href="/sections/static-sections" onClick={() => setCounter(1)}>
-            Hero Slider
-          </Link>
-        </li>
-        <li
-          className={
-            counter === 2
-              ? "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around underline"
-              : "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around hover:underline"
-          }
-        >
-          <Link href="/sections/static-sections" onClick={() => setCounter(2)}>
-            Carrousel Static
-          </Link>
-        </li>
-        <li
-          className={
-            counter === 3
-              ? "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around underline"
-              : "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around hover:underline"
-          }
-        >
-          <Link href="/sections/dynamic-sections" onClick={() => setCounter(3)}>
-            Carrousel Dynamic
-          </Link>
-        </li>
-        <li
-          className={
-            counter === 4
-              ? "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around underline"
-              : "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around hover:underline"
-          }
-        >
-          <Link href="/sections/dynamic-sections" onClick={() => setCounter(4)}>
-            Grid Dynamic
-          </Link>
-        </li>
-        <li
-          className={
-            counter === 5
-              ? "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around underline"
-              : "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around hover:underline"
-          }
-        >
-          <Link href="/sections/advertisings" onClick={() => setCounter(5)}>
-            Advertising
-          </Link>
-        </li>
+        {items.map((item) => (
+          <li
+            key={item.id}
+            className={
+              localStorage.getItem("sectionName") === item.name
+                ? "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around underline"
+                : "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around hover:underline"
+            }
+          >
+            <Link href={item.url} onClick={() => handleClick(item)}>
+              {item.name}
+            </Link>
+          </li>
+        ))}
       </ul>
     </div>
   );
 }
-
-export default SectionSelector;

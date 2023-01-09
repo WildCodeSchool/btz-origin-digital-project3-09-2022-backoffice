@@ -4,8 +4,6 @@ import {
   TSectionStatic,
   TAdvertsing,
   TSection,
-  TNewVideo,
-  TVideo,
 } from "../src/types/types";
 import axiosInstance from "./axiosinstance";
 
@@ -58,12 +56,14 @@ const categoryFetcher = {
       const sectionContent: TSection[] | null = [];
       const resp = await axiosInstance.get(`/${type}`);
       if (resp.data !== null) {
-        resp.data.forEach((element: TAdvertsing) => {
+        resp.data.forEach((element: TSection) => {
           sectionContent.push({
             id: element.id,
             title: element.title,
             description: element.description,
             section: type as string,
+            isGrid: element.isGrid,
+            isHero: element.isHero,
           });
         });
       }
@@ -83,9 +83,6 @@ const categoryFetcher = {
       console.error(err);
     }
   },
-
-  updateSection: async (id: string, data: TNewVideo) =>
-    axiosInstance.put<TNewVideo>(`/sections/${id}`, data),
 
   deleteSectionById: async (type: string | string[], id: string | string[]) =>
     axiosInstance

@@ -40,6 +40,11 @@ function Sidebar() {
   const router = useRouter();
   const sideBarChoice: string | undefined = `/${router.pathname.split("/")[1]}`;
 
+  const removeSectionsItemsFromLocalStorage = () => {
+    localStorage.removeItem("sectionName");
+    localStorage.removeItem("section");
+  };
+
   return (
     <div className="w-[350px]  h-full flex p-5 bg-bg1 text-text1 text-xl">
       <ul className="w-full h-full flex flex-col mt-[160px] list-none">
@@ -53,7 +58,9 @@ function Sidebar() {
                 : "w-[300px] h-[60px] flex text-xl border-t-[1px] last:border-b-[1px] items-center justify-around hover:text-[32px] hover:duration-150"
             }
           >
-            <Link href={el.url}>{el.name}</Link>
+            <Link href={el.url} onClick={removeSectionsItemsFromLocalStorage}>
+              {el.name}
+            </Link>
           </li>
         ))}
       </ul>

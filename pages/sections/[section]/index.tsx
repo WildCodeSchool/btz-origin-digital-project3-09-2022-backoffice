@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import sectionFetcher from "../../../services/sectionFetcher";
 import plus from "../../../src/assets/plus.svg";
@@ -35,36 +34,58 @@ function Section() {
             <th>Delete</th>
           </thead>
           <tbody className="rounded-b-[10px]">
-            {section.map((item) => (
-              <tr
-                key={item.id}
-                className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
-              >
-                <td className="border border-black px-5 last:rounded-bl-[10px]">
-                  {item.title}
-                </td>
-                <td className="border px-5">{item.description}</td>
-                <td className="border text-center">
-                  <a href={`/sections/${item.section}/${item.id}`}>📝</a>
-                </td>
-                <td className="border text-center last:rounded-br-[10px]">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      sectionFetcher
-                        .deleteSectionById(item.section, item.id)
-                        .then(() =>
-                          sectionFetcher
-                            .getSectionContent(router.query.section)
-                            .then((data) => setSection(data))
-                        )
-                    }
-                  >
-                    🗑️
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {section
+              .filter(function (item): boolean {
+                switch (localStorage.getItem("sectionName")) {
+                  case "Hero Slider":
+                    if (item.isHero === true) return true;
+                    break;
+                  case "Carrousel Static":
+                    if (item.isHero === false) return true;
+                    break;
+                  case "Carrousel Dynamic":
+                    if (item.isGrid === false) return true;
+                    break;
+                  case "Grid Dynamic":
+                    if (item.isGrid === true) return true;
+                    break;
+                  case "Advertising":
+                    return true;
+                  default:
+                    return false;
+                }
+              })
+
+              .map((item: TSection) => (
+                <tr
+                  key={item.id}
+                  className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
+                >
+                  <td className="border border-black px-5 last:rounded-bl-[10px]">
+                    {item.title}
+                  </td>
+                  <td className="border px-5">{item.description}</td>
+                  <td className="border text-center">
+                    <a href={`/sections/${item.section}/${item.id}`}>📝</a>
+                  </td>
+                  <td className="border text-center last:rounded-br-[10px]">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        sectionFetcher
+                          .deleteSectionById(item.section, item.id)
+                          .then(() =>
+                            sectionFetcher
+                              .getSectionContent(router.query.section)
+                              .then((data) => setSection(data))
+                          )
+                      }
+                    >
+                      🗑️
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

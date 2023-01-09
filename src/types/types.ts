@@ -87,3 +87,12 @@ export type TSection = {
   isGrid?: boolean;
   isHero?: boolean;
 };
+
+export type TSectionSelector = {
+  id: number;
+  name: string;
+  section: string;
+  url: string;
+  isGrid?: boolean;
+  isHero?: boolean;
+};
