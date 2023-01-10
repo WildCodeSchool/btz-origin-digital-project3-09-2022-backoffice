@@ -5,7 +5,6 @@ import videoFetcher from "../../../services/videoFetcher";
 
 export default function Video() {
   const router = useRouter();
-  console.log(router.query.id);
 
   const [video, setVideo] = useState<TVideo>({});
 
