@@ -1,11 +1,15 @@
-import { AxiosResponse } from "axios";
-import { json } from "stream/consumers";
 import { TCategory } from "../src/types/types";
 import axiosInstance from "./axiosinstance";
 
 const categoryFetcher = {
-  createCategory: async (data: TCategory) =>
-    axiosInstance.post<TCategory>(`/categories`, data),
+  createCategory: async (data: string) => {
+    await axiosInstance
+      .post<TCategory>(
+        `/categories`,
+        JSON.parse(JSON.stringify({ name: data }))
+      )
+      .then(() => console.log("Create successful"));
+  },
 
   getCategories: async () => {
     try {

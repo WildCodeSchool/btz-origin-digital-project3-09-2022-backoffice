@@ -8,7 +8,9 @@ import SearchBar from "../../src/components/SearchBar";
 export default function index() {
   const [categories, setCategories] = useState<TCategory[]>([]);
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [createMode, setCreateMode] = useState<boolean>(false);
   const [itemToEdit, setItemToEdit] = useState<string | null>();
+
   const [categoryName, setCategoryName] = useState<string>("");
 
   useEffect(() => {
@@ -16,6 +18,15 @@ export default function index() {
       setCategories(response);
     });
   }, []);
+
+  const handleItemToCreate = (): void => {
+    if (categoryName) {
+      categoryFetcher.createCategory(categoryName).then(() => {
+        categoryFetcher.getCategories().then((data) => setCategories(data));
+      });
+    }
+    setCreateMode(false);
+  };
 
   const handleItemToEdit = (e: React.MouseEvent<HTMLButtonElement>): void => {
     if (editMode) {
@@ -36,7 +47,6 @@ export default function index() {
         .updateCategoryById(e.currentTarget.id, categoryName)
         .then(() => {
           categoryFetcher.getCategories().then((data) => setCategories(data));
-          console.log(data);
         });
     }
     setEditMode(false);
@@ -123,13 +133,40 @@ export default function index() {
                 )}
               </tr>
             ))}
+            {createMode && (
+              <tr className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]">
+                <td className="border border-black px-5 last:rounded-bl-[10px]">
+                  <input
+                    type="text"
+                    name="name"
+                    className="border border-black"
+                    placeholder="please enter a name"
+                    onChange={(e) => setCategoryName(e.target.value)}
+                  />
+                </td>
+                <td className="border text-center bg-[#008000]">
+                  <button type="button" onClick={handleItemToCreate}>
+                    SAVE
+                  </button>
+                </td>
+                <td className="border text-center last:rounded-br-[10px] bg-[#FF0000]">
+                  <button
+                    className="w-full h-full bg-red"
+                    type="button"
+                    onClick={handleItemToEditCancel}
+                  >
+                    CANCEL
+                  </button>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
       <div className="w-[50px] mt-[1em] ml-[5%]">
-        <a href="/sections/new-section">
+        <button type="button" onClick={() => setCreateMode(!createMode)}>
           <Image src={plus} alt="logo-plus" />
-        </a>
+        </button>
       </div>
     </div>
   );
