@@ -10,7 +10,7 @@ import axiosInstance from "./axiosinstance";
 // Creation of the "categoryFetcher" object which contains the different API call methods
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
-const categoryFetcher = {
+const sectionFetcher = {
   getSections: async () => {
     try {
       const allSections: TSection[] | null = [];
@@ -90,4 +90,4 @@ const categoryFetcher = {
       .then(() => console.log("Delete successful")),
 };
 
-export default categoryFetcher;
+export default sectionFetcher;
