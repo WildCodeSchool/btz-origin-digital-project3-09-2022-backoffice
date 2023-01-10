@@ -47,3 +47,52 @@ export type TNewVideo = {
   duration: number;
   categoryId: string;
 };
+
+export type TAdvertsing = {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  linkTo: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type TSectionDynamic = {
+  id: string;
+  title: string;
+  description: string;
+  max: number;
+  isGrid: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  categoryId: string;
+};
+
+export type TSectionStatic = {
+  id: string;
+  title: string;
+  description: string;
+  max: number;
+  isHero: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type TSection = {
+  id: string;
+  title: string;
+  description: string;
+  section: string;
+  isGrid?: boolean;
+  isHero?: boolean;
+};
+
+export type TSectionSelector = {
+  id: number;
+  name: string;
+  section: string;
+  url: string;
+  isGrid?: boolean;
+  isHero?: boolean;
+};

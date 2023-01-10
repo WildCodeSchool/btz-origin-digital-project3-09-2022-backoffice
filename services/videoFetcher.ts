@@ -15,7 +15,6 @@ const videoFetcher = {
   getVideoById: async (id: string) => {
     try {
       const resp = await axiosInstance.get<TVideo[]>(`/videos/${id}`);
-      console.log("resp.data in function:", resp.data);
       return resp.data;
     } catch (err) {
       console.error(err);
