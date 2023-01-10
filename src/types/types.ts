@@ -96,3 +96,8 @@ export type TSectionSelector = {
   isGrid?: boolean;
   isHero?: boolean;
 };
+
+export type TCategory = {
+  id: string;
+  name: string;
+};
