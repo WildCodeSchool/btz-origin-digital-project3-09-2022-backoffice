@@ -50,6 +50,7 @@ export default function SectionSelector() {
           <li
             key={item.id}
             className={
+              typeof window !== "undefined" &&
               localStorage.getItem("sectionName") === item.name
                 ? "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around underline"
                 : "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around hover:underline"
