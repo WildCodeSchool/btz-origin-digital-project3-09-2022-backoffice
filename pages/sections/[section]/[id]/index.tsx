@@ -15,12 +15,24 @@ export default function SectionItem() {
 
   useEffect(() => {
     if (router.query.section && router.query.id) {
+      // console.log(
+      //   "router.query.section",
+      //   router.query.section,
+      //   "router.query.id",
+      //   router.query.id,
+      //   "Fetch on ==> ",
+      //   `/${router.query.section}/${router.query.id}`
+      // );
+
       sectionFetcher
         .getSectionById(router.query.section, router.query.id)
-        .then((response) => setSectionItem(response));
+        .then((response) => {
+          setSectionItem(response);
+        });
     }
   }, [router]);
 
+  console.log("sectionItem", sectionItem);
   return (
     <div>
       <h1>id :{sectionItem.id}</h1>

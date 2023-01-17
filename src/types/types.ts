@@ -86,6 +86,11 @@ export type TSection = {
   section: string;
   isGrid?: boolean;
   isHero?: boolean;
+  max?: number;
+  imageUrl?: string;
+  linkTo?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type TSectionSelector = {

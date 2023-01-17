@@ -11,6 +11,16 @@ import axiosInstance from "./axiosinstance";
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 const sectionFetcher = {
+  createSection: async (type: string | string[], data: any) => {
+    try {
+      await axiosInstance
+        .post(`/${type}`, data)
+        .then(() => console.log("Create successful"));
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
   getSections: async () => {
     try {
       const allSections: TSection[] | null = [];
@@ -78,6 +88,8 @@ const sectionFetcher = {
       const resp = await axiosInstance.get<
         TAdvertsing | TSectionDynamic | TSectionStatic
       >(`/${type}/${id}`);
+      console.log("Fetch on ==> ", `/${type}/${id}`);
+
       return resp.data;
     } catch (err) {
       console.error(err);
