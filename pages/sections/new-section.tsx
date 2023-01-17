@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
 import sectionsTypes from "../../src/types/sectionsTypes";
 import sectionFetcher from "../../services/sectionFetcher";
 import { TCategory } from "../../src/types/types";
@@ -15,16 +16,15 @@ function NewSection() {
   const [typeOfSection, setTypeOfSection] = useState<string>("");
   const [nameOfSection, setNameOfSection] = useState<string>("");
   const [categories, setCategories] = useState<TCategory[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     categoryFetcher.getCategories().then((data) => setCategories(data));
   }, []);
 
   const handleChange = (e) => {
-    console.log(e.target.value);
     setTypeOfSection(e.target.value.split("/")[0]);
     setNameOfSection(e.target.value.split("/")[1]);
-    // reset();
   };
 
   return (
@@ -32,8 +32,6 @@ function NewSection() {
       <form
         className="w-full h-full flex flex-col items-center"
         onSubmit={handleSubmit((data) => {
-          console.log(data);
-
           const { title, description, max, imageUrl, linkTo, categoryId } =
             data;
           switch (typeOfSection) {
@@ -41,9 +39,10 @@ function NewSection() {
               sectionFetcher.createSection(typeOfSection, {
                 title,
                 description,
-                max,
+                max: +max,
                 isHero: nameOfSection === "Hero Slider",
               });
+              router.push(`/sections/${typeOfSection}`);
               break;
 
             case "dynamic-sections":
@@ -54,6 +53,7 @@ function NewSection() {
                 isGrid: nameOfSection === "Grid Dynamic",
                 categoryId,
               });
+              router.push(`/sections/${typeOfSection}`);
               break;
 
             case "advertisings":
@@ -63,6 +63,7 @@ function NewSection() {
                 imageUrl,
                 linkTo,
               });
+              router.push(`/sections/${typeOfSection}`);
               break;
             default:
               // alert("please select a type");
@@ -105,7 +106,7 @@ function NewSection() {
             className="flex flex-col w-[80%] text-[20px] font-bold"
           >
             Title
-            <input {...register("title")} />
+            <input type="text" {...register("title")} />
           </label>
         </div>
 
@@ -119,8 +120,7 @@ function NewSection() {
           </label>
         </div>
 
-        {(typeOfSection === "dynamic-sections" ||
-          typeOfSection === "static-sections") && (
+        {typeOfSection === "dynamic-sections" && (
           <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
             <label
               htmlFor="max"
