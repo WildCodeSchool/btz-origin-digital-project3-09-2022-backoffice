@@ -22,8 +22,8 @@ export default function SectionItem() {
   const router = useRouter();
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [isLoadingSections, setIsLoadingSections] = useState(true);
-  const [typeOfSection, setTypeOfSection] = useState("");
   const [categories, setCategories] = useState([]);
+  const [videos, setVideos] = useState([]);
 
   useEffect(() => {
     if (router.query.section && router.query.id) {
@@ -32,16 +32,43 @@ export default function SectionItem() {
         .then((response) => {
           setSectionItem(response);
           setIsLoadingSections(!isLoadingSections);
-          console.log(response);
         });
 
       categoryFetcher.getCategories().then((data) => {
         setCategories(data);
         setIsLoadingCategories(!isLoadingCategories);
-        console.log(data);
       });
     }
   }, [router.query.section, router.query.id]);
+
+  const handleTypeOfSection = (): string => {
+    if (
+      router.query.section === "static-sections" &&
+      sectionItem.isHero === true
+    ) {
+      return "Hero Slider";
+    }
+    if (
+      router.query.section === "static-sections" &&
+      sectionItem.isHero === false
+    ) {
+      return "Carrousel Static";
+    }
+    if (
+      router.query.section === "dynamic-sections" &&
+      sectionItem.isGrid === true
+    ) {
+      return "Grid Dynamic";
+    }
+    if (
+      router.query.section === "dynamic-sections" &&
+      sectionItem.isGrid === false
+    ) {
+      return "Carrousel Dynamic";
+    }
+    if (router.query.section === "advertisings") return "Advertising";
+    return "No section type";
+  };
 
   return (
     <div className="w-full h-full flex">
@@ -50,7 +77,7 @@ export default function SectionItem() {
           <h1>Loading...</h1>
         </div>
       ) : (
-        <div className="w-full h-full flex">
+        <div className="w-1/2 h-full flex">
           <form
             className="w-full h-full flex flex-col items-center"
             onSubmit={handleSubmit((data) => {
@@ -106,34 +133,27 @@ export default function SectionItem() {
               }
             })}
           >
-            <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-              <p className="w-[80%] text-[20px] font-bold">Type of section</p>
-              <p className="w-[80%] text-[20px] font-bold bg-white">
-                {typeOfSection}
-              </p>
+            <div className="container-fields">
+              <p className="title-field">Type of section</p>
+              <p className="input-field">{handleTypeOfSection()}</p>
             </div>
 
-            <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-              <label
-                htmlFor="title"
-                className="flex flex-col w-[80%] text-[20px] font-bold"
-              >
+            <div className="container-fields">
+              <label htmlFor="title" className="title-field">
                 Title
                 <input
+                  className="input-field"
                   defaultValue={sectionItem.title}
                   {...register("title")}
                 />
               </label>
             </div>
 
-            <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-              <label
-                htmlFor="description"
-                className="flex flex-col w-[80%] text-[20px] font-bold"
-              >
+            <div className="container-fields">
+              <label htmlFor="description" className="title-field">
                 Description
-                <input
-                  className="h-[10em]"
+                <textarea
+                  className="input-field h-[10em]"
                   defaultValue={sectionItem.description}
                   {...register("description")}
                 />
@@ -141,29 +161,27 @@ export default function SectionItem() {
             </div>
 
             {router.query.section === "dynamic-sections" && (
-              <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-                <label
-                  htmlFor="max"
-                  className="flex flex-col w-[80%] text-[20px] font-bold"
-                >
+              <div className="container-fields">
+                <label htmlFor="max" className="title-field">
                   Max videos (10 by default)
-                  <input defaultValue={sectionItem.max} {...register("max")} />
+                  <input
+                    className="input-field"
+                    defaultValue={sectionItem.max}
+                    {...register("max")}
+                  />
                 </label>
               </div>
             )}
 
             {router.query.section === "dynamic-sections" && (
-              <div className="flex flex-col w-[80%] mt-[2em] text-[20px] font-bold">
-                <label
-                  htmlFor="category"
-                  className="w-[80%] text-[20px] font-bold"
-                >
+              <div className="container-fields">
+                <label htmlFor="category" className="title-field">
                   Please choose a category
                   <select
                     id="category"
                     defaultValue={sectionItem.categoryId}
                     placeholder="Please choose a category"
-                    className="w-[100%] h-[50px] flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
+                    className="input-field bg-white"
                     {...register("categoryId", { required: true })}
                   >
                     <option>...</option>
@@ -183,11 +201,8 @@ export default function SectionItem() {
             )}
 
             {router.query.section === "advertisings" && (
-              <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-                <label
-                  htmlFor="imageUrl"
-                  className="flex flex-col w-[80%] text-[20px] font-bold"
-                >
+              <div className="container">
+                <label htmlFor="imageUrl" className="title-field">
                   Image to upload
                   <input
                     defaultValue={sectionItem.imageUrl}
@@ -199,14 +214,12 @@ export default function SectionItem() {
             )}
 
             {router.query.section === "advertisings" && (
-              <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-                <label
-                  htmlFor="linkTo"
-                  className="flex flex-col w-[80%] text-[20px] font-bold"
-                >
+              <div className="container">
+                <label htmlFor="linkTo" className="title-field">
                   Link to
                   <input
                     type="text"
+                    className="input-field"
                     placeholder="Please insert here the link you want the user follows"
                     defaultValue={sectionItem.linkTo}
                     {...register("linkTo")}
@@ -216,11 +229,7 @@ export default function SectionItem() {
             )}
 
             <div className="flex flex-col my-[2em] w-[100%] justify-center items-center">
-              <input
-                id="submit"
-                type="submit"
-                className="w-[50%] h-[50px] bg-[#D9D9D9] border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
-              />
+              <input id="submit" type="submit" className="submit-btn" />
             </div>
           </form>
         </div>
