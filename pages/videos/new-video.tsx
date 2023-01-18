@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-
+import Image from "next/image";
+import cloud from "../../src/assets/cloud.svg";
 import categoryFetcher from "../../services/categoryFetcher";
 import { TCategory } from "../../src/types/types";
 import axiosInstance from "../../services/axiosinstance";
@@ -147,38 +148,29 @@ function NewVideo() {
                 />
               </label>
             </div>
-            {/* <input
-              className=" w-full h-full"
-              type="file"
-              {...register("file", { required: true })}
-            /> */}
-            <input
-              className=" w-full h-full"
-              type="file"
-              multiple
-              {...register("file", { required: true })}
-            />
           </div>
-          {/* <div className=" w-full h-full flex justify-center align-middle content-around mt-[10%]">
+          <div className=" w-full h-full flex justify-center align-middle content-around mt-[10%]">
             <div className="flex flex-col  w-[70%] h-[60%] bg-[#D9D9D9] border-dashed border-2 my-5 border-black rounded-xl drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
               <input
-                className="absolute w-full h-full invisible"
+                className="absolute w-full h-full z-50 opacity-0"
                 type="file"
+                multiple
                 {...register("file", { required: true })}
               />
               <Image
                 src={cloud}
                 alt="cloud"
-                className="w-[80%] self-center bg-slate-300 p-5"
+                className="w-[80%] h-full self-center bg-slate-300 p-5 "
               />
-              <p className="text-[20px] self-center font-bold p-5">
-                Choose a file or drag it here.
+              <p className="text-[20px] self-center font-bold p-5 ">
+                Please select your thumbnail file, your teaser file and your
+                video file
               </p>
               {errors.file && (
                 <p className="self-center">Please provide a file</p>
               )}
             </div>
-          </div> */}
+          </div>
         </div>
 
         <div className="flex flex-col  w-[100%] justify-center items-center">
