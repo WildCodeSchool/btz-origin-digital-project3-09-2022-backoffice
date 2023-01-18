@@ -3,12 +3,17 @@ import axiosInstance from "./axiosinstance";
 
 const categoryFetcher = {
   createCategory: async (data: string) => {
-    await axiosInstance
-      .post<TCategory>(
+    try {
+      await axiosInstance.post<TCategory>(
         `/categories`,
         JSON.parse(JSON.stringify({ name: data }))
-      )
-      .then(() => console.log("Create successful"));
+      );
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("createCategory successful");
+    }
   },
 
   getCategories: async () => {
@@ -26,6 +31,9 @@ const categoryFetcher = {
       return allCategories;
     } catch (err) {
       console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("getCategories successful");
     }
   },
 
@@ -35,22 +43,40 @@ const categoryFetcher = {
       return resp.data;
     } catch (err) {
       console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("getCategoryById successful");
     }
   },
 
   updateCategoryById: async (id: string, data: string) => {
-    await axiosInstance
-      .put<TCategory>(
-        `/categories/${id}`,
-        JSON.parse(JSON.stringify({ name: data }))
-      )
-      .then(() => console.log("Update successful", data));
+    try {
+      await axiosInstance
+        .put<TCategory>(
+          `/categories/${id}`,
+          JSON.parse(JSON.stringify({ name: data }))
+        )
+        .then(() => console.log("Update successful", data));
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("updateCategoryById successful");
+    }
   },
 
-  deleteCategoryById: async (id: string) =>
-    axiosInstance
-      .delete<TCategory>(`/categories/${id}`)
-      .then(() => console.log("Delete successful")),
+  deleteCategoryById: async (id: string) => {
+    try {
+      await axiosInstance
+        .delete<TCategory>(`/categories/${id}`)
+        .then(() => console.log("Delete successful"));
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("deleteCategoryById successful");
+    }
+  },
 };
 
 export default categoryFetcher;

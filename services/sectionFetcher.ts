@@ -7,10 +7,18 @@ import {
 } from "../src/types/types";
 import axiosInstance from "./axiosinstance";
 
-// Creation of the "categoryFetcher" object which contains the different API call methods
-const responseBody = <T>(response: AxiosResponse<T>) => response.data;
-
 const sectionFetcher = {
+  createSection: async (type: string | string[], data: any) => {
+    try {
+      await axiosInstance.post(`/${type}`, data);
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("createSection successful");
+    }
+  },
+
   getSections: async () => {
     try {
       const allSections: TSection[] | null = [];
@@ -48,6 +56,9 @@ const sectionFetcher = {
       return allSections;
     } catch (err) {
       console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("getSections successful");
     }
   },
 
@@ -70,6 +81,9 @@ const sectionFetcher = {
       return sectionContent;
     } catch (err) {
       console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("getSectionContent successful");
     }
   },
 
@@ -81,13 +95,37 @@ const sectionFetcher = {
       return resp.data;
     } catch (err) {
       console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("getSectionById successful");
     }
   },
 
-  deleteSectionById: async (type: string | string[], id: string | string[]) =>
-    axiosInstance
-      .delete<TAdvertsing | TSectionDynamic | TSectionStatic>(`/${type}/${id}`)
-      .then(() => console.log("Delete successful")),
+  updateSectionById: async (
+    type: string | string[],
+    id: string | string[],
+    data: TSection
+  ) => {
+    try {
+      await axiosInstance.put(`/${type}/${id}`, data);
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("updateSectionById successful");
+    }
+  },
+
+  deleteSectionById: async (type: string | string[], id: string | string[]) => {
+    try {
+      await axiosInstance.delete(`/${type}/${id}`);
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("Delete successful");
+    }
+  },
 };
 
 export default sectionFetcher;
