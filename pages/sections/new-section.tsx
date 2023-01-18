@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
+import axios from "axios";
 import sectionsTypes from "../../src/types/sectionsTypes";
 import sectionFetcher from "../../services/sectionFetcher";
 import { TCategory } from "../../src/types/types";
@@ -17,60 +18,62 @@ function NewSection() {
   const [nameOfSection, setNameOfSection] = useState<string>("");
   const [categories, setCategories] = useState<TCategory[]>([]);
   const router = useRouter();
+  const formData = new FormData();
 
   useEffect(() => {
     categoryFetcher.getCategories().then((data) => setCategories(data));
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (e: FieldValues) => {
     setTypeOfSection(e.target.value.split("/")[0]);
     setNameOfSection(e.target.value.split("/")[1]);
+  };
+
+  const handleData = (data: FieldValues) => {
+    // const { title, description, max, file, linkTo, categoryId } = data;
+    switch (typeOfSection) {
+      case "static-sections":
+        sectionFetcher.createSection(typeOfSection, {
+          title: data.title,
+          description: data.description,
+          max: +data.max,
+          isHero: nameOfSection === "Hero Slider",
+        });
+        router.push(`/sections/${typeOfSection}`);
+        break;
+
+      case "dynamic-sections":
+        sectionFetcher.createSection(typeOfSection, {
+          title: data.title,
+          description: data.description,
+          max: +data.max,
+          isGrid: nameOfSection === "Grid Dynamic",
+          categoryId: data.categoryId,
+        });
+        router.push(`/sections/${typeOfSection}`);
+        break;
+
+      case "advertisings":
+        formData.append("title", data.title);
+        formData.append("description", data.description);
+        formData.append("linkTo", data.linkTo);
+        formData.append("file", data.file[0]);
+        axios.post("http://localhost:4000/api/v1/advertisings", formData);
+        router.push(`/sections/${typeOfSection}`);
+        break;
+      default:
+        // alert("please select a type");
+        break;
+    }
+
+    reset();
   };
 
   return (
     <div className="w-full h-full flex">
       <form
         className="w-full h-full flex flex-col items-center"
-        onSubmit={handleSubmit((data) => {
-          const { title, description, max, imageUrl, linkTo, categoryId } =
-            data;
-          switch (typeOfSection) {
-            case "static-sections":
-              sectionFetcher.createSection(typeOfSection, {
-                title,
-                description,
-                max: +max,
-                isHero: nameOfSection === "Hero Slider",
-              });
-              router.push(`/sections/${typeOfSection}`);
-              break;
-
-            case "dynamic-sections":
-              sectionFetcher.createSection(typeOfSection, {
-                title,
-                description,
-                max: +max,
-                isGrid: nameOfSection === "Grid Dynamic",
-                categoryId,
-              });
-              router.push(`/sections/${typeOfSection}`);
-              break;
-
-            case "advertisings":
-              sectionFetcher.createSection(typeOfSection, {
-                title,
-                description,
-                imageUrl,
-                linkTo,
-              });
-              router.push(`/sections/${typeOfSection}`);
-              break;
-            default:
-              // alert("please select a type");
-              break;
-          }
-          reset();
-        })}
+        onSubmit={handleSubmit((data) => handleData(data))}
       >
         <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
           <label htmlFor="type" className="w-[80%] text-[20px] font-bold">
@@ -158,20 +161,15 @@ function NewSection() {
           </div>
         )}
 
-        {typeOfSection === "advertisings" && (
+        {/* {typeOfSection === "advertisings" && (
           <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-            <label
-              htmlFor="imageUrl"
-              className="flex flex-col w-[80%] text-[20px] font-bold"
-            >
-              Image to upload
-              <input type="file" {...register("imageUrl")} />
-            </label>
+            <input type="file" {...register("file", { required: true })} />
           </div>
-        )}
+        )} */}
 
         {typeOfSection === "advertisings" && (
           <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
+            <input type="file" {...register("file", { required: true })} />
             <label
               htmlFor="linkTo"
               className="flex flex-col w-[80%] text-[20px] font-bold"
@@ -187,11 +185,14 @@ function NewSection() {
         )}
 
         <div className="flex flex-col my-[2em] w-[100%] justify-center items-center">
-          <input
+          <button
             id="submit"
-            type="submit"
+            type="button"
+            onClick={handleSubmit(handleData)}
             className="w-[50%] h-[50px] bg-[#D9D9D9] border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
-          />
+          >
+            Envoyer
+          </button>
         </div>
       </form>
     </div>
