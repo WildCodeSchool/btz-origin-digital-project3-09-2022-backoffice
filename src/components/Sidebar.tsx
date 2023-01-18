@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { CSVLink } from "react-csv";
+import userFetcher from "../../services/userFetcher";
 
 type TItem = {
   id: number;
@@ -39,11 +41,24 @@ const items: TItem[] = [
 function Sidebar() {
   const router = useRouter();
   const sideBarChoice: string | undefined = `/${router.pathname.split("/")[1]}`;
-
+  const [csvData, setCsvData] = React.useState<any>([]);
+  const [csvHeaders, setCsvHeaders] = React.useState<any>([]);
   const removeSectionsItemsFromLocalStorage = () => {
     localStorage.removeItem("sectionName");
     localStorage.removeItem("section");
   };
+
+  useEffect(() => {
+    userFetcher
+      .getUsers()
+      .then((res) => {
+        console.log(res);
+
+        setCsvData(res.data);
+        // setCsvHeaders(res.headers);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <div className="w-[350px]  h-full flex p-5 bg-bg1 text-text1 text-xl">

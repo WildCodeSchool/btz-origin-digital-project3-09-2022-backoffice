@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import cloud from "../../src/assets/cloud.svg";
 import categoryFetcher from "../../services/categoryFetcher";
 import { TCategory } from "../../src/types/types";
 import axiosInstance from "../../services/axiosinstance";
 
 function NewVideo() {
+  const router = useRouter();
   const [categories, setCategories] = useState<TCategory[]>([]);
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
   useEffect(() => {
@@ -52,6 +55,8 @@ function NewVideo() {
       formData.append("files", dataOk[2]);
 
       axiosInstance.post("/videos", formData);
+      reset();
+      router.push("/videos");
     }
   };
   return (
