@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -8,6 +10,8 @@ import {
   TSectionStatic,
 } from "../../../../src/types/types";
 import categoryFetcher from "../../../../services/categoryFetcher";
+import TableVideos from "../../../../src/components/TableVideos";
+import videoFetcher from "../../../../services/videoFetcher";
 
 export default function SectionItem() {
   const {
@@ -22,6 +26,7 @@ export default function SectionItem() {
   const router = useRouter();
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [isLoadingSections, setIsLoadingSections] = useState(true);
+  const [isLoadingVideos, setIsLoadingVideos] = useState(true);
   const [categories, setCategories] = useState([]);
   const [videos, setVideos] = useState([]);
 
@@ -29,14 +34,19 @@ export default function SectionItem() {
     if (router.query.section && router.query.id) {
       sectionFetcher
         .getSectionById(router.query.section, router.query.id)
-        .then((response) => {
-          setSectionItem(response);
+        .then((data) => {
+          setSectionItem(data);
           setIsLoadingSections(!isLoadingSections);
         });
 
       categoryFetcher.getCategories().then((data) => {
         setCategories(data);
         setIsLoadingCategories(!isLoadingCategories);
+      });
+
+      videoFetcher.getVideos().then((data) => {
+        setVideos(data);
+        setIsLoadingVideos(!isLoadingVideos);
       });
     }
   }, [router.query.section, router.query.id]);
@@ -72,7 +82,7 @@ export default function SectionItem() {
 
   return (
     <div className="w-full h-full flex">
-      {isLoadingCategories && isLoadingSections ? (
+      {isLoadingCategories || isLoadingSections || isLoadingVideos ? (
         <div>
           <h1>Loading...</h1>
         </div>
@@ -232,6 +242,15 @@ export default function SectionItem() {
               <input id="submit" type="submit" className="submit-btn" />
             </div>
           </form>
+        </div>
+      )}
+      {isLoadingCategories || isLoadingSections || isLoadingVideos ? (
+        <div>
+          <h1>Loading...</h1>
+        </div>
+      ) : (
+        <div className="w-1/2 h-full flex sticky">
+          <TableVideos videos={videos} />
         </div>
       )}
     </div>
