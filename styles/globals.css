@@ -4,15 +4,15 @@
 
 @layer components {
   .thead-fixed {
-    @apply sticky top-[2em] h-[50px] rounded-t-[10px];
+    @apply overflow-auto border border-black drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)];
   }
 
   .table-fixed {
-    @apply sticky top-[2em] w-[90%] h-[50px] mt-[3em] ml-[5%] text-xl border border-black rounded-[10px] bg-white  drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)];
+    @apply sticky top-0 ml-[5%] text-xl border border-black rounded-[10px] bg-white  drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)];
   }
 
   .container-fields {
-    @apply w-[80%] flex flex-col mt-[1em] justify-center items-center;
+    @apply w-[80%] flex flex-col justify-center items-center;
   }
 
   .title-field {

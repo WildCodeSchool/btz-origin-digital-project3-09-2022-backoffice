@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTable, useSortBy } from "react-table";
-import { useRouter } from "next/router";
 import { TVideo } from "../types/types";
-import sectionFetcher from "../../services/sectionFetcher";
 
 type TColumns = {
   Header: string;
@@ -27,9 +25,9 @@ function Table({ columns, data }: { columns: TColumns[]; data: TData[] }) {
     );
 
   return (
-    <div className="w-[80%] h-[80%] overflow-auto mt-[2em] border border-black drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
+    <div className="sticky top-0 w-full h-full overflow-auto border border-black drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
       <table
-        className="table-auto w-full text-center drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
+        className="sticky top-0 table-auto w-full text-center drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
         {...getTableProps()}
       >
         <thead>
@@ -73,9 +71,7 @@ function Table({ columns, data }: { columns: TColumns[]; data: TData[] }) {
 type Props = { videos: TVideo[] };
 
 export default function TableVideos({ videos }: Props) {
-  const router = useRouter();
   const [data, setData] = useState<TData[]>([]);
-  const [count, setCount] = useState(0);
   const [videoIds, setVideoIds] = useState<string[]>([]);
   const columns = [
     {
@@ -93,26 +89,19 @@ export default function TableVideos({ videos }: Props) {
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-    console.log(e.target.checked);
+    const arr = videoIds;
+    const newId = e.target.value;
     if (e.target.checked) {
-      sectionFetcher.updateSectionByIdAddVideo(
-        router.query.section as string,
-        router.query.id as string,
-        { videoId: e.target.value as string }
-      );
-      setCount(count + 1);
-      setVideoIds((element) => [...element, e.target.value]);
+      if (!arr.includes(newId)) {
+        // checking weather array contain the id
+        arr.push(newId); // adding to array because value doesnt exists
+      }
     }
     if (!e.target.checked) {
-      sectionFetcher.updateSectionByIdRemoveVideo(
-        router.query.section as string,
-        router.query.id as string,
-        { videoId: e.target.value as string }
-      );
-      setCount(count - 1);
-      setVideoIds((element) => element.filter((id) => id !== e.target.value));
+      arr.splice(arr.indexOf(newId), 1); // deleting
     }
+    setVideoIds(arr);
+    console.log(videoIds);
   };
 
   useEffect(() => {
@@ -127,7 +116,6 @@ export default function TableVideos({ videos }: Props) {
               className="m-[2em]"
               type="checkbox"
               value={video.id}
-              checked={videoIds.includes(video.id)}
               onChange={(e) => handleChange(e)}
             />
           ),
@@ -145,7 +133,7 @@ export default function TableVideos({ videos }: Props) {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <Table
         columns={columns}
         data={data.sort((a, b) => (a.title > b.title ? 1 : -1))}
