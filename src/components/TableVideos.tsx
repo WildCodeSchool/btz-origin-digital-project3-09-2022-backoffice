@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useTable, useSortBy } from "react-table";
+import { useRouter } from "next/router";
 import { TVideo } from "../types/types";
+import sectionFetcher from "../../services/sectionFetcher";
 
 type TColumns = {
   Header: string;
@@ -25,36 +27,21 @@ function Table({ columns, data }: { columns: TColumns[]; data: TData[] }) {
     );
 
   return (
-    <div
-      style={{
-        width: "80%",
-        maxHeight: "80%",
-        overflow: "auto",
-        marginTop: "2em",
-        border: "1px solid black",
-      }}
-    >
+    <div className="w-[80%] h-[80%] overflow-auto mt-[2em] border border-black drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
       <table
-        style={{
-          width: "100%",
-        }}
+        className="table-auto w-full text-center drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
         {...getTableProps()}
       >
         <thead>
           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <tr
+              className=" sticky top-0 bg-lightgrey z-10"
+              {...headerGroup.getHeaderGroupProps()}
+            >
               {headerGroup.headers.map((column) => (
                 <th
+                  className="sticky top-0 px-4 py-2 bg-lightgrey"
                   {...column.getHeaderProps()}
-                  style={{
-                    height: "2em",
-                    margin: "5em 2em 0 2em",
-                    position: "sticky",
-                    top: "0",
-                    zIndex: 1,
-                    background: "white",
-                    border: "1px solid black",
-                  }}
                 >
                   {column.render("Header")}
                 </th>
@@ -66,22 +53,10 @@ function Table({ columns, data }: { columns: TColumns[]; data: TData[] }) {
           {rows.map((row, i) => {
             prepareRow(row);
             return (
-              <tr
-                style={{
-                  border: "1px solid black",
-                }}
-                {...row.getRowProps()}
-              >
+              <tr className="hover:bg-gray-100" {...row.getRowProps()}>
                 {row.cells.map((cell) => {
                   return (
-                    <td
-                      style={{
-                        padding: "0.5em",
-                        margin: "auto",
-                        border: "1px solid black",
-                      }}
-                      {...cell.getCellProps()}
-                    >
+                    <td className="px-4 py-2" {...cell.getCellProps()}>
                       {cell.render("Cell")}
                     </td>
                   );
@@ -91,15 +66,17 @@ function Table({ columns, data }: { columns: TColumns[]; data: TData[] }) {
           })}
         </tbody>
       </table>
-      /
     </div>
   );
 }
 
 type Props = { videos: TVideo[] };
 
-function TableVideos({ videos }: Props) {
+export default function TableVideos({ videos }: Props) {
+  const router = useRouter();
   const [data, setData] = useState<TData[]>([]);
+  const [count, setCount] = useState(0);
+  const [videoIds, setVideoIds] = useState<string[]>([]);
   const columns = [
     {
       Header: "Select",
@@ -118,6 +95,24 @@ function TableVideos({ videos }: Props) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);
     console.log(e.target.checked);
+    if (e.target.checked) {
+      sectionFetcher.updateSectionByIdAddVideo(
+        router.query.section as string,
+        router.query.id as string,
+        { videoId: e.target.value as string }
+      );
+      setCount(count + 1);
+      setVideoIds((element) => [...element, e.target.value]);
+    }
+    if (!e.target.checked) {
+      sectionFetcher.updateSectionByIdRemoveVideo(
+        router.query.section as string,
+        router.query.id as string,
+        { videoId: e.target.value as string }
+      );
+      setCount(count - 1);
+      setVideoIds((element) => element.filter((id) => id !== e.target.value));
+    }
   };
 
   useEffect(() => {
@@ -128,7 +123,13 @@ function TableVideos({ videos }: Props) {
         {
           id: video.id,
           select: (
-            <input type="checkbox" value={video.id} onChange={handleChange} />
+            <input
+              className="m-[2em]"
+              type="checkbox"
+              value={video.id}
+              checked={videoIds.includes(video.id)}
+              onChange={(e) => handleChange(e)}
+            />
           ),
           title: video.title,
           video: (
@@ -152,5 +153,3 @@ function TableVideos({ videos }: Props) {
     </div>
   );
 }
-
-export default TableVideos;

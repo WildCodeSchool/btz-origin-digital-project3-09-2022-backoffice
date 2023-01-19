@@ -106,7 +106,7 @@ export default function SectionItem() {
                       isHero: sectionItem.isHero,
                     }
                   );
-                  router.push(`/sections/${router.query.section}`);
+                  router.push(`/sections`);
                   break;
 
                 case "dynamic-sections":
@@ -121,7 +121,7 @@ export default function SectionItem() {
                       categoryId,
                     }
                   );
-                  router.push(`/sections/${router.query.section}`);
+                  router.push(`/sections`);
                   break;
 
                 case "advertisings":
@@ -135,7 +135,7 @@ export default function SectionItem() {
                       linkTo,
                     }
                   );
-                  router.push(`/sections/${router.query.section}`);
+                  router.push(`/sections`);
                   break;
                 default:
                   // alert("please select a type");

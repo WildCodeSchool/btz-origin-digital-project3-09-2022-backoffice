@@ -104,7 +104,7 @@ const sectionFetcher = {
   updateSectionById: async (
     type: string | string[],
     id: string | string[],
-    data: TSection
+    data: TSection | TSection[]
   ) => {
     try {
       await axiosInstance.put(`/${type}/${id}`, data);
@@ -113,6 +113,36 @@ const sectionFetcher = {
       throw new Error(err);
     } finally {
       console.log("updateSectionById successful");
+    }
+  },
+
+  updateSectionByIdAddVideo: async (
+    type: string | string[],
+    id: string | string[],
+    data: string | string[]
+  ) => {
+    try {
+      await axiosInstance.put(`/${type}/${id}/add-video`, data);
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("updateSectionByIdAddVideo successful");
+    }
+  },
+
+  updateSectionByIdRemoveVideo: async (
+    type: string | string[],
+    id: string | string[],
+    data: string | string[]
+  ) => {
+    try {
+      await axiosInstance.put(`/${type}/${id}/remove-video`, data);
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("updateSectionByIdRemoveVideo successful");
     }
   },
 
