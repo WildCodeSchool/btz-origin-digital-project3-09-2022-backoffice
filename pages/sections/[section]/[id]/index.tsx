@@ -29,6 +29,7 @@ export default function SectionItem() {
   const [isLoadingVideos, setIsLoadingVideos] = useState(true);
   const [categories, setCategories] = useState([]);
   const [videos, setVideos] = useState([]);
+  const [videoIds, setVideoIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (router.query.section && router.query.id) {
@@ -80,6 +81,10 @@ export default function SectionItem() {
     return "No section type";
   };
 
+  useEffect(() => {
+    console.log(videoIds);
+  }, [videoIds]);
+
   return (
     <div className="w-full h-full flex flex-col">
       {isLoadingCategories || isLoadingSections || isLoadingVideos ? (
@@ -103,6 +108,11 @@ export default function SectionItem() {
                     isHero: sectionItem.isHero,
                   }
                 );
+                sectionFetcher.updateSectionByIdAddVideo(
+                  router.query.section,
+                  router.query.id,
+                  videoIds
+                );
                 router.push(`/sections`);
                 break;
 
@@ -118,6 +128,7 @@ export default function SectionItem() {
                     categoryId,
                   }
                 );
+
                 router.push(`/sections`);
                 break;
 
@@ -256,7 +267,11 @@ export default function SectionItem() {
                 </div>
               ) : (
                 <div className="w-1/2 h-full flex flex-col items-start overflow-auto sticky border">
-                  <TableVideos videos={videos} />
+                  <TableVideos
+                    videos={videos}
+                    videoIds={videoIds}
+                    setVideoIds={setVideoIds}
+                  />
                 </div>
               ))}
           </div>

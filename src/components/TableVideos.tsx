@@ -68,11 +68,16 @@ function Table({ columns, data }: { columns: TColumns[]; data: TData[] }) {
   );
 }
 
-type Props = { videos: TVideo[] };
+type Props = {
+  videos: TVideo[];
+  videoIds: { id: string; status: boolean }[];
+  setVideoIds: React.Dispatch<
+    React.SetStateAction<{ id: string; status: boolean }[]>
+  >;
+};
 
-export default function TableVideos({ videos }: Props) {
+export default function TableVideos({ videos, videoIds, setVideoIds }: Props) {
   const [data, setData] = useState<TData[]>([]);
-  const [videoIds, setVideoIds] = useState<string[]>([]);
   const columns = [
     {
       Header: "Select",
@@ -90,16 +95,17 @@ export default function TableVideos({ videos }: Props) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const arr = videoIds;
+    const status = e.target.checked;
     const newId = e.target.value;
-    if (e.target.checked) {
-      if (!arr.includes(newId)) {
-        // checking weather array contain the id
-        arr.push(newId); // adding to array because value doesnt exists
+
+    arr.forEach((element, index) => {
+      if (element.id === newId) {
+        // note this will expect a 'truthy' value i.e. except for false, 0, "", null, undefined, and NaN
+        arr.splice(index, 1); // removing the id from array because value exists
       }
-    }
-    if (!e.target.checked) {
-      arr.splice(arr.indexOf(newId), 1); // deleting
-    }
+    });
+    arr.push({ id: newId, status }); // adding to array because value doesnt exists
+
     setVideoIds(arr);
     console.log(videoIds);
   };
