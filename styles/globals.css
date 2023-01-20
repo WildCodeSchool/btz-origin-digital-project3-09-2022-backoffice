@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .thead-fixed {
+    @apply overflow-auto border border-black drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)];
+  }
+
+  .table-fixed {
+    @apply sticky top-0 ml-[5%] text-xl border border-black rounded-[10px] bg-white  drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)];
+  }
+
+  .container-fields {
+    @apply w-[80%] flex flex-col justify-center items-center mt-6;
+  }
+
+  .title-field {
+    @apply w-full text-[20px] font-bold;
+  }
+
+  .input-field {
+    @apply w-full py-2 px-5 border border-black drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)] font-normal;
+  }
+
+  .submit-btn {
+    @apply w-[50%] h-[50px] mt-[2em] bg-[#D9D9D9] border-solid border-black drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)];
+  }
+}

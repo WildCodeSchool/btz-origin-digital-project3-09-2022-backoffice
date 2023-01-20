@@ -28,36 +28,40 @@ function Sections() {
             <th>Delete</th>
           </thead>
           <tbody className="rounded-b-[10px]">
-            {sections.map((section) => (
-              <tr
-                key={section.id}
-                className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
-              >
-                <td className="border border-black px-5 last:rounded-bl-[10px]">
-                  {section.title}
-                </td>
-                <td className="border px-5">{section.description}</td>
-                <td className="border text-center">
-                  <a href={`/sections/${section.section}/${section.id}`}>📝</a>
-                </td>
-                <td className="border text-center last:rounded-br-[10px]">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      sectionFetcher
-                        .deleteSectionById(section.section, section.id)
-                        .then(() =>
-                          sectionFetcher
-                            .getSections()
-                            .then((data) => setSections(data))
-                        )
-                    }
-                  >
-                    🗑️
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {sections
+              .sort((a, b) => (a.title > b.title ? 1 : -1))
+              .map((section) => (
+                <tr
+                  key={section.id}
+                  className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
+                >
+                  <td className="border border-black px-5 last:rounded-bl-[10px]">
+                    {section.title}
+                  </td>
+                  <td className="border px-5">{section.description}</td>
+                  <td className="border text-center">
+                    <a href={`/sections/${section.section}/${section.id}`}>
+                      📝
+                    </a>
+                  </td>
+                  <td className="border text-center last:rounded-br-[10px]">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        sectionFetcher
+                          .deleteSectionById(section.section, section.id)
+                          .then(() =>
+                            sectionFetcher
+                              .getSections()
+                              .then((data) => setSections(data))
+                          )
+                      }
+                    >
+                      🗑️
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

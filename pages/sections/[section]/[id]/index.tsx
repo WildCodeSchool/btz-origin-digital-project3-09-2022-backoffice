@@ -1,13 +1,18 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import sectionFetcher from "../../../../services/sectionFetcher";
-import {
-  TAdvertsing,
-  TSectionDynamic,
-  TSectionStatic,
-} from "../../../../src/types/types";
+import { TSection } from "../../../../src/types/types";
 import categoryFetcher from "../../../../services/categoryFetcher";
+import TableVideosStaticSection from "../../../../src/components/TableVideosStaticSection";
+import videoFetcher from "../../../../services/videoFetcher";
+
+type TVideoIds = {
+  id: string;
+  status: boolean;
+};
 
 export default function SectionItem() {
   const {
@@ -16,60 +21,96 @@ export default function SectionItem() {
     formState: { errors },
   } = useForm();
 
-  const [sectionItem, setSectionItem] = useState<
-    TAdvertsing[] | TSectionDynamic[] | TSectionStatic[]
-  >([]);
+  const [sectionItem, setSectionItem] = useState<TSection>();
   const router = useRouter();
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [isLoadingSections, setIsLoadingSections] = useState(true);
-  const [typeOfSection, setTypeOfSection] = useState("");
+  const [isLoadingVideos, setIsLoadingVideos] = useState(true);
   const [categories, setCategories] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [videoIds, setVideoIds] = useState<TVideoIds[]>([]);
 
   useEffect(() => {
     if (router.query.section && router.query.id) {
       sectionFetcher
         .getSectionById(router.query.section, router.query.id)
-        .then((response) => {
-          setSectionItem(response);
+        .then((data) => {
+          setSectionItem(data);
           setIsLoadingSections(!isLoadingSections);
-          console.log(response);
         });
 
       categoryFetcher.getCategories().then((data) => {
         setCategories(data);
         setIsLoadingCategories(!isLoadingCategories);
-        console.log(data);
+      });
+
+      videoFetcher.getVideos().then((data) => {
+        setVideos(data);
+        setIsLoadingVideos(!isLoadingVideos);
       });
     }
   }, [router.query.section, router.query.id]);
 
-  return (
-    <div className="w-full h-full flex">
-      {isLoadingCategories && isLoadingSections ? (
-        <div>
-          <h1>Loading...</h1>
-        </div>
-      ) : (
-        <div className="w-full h-full flex">
-          <form
-            className="w-full h-full flex flex-col items-center"
-            onSubmit={handleSubmit((data) => {
-              const { title, description, max, imageUrl, linkTo, categoryId } =
-                data;
+  const handleTypeOfSection = (): string => {
+    if (router.query.section === "static-sections" && sectionItem) {
+      if (sectionItem.isHero === true) {
+        return "Hero Slider";
+      }
+      if (sectionItem.isHero === false) {
+        return "Carrousel Static";
+      }
+    }
+    if (router.query.section === "dynamic-sections" && sectionItem) {
+      if (sectionItem.isGrid === true) {
+        return "Grid Dynamic";
+      }
+      if (sectionItem.isGrid === false) {
+        return "Carrousel Dynamic";
+      }
+    }
+    if (router.query.section === "advertisings") return "Advertising";
+    return "No section type";
+  };
 
+  return (
+    <div className="w-full h-full flex flex-col">
+      {isLoadingCategories || isLoadingSections || isLoadingVideos ? (
+        <h1>Loading...</h1>
+      ) : (
+        <form
+          className="w-full h-4/5 flex flex-col justify-around mt-[5em]"
+          onSubmit={handleSubmit((data) => {
+            const { title, description, max, imageUrl, linkTo, categoryId } =
+              data;
+            if (router.query.section && router.query.id && sectionItem) {
               switch (router.query.section) {
                 case "static-sections":
                   sectionFetcher.updateSectionById(
                     router.query.section,
-                    router.query.id,
+                    router.query.id as string,
                     {
                       title,
                       description,
-                      max: +max,
                       isHero: sectionItem.isHero,
                     }
                   );
-                  router.push(`/sections/${router.query.section}`);
+                  videoIds.forEach((videoId) => {
+                    if (videoId.status) {
+                      sectionFetcher.updateSectionByIdAddVideo(
+                        router.query.section as string,
+                        router.query.id as string,
+                        { videoId: videoId.id }
+                      );
+                    }
+                    if (!videoId.status) {
+                      sectionFetcher.updateSectionByIdRemoveVideo(
+                        router.query.section as string,
+                        router.query.id as string,
+                        { videoId: videoId.id }
+                      );
+                    }
+                  });
+                  router.push(`/sections`);
                   break;
 
                 case "dynamic-sections":
@@ -84,7 +125,8 @@ export default function SectionItem() {
                       categoryId,
                     }
                   );
-                  router.push(`/sections/${router.query.section}`);
+
+                  router.push(`/sections`);
                   break;
 
                 case "advertisings":
@@ -98,132 +140,148 @@ export default function SectionItem() {
                       linkTo,
                     }
                   );
-                  router.push(`/sections/${router.query.section}`);
+                  router.push(`/sections`);
                   break;
                 default:
                   // alert("please select a type");
                   break;
               }
-            })}
-          >
-            <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-              <p className="w-[80%] text-[20px] font-bold">Type of section</p>
-              <p className="w-[80%] text-[20px] font-bold bg-white">
-                {typeOfSection}
-              </p>
-            </div>
-
-            <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-              <label
-                htmlFor="title"
-                className="flex flex-col w-[80%] text-[20px] font-bold"
+            }
+          })}
+        >
+          <div className="flex flex-row w-4/5 h-full self-center">
+            <div className="w-1/2 h-full border-2 border-y-black border-l-black border-r-transparent">
+              <div
+                className={
+                  router.query.section === "static-sections"
+                    ? "w-full h-full flex flex-col items-center"
+                    : "w-full h-full flex flex-col items-center"
+                }
               >
-                Title
-                <input
-                  defaultValue={sectionItem.title}
-                  {...register("title")}
-                />
-              </label>
-            </div>
+                <div className="w-full sticky top-0 bg-lightgrey font-bold z-10 border-b-transparent drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]">
+                  <p className="py-2 px-4 bl-lightgrey">Informations</p>
+                </div>
 
-            <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-              <label
-                htmlFor="description"
-                className="flex flex-col w-[80%] text-[20px] font-bold"
-              >
-                Description
-                <input
-                  className="h-[10em]"
-                  defaultValue={sectionItem.description}
-                  {...register("description")}
-                />
-              </label>
-            </div>
+                <div className="container-fields">
+                  <p className="title-field">Type of section</p>
+                  <p className="input-field">{handleTypeOfSection()}</p>
+                </div>
 
-            {router.query.section === "dynamic-sections" && (
-              <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-                <label
-                  htmlFor="max"
-                  className="flex flex-col w-[80%] text-[20px] font-bold"
-                >
-                  Max videos (10 by default)
-                  <input defaultValue={sectionItem.max} {...register("max")} />
-                </label>
+                <div className="container-fields">
+                  <label htmlFor="title" className="title-field">
+                    Title
+                    <input
+                      className="input-field"
+                      defaultValue={sectionItem.title}
+                      {...register("title")}
+                    />
+                  </label>
+                </div>
+
+                <div className="container-fields mt-10">
+                  <label htmlFor="description" className="title-field">
+                    Description
+                    <textarea
+                      className="input-field h-[10em]"
+                      defaultValue={sectionItem.description}
+                      {...register("description")}
+                    />
+                  </label>
+                </div>
+
+                {router.query.section === "dynamic-sections" && (
+                  <div className="container-fields">
+                    <label htmlFor="max" className="title-field">
+                      Max videos (10 by default)
+                      <input
+                        className="input-field"
+                        defaultValue={sectionItem.max}
+                        {...register("max")}
+                      />
+                    </label>
+                  </div>
+                )}
+
+                {router.query.section === "dynamic-sections" && (
+                  <div className="container-fields">
+                    <label htmlFor="category" className="title-field">
+                      Please choose a category
+                      <select
+                        id="category"
+                        defaultValue={sectionItem.categoryId}
+                        placeholder="Please choose a category"
+                        className="input-field bg-white"
+                        {...register("categoryId", { required: true })}
+                      >
+                        <option>...</option>
+                        {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.category && (
+                        <p className="font-normal text-[#FF0000]">
+                          Category is required.
+                        </p>
+                      )}
+                    </label>
+                  </div>
+                )}
+
+                {router.query.section === "advertisings" && (
+                  <div className="container">
+                    <label htmlFor="imageUrl" className="title-field">
+                      Image to upload
+                      <input
+                        defaultValue={sectionItem.imageUrl}
+                        type="file"
+                        {...register("imageUrl")}
+                      />
+                    </label>
+                  </div>
+                )}
+
+                {router.query.section === "advertisings" && (
+                  <div className="container">
+                    <label htmlFor="linkTo" className="title-field">
+                      Link to
+                      <input
+                        type="text"
+                        className="input-field"
+                        placeholder="Please insert here the link you want the user follows"
+                        defaultValue={sectionItem.linkTo}
+                        {...register("linkTo")}
+                      />
+                    </label>
+                  </div>
+                )}
               </div>
-            )}
-
-            {router.query.section === "dynamic-sections" && (
-              <div className="flex flex-col w-[80%] mt-[2em] text-[20px] font-bold">
-                <label
-                  htmlFor="category"
-                  className="w-[80%] text-[20px] font-bold"
-                >
-                  Please choose a category
-                  <select
-                    id="category"
-                    defaultValue={sectionItem.categoryId}
-                    placeholder="Please choose a category"
-                    className="w-[100%] h-[50px] flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
-                    {...register("categoryId", { required: true })}
-                  >
-                    <option>...</option>
-                    {categories.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.category && (
-                    <p className="font-normal text-[#FF0000]">
-                      Category is required.
-                    </p>
+            </div>
+            {router.query.section === "static-sections" &&
+              (isLoadingCategories || isLoadingSections || isLoadingVideos ? (
+                <div>
+                  <h1>Loading...</h1>
+                </div>
+              ) : (
+                <div className="w-1/2 h-full flex flex-col items-start overflow-auto sticky border">
+                  {sectionItem ? (
+                    <TableVideosStaticSection
+                      videos={videos}
+                      videoIds={videoIds}
+                      setVideoIds={setVideoIds}
+                      sectionItem={sectionItem}
+                    />
+                  ) : (
+                    "Is loading..."
                   )}
-                </label>
-              </div>
-            )}
-
-            {router.query.section === "advertisings" && (
-              <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-                <label
-                  htmlFor="imageUrl"
-                  className="flex flex-col w-[80%] text-[20px] font-bold"
-                >
-                  Image to upload
-                  <input
-                    defaultValue={sectionItem.imageUrl}
-                    type="file"
-                    {...register("imageUrl")}
-                  />
-                </label>
-              </div>
-            )}
-
-            {router.query.section === "advertisings" && (
-              <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-                <label
-                  htmlFor="linkTo"
-                  className="flex flex-col w-[80%] text-[20px] font-bold"
-                >
-                  Link to
-                  <input
-                    type="text"
-                    placeholder="Please insert here the link you want the user follows"
-                    defaultValue={sectionItem.linkTo}
-                    {...register("linkTo")}
-                  />
-                </label>
-              </div>
-            )}
-
-            <div className="flex flex-col my-[2em] w-[100%] justify-center items-center">
-              <input
-                id="submit"
-                type="submit"
-                className="w-[50%] h-[50px] bg-[#D9D9D9] border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
-              />
-            </div>
-          </form>
-        </div>
+                </div>
+              ))}
+          </div>
+          <div className="w-2/5 flex  self-center">
+            <input id="submit" type="submit" className="submit-btn w-full" />
+          </div>
+        </form>
       )}
     </div>
   );

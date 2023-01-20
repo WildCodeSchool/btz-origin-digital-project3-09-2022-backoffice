@@ -1,4 +1,3 @@
-import { AxiosResponse } from "axios";
 import {
   TSectionDynamic,
   TSectionStatic,
@@ -104,7 +103,7 @@ const sectionFetcher = {
   updateSectionById: async (
     type: string | string[],
     id: string | string[],
-    data: TSection
+    data: any
   ) => {
     try {
       await axiosInstance.put(`/${type}/${id}`, data);
@@ -113,6 +112,36 @@ const sectionFetcher = {
       throw new Error(err);
     } finally {
       console.log("updateSectionById successful");
+    }
+  },
+
+  updateSectionByIdAddVideo: async (
+    type: string,
+    id: string,
+    data: { videoId: string }
+  ) => {
+    try {
+      await axiosInstance.put(`/${type}/${id}/add-video`, data);
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("updateSectionByIdAddVideo successful");
+    }
+  },
+
+  updateSectionByIdRemoveVideo: async (
+    type: string,
+    id: string,
+    data: { videoId: string }
+  ) => {
+    try {
+      await axiosInstance.put(`/${type}/${id}/remove-video`, data);
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("updateSectionByIdRemoveVideo successful");
     }
   },
 

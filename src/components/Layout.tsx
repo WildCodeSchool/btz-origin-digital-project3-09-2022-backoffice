@@ -18,7 +18,7 @@ function Layout({ children }: TChildren) {
         <Navbar />
         <div className="w-full  h-[90%] flex bg-lightgrey">
           <Sidebar />
-          <div className="w-full h-full overflow-auto">{children}</div>
+          <div className="w-full h-full">{children}</div>
         </div>
       </div>
     </>

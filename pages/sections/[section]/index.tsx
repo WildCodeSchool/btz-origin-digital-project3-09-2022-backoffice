@@ -35,6 +35,7 @@ function Section() {
           </thead>
           <tbody className="rounded-b-[10px]">
             {section
+              .sort((a, b) => (a.title > b.title ? 1 : -1))
               .filter((item) => {
                 switch (localStorage.getItem("sectionName")) {
                   case "Hero Slider":

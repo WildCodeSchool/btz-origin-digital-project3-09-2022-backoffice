@@ -77,13 +77,14 @@ export type TSectionStatic = {
   isHero: boolean;
   createdAt: Date;
   updatedAt: Date;
+  video?: { id: string; status: boolean }[];
 };
 
 export type TSection = {
   id: string;
   title: string;
   description: string;
-  section: string;
+  section?: string;
   isGrid?: boolean;
   isHero?: boolean;
   max?: number;
@@ -91,6 +92,7 @@ export type TSection = {
   linkTo?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  videos?: TVideo[];
 };
 
 export type TSectionSelector = {
