@@ -4,14 +4,15 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import sectionFetcher from "../../../../services/sectionFetcher";
-import {
-  TAdvertsing,
-  TSectionDynamic,
-  TSectionStatic,
-} from "../../../../src/types/types";
+import { TSection } from "../../../../src/types/types";
 import categoryFetcher from "../../../../services/categoryFetcher";
 import TableVideos from "../../../../src/components/TableVideos";
 import videoFetcher from "../../../../services/videoFetcher";
+
+type TVideoIds = {
+  id: string;
+  status: boolean;
+};
 
 export default function SectionItem() {
   const {
@@ -20,16 +21,14 @@ export default function SectionItem() {
     formState: { errors },
   } = useForm();
 
-  const [sectionItem, setSectionItem] = useState<
-    TAdvertsing[] | TSectionDynamic[] | TSectionStatic[]
-  >([]);
+  const [sectionItem, setSectionItem] = useState<TSection>();
   const router = useRouter();
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [isLoadingSections, setIsLoadingSections] = useState(true);
   const [isLoadingVideos, setIsLoadingVideos] = useState(true);
   const [categories, setCategories] = useState([]);
   const [videos, setVideos] = useState([]);
-  const [videoIds, setVideoIds] = useState<string[]>([]);
+  const [videoIds, setVideoIds] = useState<TVideoIds[]>([]);
 
   useEffect(() => {
     if (router.query.section && router.query.id) {
@@ -53,37 +52,25 @@ export default function SectionItem() {
   }, [router.query.section, router.query.id]);
 
   const handleTypeOfSection = (): string => {
-    if (
-      router.query.section === "static-sections" &&
-      sectionItem.isHero === true
-    ) {
-      return "Hero Slider";
+    if (router.query.section === "static-sections" && sectionItem) {
+      if (sectionItem.isHero === true) {
+        return "Hero Slider";
+      }
+      if (sectionItem.isHero === false) {
+        return "Carrousel Static";
+      }
     }
-    if (
-      router.query.section === "static-sections" &&
-      sectionItem.isHero === false
-    ) {
-      return "Carrousel Static";
-    }
-    if (
-      router.query.section === "dynamic-sections" &&
-      sectionItem.isGrid === true
-    ) {
-      return "Grid Dynamic";
-    }
-    if (
-      router.query.section === "dynamic-sections" &&
-      sectionItem.isGrid === false
-    ) {
-      return "Carrousel Dynamic";
+    if (router.query.section === "dynamic-sections" && sectionItem) {
+      if (sectionItem.isGrid === true) {
+        return "Grid Dynamic";
+      }
+      if (sectionItem.isGrid === false) {
+        return "Carrousel Dynamic";
+      }
     }
     if (router.query.section === "advertisings") return "Advertising";
     return "No section type";
   };
-
-  useEffect(() => {
-    console.log(videoIds);
-  }, [videoIds]);
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -95,59 +82,70 @@ export default function SectionItem() {
           onSubmit={handleSubmit((data) => {
             const { title, description, max, imageUrl, linkTo, categoryId } =
               data;
+            if (router.query.section && router.query.id && sectionItem) {
+              switch (router.query.section) {
+                case "static-sections":
+                  sectionFetcher.updateSectionById(
+                    router.query.section,
+                    router.query.id as string,
+                    {
+                      title,
+                      description,
+                      isHero: sectionItem.isHero,
+                    }
+                  );
+                  videoIds.forEach((videoId) => {
+                    if (videoId.status) {
+                      sectionFetcher.updateSectionByIdAddVideo(
+                        router.query.section as string,
+                        router.query.id as string,
+                        { videoId: videoId.id }
+                      );
+                    }
+                    if (!videoId.status) {
+                      sectionFetcher.updateSectionByIdRemoveVideo(
+                        router.query.section as string,
+                        router.query.id as string,
+                        { videoId: videoId.id }
+                      );
+                    }
+                  });
+                  router.push(`/sections`);
+                  break;
 
-            switch (router.query.section) {
-              case "static-sections":
-                sectionFetcher.updateSectionById(
-                  router.query.section,
-                  router.query.id,
-                  {
-                    title,
-                    description,
-                    max: +max,
-                    isHero: sectionItem.isHero,
-                  }
-                );
-                sectionFetcher.updateSectionByIdAddVideo(
-                  router.query.section,
-                  router.query.id,
-                  videoIds
-                );
-                router.push(`/sections`);
-                break;
+                case "dynamic-sections":
+                  sectionFetcher.updateSectionById(
+                    router.query.section,
+                    router.query.id,
+                    {
+                      title,
+                      description,
+                      max: +max,
+                      isGrid: sectionItem.isGrid,
+                      categoryId,
+                    }
+                  );
 
-              case "dynamic-sections":
-                sectionFetcher.updateSectionById(
-                  router.query.section,
-                  router.query.id,
-                  {
-                    title,
-                    description,
-                    max: +max,
-                    isGrid: sectionItem.isGrid,
-                    categoryId,
-                  }
-                );
+                  router.push(`/sections`);
+                  break;
 
-                router.push(`/sections`);
-                break;
-
-              case "advertisings":
-                sectionFetcher.updateSectionById(
-                  router.query.section,
-                  router.query.id,
-                  {
-                    title,
-                    description,
-                    imageUrl,
-                    linkTo,
-                  }
-                );
-                router.push(`/sections`);
-                break;
-              default:
-                // alert("please select a type");
-                break;
+                case "advertisings":
+                  sectionFetcher.updateSectionById(
+                    router.query.section,
+                    router.query.id,
+                    {
+                      title,
+                      description,
+                      imageUrl,
+                      linkTo,
+                    }
+                  );
+                  router.push(`/sections`);
+                  break;
+                default:
+                  // alert("please select a type");
+                  break;
+              }
             }
           })}
         >
@@ -267,11 +265,16 @@ export default function SectionItem() {
                 </div>
               ) : (
                 <div className="w-1/2 h-full flex flex-col items-start overflow-auto sticky border">
-                  <TableVideos
-                    videos={videos}
-                    videoIds={videoIds}
-                    setVideoIds={setVideoIds}
-                  />
+                  {sectionItem ? (
+                    <TableVideos
+                      videos={videos}
+                      videoIds={videoIds}
+                      setVideoIds={setVideoIds}
+                      sectionItem={sectionItem}
+                    />
+                  ) : (
+                    "Is loading..."
+                  )}
                 </div>
               ))}
           </div>
