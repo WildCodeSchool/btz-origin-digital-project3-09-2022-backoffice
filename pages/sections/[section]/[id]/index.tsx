@@ -178,7 +178,7 @@ export default function SectionItem() {
                   </label>
                 </div>
 
-                <div className="container-fields">
+                <div className="container-fields mt-10">
                   <label htmlFor="description" className="title-field">
                     Description
                     <textarea
