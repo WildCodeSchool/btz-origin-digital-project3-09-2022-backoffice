@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import sectionFetcher from "../../../../services/sectionFetcher";
 import { TSection } from "../../../../src/types/types";
 import categoryFetcher from "../../../../services/categoryFetcher";
-import TableVideos from "../../../../src/components/TableVideos";
+import TableVideosStaticSection from "../../../../src/components/TableVideosStaticSection";
 import videoFetcher from "../../../../services/videoFetcher";
 
 type TVideoIds = {
@@ -266,7 +266,7 @@ export default function SectionItem() {
               ) : (
                 <div className="w-1/2 h-full flex flex-col items-start overflow-auto sticky border">
                   {sectionItem ? (
-                    <TableVideos
+                    <TableVideosStaticSection
                       videos={videos}
                       videoIds={videoIds}
                       setVideoIds={setVideoIds}
