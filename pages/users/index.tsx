@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import json2csv from "json2csv";
 import Image from "next/image";
 import { TUser } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
 import userFetcher from "../../services/userFetcher";
 import plus from "../../src/assets/plus.svg";
+import csv_icon from "../../src/assets/csv-icon.svg";
 
 function Users() {
   const [users, setUsers] = useState<TUser[]>([]);
@@ -13,6 +15,17 @@ function Users() {
       setUsers(response);
     });
   }, []);
+
+  const exportToCsv = () => {
+    const csv = json2csv.parse(users);
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "data.csv";
+    a.click();
+  };
 
   return (
     <div className="w-full bg-lightgrey">
@@ -61,10 +74,16 @@ function Users() {
           </tbody>
         </table>
       </div>
-      <div className="w-[50px] mt-[1em] ml-[5%]">
-        <a href="/users/new-user">
-          <Image src={plus} alt="logo-plus" />
+      <div className="mt-[1em] ml-[5%] flex">
+        <a className="m-3" href="/users/new-user">
+          <Image width={50} height={50} src={plus} alt="logo-plus" />
         </a>
+
+        <button type="submit" onClick={exportToCsv}>
+          <Image width={50} height={50} src={csv_icon} alt="logo-csv" />
+        </button>
+
+        {/* ... */}
       </div>
     </div>
   );
