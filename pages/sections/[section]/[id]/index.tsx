@@ -194,15 +194,12 @@ export default function SectionItem() {
                   </div>
                 ) : (
                   <div className="w-1/2 h-full flex flex-col items-start overflow-auto sticky border">
-                    {sectionItem ? (
-                      <TableVideosStaticSection
-                        videos={videos}
-                        videoIds={videoIds}
-                        setVideoIds={setVideoIds}
-                      />
-                    ) : (
-                      "Is loading..."
-                    )}
+                    <TableVideosStaticSection
+                      videos={videos}
+                      videoIds={videoIds}
+                      setVideoIds={setVideoIds}
+                      sectionItem={sectionItem}
+                    />
                   </div>
                 ))}
             </div>

@@ -1,8 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { CSVLink } from "react-csv";
-import userFetcher from "../../services/userFetcher";
 
 type TItem = {
   id: number;

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { type } from "os";
 import Table, { TData } from "./table";
 import { TSection, TVideo } from "../types/types";
 
