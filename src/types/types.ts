@@ -80,6 +80,11 @@ export type TSectionStatic = {
   video?: { id: string; status: boolean }[];
 };
 
+export type TVideoIds = {
+  id: string;
+  status: boolean;
+};
+
 export type TSection = {
   id: string;
   title: string;
@@ -92,7 +97,7 @@ export type TSection = {
   linkTo?: string;
   createdAt?: Date;
   updatedAt?: Date;
-  videos?: TVideo[];
+  videoIds?: TVideoIds[];
 };
 
 export type TSectionSelector = {
