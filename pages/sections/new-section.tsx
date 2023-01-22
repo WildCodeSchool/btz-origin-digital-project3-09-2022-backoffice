@@ -78,34 +78,23 @@ function NewSection() {
         <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
           <label htmlFor="type" className="w-[80%] text-[20px] font-bold">
             Type of section
-            {localStorage.getItem("sectionName") ? (
-              <select
-                id="type"
-                className="w-[100%] h-[50px] flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
-                {...register("type", { required: true })}
-                onChange={(e) => handleChange(e)}
-              >
-                <option>{localStorage.getItem("sectionName")}</option>
-              </select>
-            ) : (
-              <select
-                id="type"
-                placeholder="Please choose a type of section"
-                className="w-[100%] h-[50px] flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
-                {...register("type", { required: true })}
-                onChange={(e) => handleChange(e)}
-              >
-                <option>Please choose a type of section</option>
-                {sectionsTypes.map((section) => (
-                  <option
-                    key={section.id}
-                    value={`${section.section}/${section.name}`}
-                  >
-                    {section.name}
-                  </option>
-                ))}
-              </select>
-            )}
+            <select
+              id="type"
+              placeholder="Please choose a type of section"
+              className="w-[100%] h-[50px] flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
+              {...register("type", { required: true })}
+              onChange={(e) => handleChange(e)}
+            >
+              <option>Please choose a type of section</option>
+              {sectionsTypes.map((section) => (
+                <option
+                  key={section.id}
+                  value={`${section.section}/${section.name}`}
+                >
+                  {section.name}
+                </option>
+              ))}
+            </select>
             {errors.category && (
               <p className="font-normal text-[#FF0000]">
                 Type of section is required.

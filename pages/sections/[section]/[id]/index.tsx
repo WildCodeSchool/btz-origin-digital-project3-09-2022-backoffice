@@ -151,47 +151,97 @@ export default function SectionItem() {
             }
           })}
         >
-          <div className="flex flex-row w-4/5 h-full self-center">
-            <div className="w-1/2 h-full border-2 border-y-black border-l-black border-r-transparent">
-              <div
-                className={
-                  router.query.section === "static-sections"
-                    ? "w-full h-full flex flex-col items-center"
-                    : "w-full h-full flex flex-col items-center"
-                }
-              >
-                <div className="w-full sticky top-0 bg-lightgrey font-bold z-10 border-b-transparent drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]">
-                  <p className="py-2 px-4 bl-lightgrey">Informations</p>
-                </div>
+          {router.query.section === "static-sections" && (
+            <div className="flex flex-row w-4/5 h-full self-center">
+              <div className="w-1/2 h-full border-2 border-y-black border-l-black border-r-transparent">
+                <div className="w-full h-full flex flex-col items-center">
+                  <div className="w-full sticky top-0 bg-lightgrey font-bold z-10 border-b-transparent drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]">
+                    <p className="py-1 px-4 bl-lightgrey">Informations</p>
+                  </div>
 
-                <div className="container-fields">
-                  <p className="title-field">Type of section</p>
-                  <p className="input-field">{handleTypeOfSection()}</p>
-                </div>
+                  <div className="container-fields">
+                    <p className="title-field">Type of section</p>
+                    <p className="input-field">{handleTypeOfSection()}</p>
+                  </div>
 
-                <div className="container-fields">
-                  <label htmlFor="title" className="title-field">
-                    Title
-                    <input
-                      className="input-field"
-                      defaultValue={sectionItem.title}
-                      {...register("title")}
-                    />
-                  </label>
-                </div>
+                  <div className="container-fields">
+                    <label htmlFor="title" className="title-field">
+                      Title
+                      <input
+                        className="input-field"
+                        defaultValue={sectionItem.title}
+                        {...register("title")}
+                      />
+                    </label>
+                  </div>
 
-                <div className="container-fields mt-10">
-                  <label htmlFor="description" className="title-field">
-                    Description
-                    <textarea
-                      className="input-field h-[10em]"
-                      defaultValue={sectionItem.description}
-                      {...register("description")}
-                    />
-                  </label>
+                  <div className="container-fields mt-10">
+                    <label htmlFor="description" className="title-field">
+                      Description
+                      <textarea
+                        className="input-field h-[10em]"
+                        defaultValue={sectionItem.description}
+                        {...register("description")}
+                      />
+                    </label>
+                  </div>
                 </div>
+              </div>
+              {router.query.section === "static-sections" &&
+                (isLoadingCategories || isLoadingSections || isLoadingVideos ? (
+                  <div>
+                    <h1>Loading...</h1>
+                  </div>
+                ) : (
+                  <div className="w-1/2 h-full flex flex-col items-start overflow-auto sticky border">
+                    {sectionItem ? (
+                      <TableVideosStaticSection
+                        videos={videos}
+                        videoIds={videoIds}
+                        setVideoIds={setVideoIds}
+                      />
+                    ) : (
+                      "Is loading..."
+                    )}
+                  </div>
+                ))}
+            </div>
+          )}
+          {router.query.section === "dynamic-sections" && (
+            <div className="flex flex-row w-4/5 h-full self-center">
+              <div className="w-full h-full border-2 border-black">
+                <div className="w-full h-full flex flex-col items-center">
+                  <div className="w-full sticky top-0 bg-lightgrey font-bold z-10 border-b-transparent drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]">
+                    <p className="py-1 px-4 bl-lightgrey">Informations</p>
+                  </div>
 
-                {router.query.section === "dynamic-sections" && (
+                  <div className="container-fields">
+                    <p className="title-field">Type of section</p>
+                    <p className="input-field">{handleTypeOfSection()}</p>
+                  </div>
+
+                  <div className="container-fields">
+                    <label htmlFor="title" className="title-field">
+                      Title
+                      <input
+                        className="input-field"
+                        defaultValue={sectionItem.title}
+                        {...register("title")}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="container-fields">
+                    <label htmlFor="description" className="title-field">
+                      Description
+                      <textarea
+                        className="input-field h-[6em] overflow-y-scroll resize-none"
+                        defaultValue={sectionItem.description}
+                        {...register("description")}
+                      />
+                    </label>
+                  </div>
+
                   <div className="container-fields">
                     <label htmlFor="max" className="title-field">
                       Max videos (10 by default)
@@ -202,9 +252,7 @@ export default function SectionItem() {
                       />
                     </label>
                   </div>
-                )}
 
-                {router.query.section === "dynamic-sections" && (
                   <div className="container-fields">
                     <label htmlFor="category" className="title-field">
                       Please choose a category
@@ -229,10 +277,46 @@ export default function SectionItem() {
                       )}
                     </label>
                   </div>
-                )}
+                </div>
+              </div>
+            </div>
+          )}
+          {router.query.section === "advertisings" && (
+            <div className="flex flex-row w-4/5 h-full self-center">
+              <div className="w-full h-full border-2 border-black ">
+                <div className="w-full h-full flex flex-col items-center">
+                  <div className="w-full sticky top-0 bg-lightgrey font-bold z-10 border-b-transparent drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]">
+                    <p className="py-1 px-4 bl-lightgrey">Informations</p>
+                  </div>
 
-                {router.query.section === "advertisings" && (
-                  <div className="container">
+                  <div className="container-fields">
+                    <p className="title-field">Type of section</p>
+                    <p className="input-field">{handleTypeOfSection()}</p>
+                  </div>
+
+                  <div className="container-fields">
+                    <label htmlFor="title" className="title-field">
+                      Title
+                      <input
+                        className="input-field"
+                        defaultValue={sectionItem.title}
+                        {...register("title")}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="container-fields">
+                    <label htmlFor="description" className="title-field">
+                      Description
+                      <textarea
+                        className="input-field h-[6em] overflow-y-scroll resize-none"
+                        defaultValue={sectionItem.description}
+                        {...register("description")}
+                      />
+                    </label>
+                  </div>
+
+                  {/* <div className="container-fields">
                     <label htmlFor="imageUrl" className="title-field">
                       Image to upload
                       <input
@@ -241,11 +325,9 @@ export default function SectionItem() {
                         {...register("imageUrl")}
                       />
                     </label>
-                  </div>
-                )}
+                  </div> */}
 
-                {router.query.section === "advertisings" && (
-                  <div className="container">
+                  <div className="container-fields">
                     <label htmlFor="linkTo" className="title-field">
                       Link to
                       <input
@@ -257,29 +339,10 @@ export default function SectionItem() {
                       />
                     </label>
                   </div>
-                )}
+                </div>
               </div>
             </div>
-            {router.query.section === "static-sections" &&
-              (isLoadingCategories || isLoadingSections || isLoadingVideos ? (
-                <div>
-                  <h1>Loading...</h1>
-                </div>
-              ) : (
-                <div className="w-1/2 h-full flex flex-col items-start overflow-auto sticky border">
-                  {sectionItem ? (
-                    <TableVideosStaticSection
-                      videos={videos}
-                      videoIds={videoIds}
-                      setVideoIds={setVideoIds}
-                      sectionItem={sectionItem}
-                    />
-                  ) : (
-                    "Is loading..."
-                  )}
-                </div>
-              ))}
-          </div>
+          )}
           <div className="w-2/5 flex  self-center">
             <input id="submit" type="submit" className="submit-btn w-full" />
           </div>
