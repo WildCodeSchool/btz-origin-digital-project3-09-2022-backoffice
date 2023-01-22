@@ -103,17 +103,17 @@ function Section() {
           </a>
         )}
         {typeOfSection === "Carrousel Dynamic" && (
-          <a href="/sections/dynamic-sections/new-dynamic-carousel">
+          <a href="/sections/new-section">
             <Image src={plus} alt="add-button" />
           </a>
         )}
         {typeOfSection === "Grid Dynamic" && (
-          <a href="/sections/dynamic-sections/new-dynamic-grid">
+          <a href="/sections/new-section">
             <Image src={plus} alt="add-button" />
           </a>
         )}
         {typeOfSection === "Advertising" && (
-          <a href="/sections/advertisings/new-advertising">
+          <a href="/sections/new-section">
             <Image src={plus} alt="add-button" />
           </a>
         )}

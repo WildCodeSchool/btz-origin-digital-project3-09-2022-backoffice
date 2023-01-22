@@ -63,76 +63,78 @@ export default function index() {
             <th>Delete</th>
           </thead>
           <tbody className="rounded-b-[10px]">
-            {categories.map((category: TCategory) => (
-              <tr
-                key={category.id}
-                className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
-              >
-                <td className="border border-black px-5 last:rounded-bl-[10px]">
+            {categories
+              .sort((a, b) => (a.name > b.name ? 1 : -1))
+              .map((category: TCategory) => (
+                <tr
+                  key={category.id}
+                  className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
+                >
+                  <td className="border border-black px-5 last:rounded-bl-[10px]">
+                    {editMode && itemToEdit === category.id ? (
+                      <input
+                        type="text"
+                        name="name"
+                        className="border border-black"
+                        placeholder={category.name}
+                        defaultValue={category.name}
+                        onChange={(e) => setCategoryName(e.target.value)}
+                      />
+                    ) : (
+                      category.name
+                    )}
+                  </td>
                   {editMode && itemToEdit === category.id ? (
-                    <input
-                      type="text"
-                      name="name"
-                      className="border border-black"
-                      placeholder={category.name}
-                      defaultValue={category.name}
-                      onChange={(e) => setCategoryName(e.target.value)}
-                    />
+                    <td className="border text-center bg-[#008000]">
+                      <button
+                        id={category.id}
+                        type="button"
+                        onClick={handleItemToUpdate}
+                      >
+                        SAVE
+                      </button>
+                    </td>
                   ) : (
-                    category.name
+                    <td className="border text-center">
+                      <button
+                        id={category.id}
+                        type="button"
+                        onClick={handleItemToEdit}
+                      >
+                        📝
+                      </button>
+                    </td>
                   )}
-                </td>
-                {editMode && itemToEdit === category.id ? (
-                  <td className="border text-center bg-[#008000]">
-                    <button
-                      id={category.id}
-                      type="button"
-                      onClick={handleItemToUpdate}
-                    >
-                      SAVE
-                    </button>
-                  </td>
-                ) : (
-                  <td className="border text-center">
-                    <button
-                      id={category.id}
-                      type="button"
-                      onClick={handleItemToEdit}
-                    >
-                      📝
-                    </button>
-                  </td>
-                )}
-                {editMode && itemToEdit === category.id ? (
-                  <td className="border text-center last:rounded-br-[10px] bg-[#FF0000]">
-                    <button
-                      className="w-full h-full bg-red"
-                      type="button"
-                      onClick={handleItemToEditCancel}
-                    >
-                      CANCEL
-                    </button>
-                  </td>
-                ) : (
-                  <td className="border text-center last:rounded-br-[10px]">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        categoryFetcher
-                          .deleteCategoryById(category.id)
-                          .then(() =>
-                            categoryFetcher
-                              .getCategories()
-                              .then((data) => setCategories(data))
-                          )
-                      }
-                    >
-                      🗑️
-                    </button>
-                  </td>
-                )}
-              </tr>
-            ))}
+                  {editMode && itemToEdit === category.id ? (
+                    <td className="border text-center last:rounded-br-[10px] bg-[#FF0000]">
+                      <button
+                        className="w-full h-full bg-red"
+                        type="button"
+                        onClick={handleItemToEditCancel}
+                      >
+                        CANCEL
+                      </button>
+                    </td>
+                  ) : (
+                    <td className="border text-center last:rounded-br-[10px]">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          categoryFetcher
+                            .deleteCategoryById(category.id)
+                            .then(() =>
+                              categoryFetcher
+                                .getCategories()
+                                .then((data) => setCategories(data))
+                            )
+                        }
+                      >
+                        🗑️
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
             {createMode && (
               <tr className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]">
                 <td className="border border-black px-5 last:rounded-bl-[10px]">
