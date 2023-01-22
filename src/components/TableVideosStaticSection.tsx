@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { type } from "os";
 import Table, { TData } from "./table";
 import { TSection, TVideo } from "../types/types";
 
@@ -8,7 +9,7 @@ type Props = {
   setVideoIds: React.Dispatch<
     React.SetStateAction<{ id: string; status: boolean }[]>
   >;
-  sectionItem: TSection;
+  sectionItem: TSection | undefined;
 };
 
 export default function TableVideos({
@@ -58,20 +59,23 @@ export default function TableVideos({
           id: video.id,
           select: (
             <input
-              className="m-[2em]"
+              className="w-6 h-6 m-[2em]"
               type="checkbox"
               value={video.id}
               defaultChecked={
-                sectionItem.videos.filter((e) => e.id === video.id).length > 0
+                typeof sectionItem !== "undefined"
+                  ? sectionItem.videos.filter((e) => e.id === video.id).length >
+                    0
+                  : false
               }
               onChange={(e) => handleChange(e)}
             />
           ),
           title: video.title,
           video: (
-            <video controls className="m-auto" width="200" height="200">
-              <source src={video.videoUrl} type="video/mp4" />
-              <track src={video.videoUrl} kind="captions" />
+            <video controls className="m-auto" width="250" height="200">
+              <source src={video.teaserUrl} type="video/mp4" />
+              <track src={video.teaserUrl} kind="captions" />
             </video>
           ),
         },

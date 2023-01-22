@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import sectionFetcher from "../../../../services/sectionFetcher";
-import { TSection } from "../../../../src/types/types";
+import { TCategory, TSection, TVideo } from "../../../../src/types/types";
 import categoryFetcher from "../../../../services/categoryFetcher";
 import TableVideosStaticSection from "../../../../src/components/TableVideosStaticSection";
 import videoFetcher from "../../../../services/videoFetcher";
@@ -26,8 +26,8 @@ export default function SectionItem() {
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [isLoadingSections, setIsLoadingSections] = useState(true);
   const [isLoadingVideos, setIsLoadingVideos] = useState(true);
-  const [categories, setCategories] = useState([]);
-  const [videos, setVideos] = useState([]);
+  const [categories, setCategories] = useState<TCategory[]>([]);
+  const [videos, setVideos] = useState<TVideo[]>([]);
   const [videoIds, setVideoIds] = useState<TVideoIds[]>([]);
 
   useEffect(() => {
@@ -46,6 +46,8 @@ export default function SectionItem() {
 
       videoFetcher.getVideos().then((data) => {
         setVideos(data);
+        console.log(data);
+
         setIsLoadingVideos(!isLoadingVideos);
       });
     }

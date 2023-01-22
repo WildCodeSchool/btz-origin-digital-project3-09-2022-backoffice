@@ -1,13 +1,13 @@
+import axiosInstance from "./axiosinstance";
 import {
+  TSection,
+  TAdvertsing,
   TSectionDynamic,
   TSectionStatic,
-  TAdvertsing,
-  TSection,
 } from "../src/types/types";
-import axiosInstance from "./axiosinstance";
 
 const sectionFetcher = {
-  createSection: async (type: string | string[], data: any) => {
+  createSection: async (type: string | string[], data: Partial<TSection>) => {
     try {
       await axiosInstance.post(`/${type}`, data);
     } catch (err) {
@@ -15,6 +15,20 @@ const sectionFetcher = {
       throw new Error(err);
     } finally {
       console.log("createSection successful");
+    }
+  },
+
+  createSectionWithVideos: async (
+    type: string | string[],
+    data: Partial<TSection>
+  ) => {
+    try {
+      await axiosInstance.post(`/${type}/new-with-videos`, data);
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("createSectionWithVideos successful");
     }
   },
 
@@ -97,6 +111,33 @@ const sectionFetcher = {
       throw new Error(err);
     } finally {
       console.log("getSectionById successful");
+    }
+  },
+
+  getSectionByTitle: async (type: string | string[], title: string) => {
+    try {
+      const sectionByTitle: TSection[] | null = [];
+      const resp = await axiosInstance.get(`/${type}`);
+      if (resp.data !== null) {
+        resp.data.forEach((element: TSection) => {
+          if (element.title === title) {
+            sectionByTitle.push({
+              id: element.id,
+              title: element.title,
+              description: element.description,
+              section: type as string,
+              isGrid: element.isGrid,
+              isHero: element.isHero,
+            });
+          }
+        });
+      }
+      return sectionByTitle;
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    } finally {
+      console.log("getSectionByTitle successful");
     }
   },
 

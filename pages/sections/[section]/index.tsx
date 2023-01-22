@@ -10,6 +10,7 @@ import SectionSelector from "../../../src/components/SectionSelector";
 function Section() {
   const [section, setSection] = useState<TSection[]>([]);
   const router = useRouter();
+  const typeOfSection = localStorage.getItem("sectionName");
 
   useEffect(() => {
     if (router.query.section) {
@@ -91,9 +92,31 @@ function Section() {
         </table>
       </div>
       <div className="w-[50px] mt-[1em] ml-[5%]">
-        <a href="/sections/new-section">
-          <Image src={plus} alt="logo-plus" />
-        </a>
+        {typeOfSection === "Hero Slider" && (
+          <a href="/sections/static-sections/new-hero-slider">
+            <Image src={plus} alt="add-button" />
+          </a>
+        )}
+        {typeOfSection === "Carrousel Static" && (
+          <a href="/sections/static-sections/new-static-carousel">
+            <Image src={plus} alt="add-button" />
+          </a>
+        )}
+        {typeOfSection === "Carrousel Dynamic" && (
+          <a href="/sections/dynamic-sections/new-dynamic-carousel">
+            <Image src={plus} alt="add-button" />
+          </a>
+        )}
+        {typeOfSection === "Grid Dynamic" && (
+          <a href="/sections/dynamic-sections/new-dynamic-grid">
+            <Image src={plus} alt="add-button" />
+          </a>
+        )}
+        {typeOfSection === "Advertising" && (
+          <a href="/sections/advertisings/new-advertising">
+            <Image src={plus} alt="add-button" />
+          </a>
+        )}
       </div>
     </div>
   );
