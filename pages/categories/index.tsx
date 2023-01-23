@@ -193,7 +193,7 @@ export default function index() {
                 Delete
               </button>
               <button
-                className="bg-red w-1/2 ml-2 "
+                className="bg-red w-1/2 ml-2"
                 type="button"
                 onClick={handleDeleteCancelled}
               >
