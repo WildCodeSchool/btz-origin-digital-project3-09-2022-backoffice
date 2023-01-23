@@ -46,8 +46,6 @@ export default function SectionItem() {
 
       videoFetcher.getVideos().then((data) => {
         setVideos(data);
-        console.log(data);
-
         setIsLoadingVideos(!isLoadingVideos);
       });
     }
