@@ -6,6 +6,7 @@ import SearchBar from "../../src/components/SearchBar";
 import userFetcher from "../../services/userFetcher";
 import plus from "../../src/assets/plus.svg";
 import csv_icon from "../../src/assets/csv-icon.svg";
+import ModalOnDelete from "../../src/components/modal/ModalOnDelete";
 
 function Users() {
   const [users, setUsers] = useState<TUser[]>([]);
@@ -25,6 +26,25 @@ function Users() {
     a.href = url;
     a.download = "data.csv";
     a.click();
+  };
+
+  const [itemToDelete, setItemToDelete] = useState<string | null>();
+  const [showModal, setShowModal] = useState(false);
+
+  const handleItemToDelete = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    setShowModal(true);
+    setItemToDelete(e.currentTarget.id);
+  };
+
+  const handleDeleteConfirmed = (): void => {
+    userFetcher
+      .deleteUserById(itemToDelete as string)
+      .then(() => userFetcher.getUsers().then((data) => setUsers(data)));
+    setShowModal(false);
+  };
+
+  const handleDeleteCancelled = (): void => {
+    setShowModal(false);
   };
 
   return (
@@ -57,14 +77,9 @@ function Users() {
                 </td>
                 <td className="border text-center last:rounded-br-[10px]">
                   <button
+                    id={user.id}
                     type="button"
-                    onClick={() =>
-                      userFetcher
-                        .deleteUserById(user.id)
-                        .then(() =>
-                          userFetcher.getUsers().then((data) => setUsers(data))
-                        )
-                    }
+                    onClick={handleItemToDelete}
                   >
                     🗑️
                   </button>
@@ -85,6 +100,12 @@ function Users() {
 
         {/* ... */}
       </div>
+      {showModal && (
+        <ModalOnDelete
+          handleDeleteConfirmed={handleDeleteConfirmed}
+          handleDeleteCancelled={handleDeleteCancelled}
+        />
+      )}
     </div>
   );
 }
