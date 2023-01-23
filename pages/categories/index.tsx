@@ -4,15 +4,16 @@ import categoryFetcher from "../../services/categoryFetcher";
 import plus from "../../src/assets/plus.svg";
 import { TCategory } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
+import ModalOnDelete from "../../src/components/modal/ModalOnDelete";
 
 export default function index() {
   const [categories, setCategories] = useState<TCategory[]>([]);
+  const [categoryName, setCategoryName] = useState<string>("");
   const [editMode, setEditMode] = useState<boolean>(false);
   const [createMode, setCreateMode] = useState<boolean>(false);
   const [itemToEdit, setItemToEdit] = useState<string | null>();
   const [itemToDelete, setItemToDelete] = useState<string | null>();
   const [showModal, setShowModal] = useState(false);
-  const [categoryName, setCategoryName] = useState<string>("");
 
   useEffect(() => {
     categoryFetcher.getCategories().then((response) => {
@@ -181,27 +182,10 @@ export default function index() {
         </button>
       </div>
       {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <p>Are you sure you want to delete this item?</p>
-            <div className="modal-buttons">
-              <button
-                className="bg-green w-1/2 mr-2"
-                type="button"
-                onClick={handleDeleteConfirmed}
-              >
-                Delete
-              </button>
-              <button
-                className="bg-red w-1/2 ml-2"
-                type="button"
-                onClick={handleDeleteCancelled}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+        <ModalOnDelete
+          handleDeleteConfirmed={handleDeleteConfirmed}
+          handleDeleteCancelled={handleDeleteCancelled}
+        />
       )}
     </div>
   );
