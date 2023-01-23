@@ -6,11 +6,14 @@ import plus from "../../../src/assets/plus.svg";
 import { TSection } from "../../../src/types/types";
 import SearchBar from "../../../src/components/SearchBar";
 import SectionSelector from "../../../src/components/SectionSelector";
+import ModalOnDelete from "../../../src/components/modal/ModalOnDelete";
 
 function Section() {
   const [section, setSection] = useState<TSection[]>([]);
   const router = useRouter();
   const typeOfSection = localStorage.getItem("sectionName");
+  const [itemToDelete, setItemToDelete] = useState<string | null>();
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (router.query.section) {
@@ -21,6 +24,27 @@ function Section() {
         });
     }
   }, [router]);
+
+  const handleItemToDelete = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    setShowModal(true);
+    setItemToDelete(e.currentTarget.id);
+    console.log(router.query.section, itemToDelete);
+  };
+
+  const handleDeleteConfirmed = (): void => {
+    sectionFetcher
+      .deleteSectionById(router.query.section as string, itemToDelete as string)
+      .then(() =>
+        sectionFetcher
+          .getSectionContent(router.query.section as string)
+          .then((data) => setSection(data))
+      );
+    setShowModal(false);
+  };
+
+  const handleDeleteCancelled = (): void => {
+    setShowModal(false);
+  };
 
   return (
     <div className="w-full bg-lightgrey">
@@ -73,15 +97,8 @@ function Section() {
                   <td className="border text-center last:rounded-br-[10px]">
                     <button
                       type="button"
-                      onClick={() =>
-                        sectionFetcher
-                          .deleteSectionById(item.section, item.id)
-                          .then(() =>
-                            sectionFetcher
-                              .getSectionContent(router.query.section)
-                              .then((data) => setSection(data))
-                          )
-                      }
+                      id={item.id}
+                      onClick={handleItemToDelete}
                     >
                       🗑️
                     </button>
@@ -118,6 +135,12 @@ function Section() {
           </a>
         )}
       </div>
+      {showModal && (
+        <ModalOnDelete
+          handleDeleteConfirmed={handleDeleteConfirmed}
+          handleDeleteCancelled={handleDeleteCancelled}
+        />
+      )}
     </div>
   );
 }

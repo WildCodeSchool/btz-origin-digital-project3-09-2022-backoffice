@@ -60,7 +60,7 @@ export default function index() {
   };
 
   const handleDeleteConfirmed = (): void => {
-    categoryFetcher.deleteCategoryById(itemToDelete).then(() => {
+    categoryFetcher.deleteCategoryById(itemToDelete as string).then(() => {
       categoryFetcher.getCategories().then((data) => setCategories(data));
     });
     setShowModal(false);
