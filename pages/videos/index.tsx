@@ -4,15 +4,34 @@ import { TVideo } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
 import videoFetcher from "../../services/videoFetcher";
 import plus from "../../src/assets/plus.svg";
+import ModalOnDelete from "../../src/components/modal/ModalOnDelete";
 
 function Videos() {
   const [videos, setVideos] = useState<TVideo[]>([]);
+  const [itemToDelete, setItemToDelete] = useState<string | null>();
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     videoFetcher.getVideos().then((response) => {
       setVideos(response);
     });
   }, []);
+
+  const handleItemToDelete = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    setShowModal(true);
+    setItemToDelete(e.currentTarget.id);
+  };
+
+  const handleDeleteConfirmed = (): void => {
+    videoFetcher
+      .deleteVideoById(itemToDelete as string)
+      .then(() => videoFetcher.getVideos().then((data) => setVideos(data)));
+    setShowModal(false);
+  };
+
+  const handleDeleteCancelled = (): void => {
+    setShowModal(false);
+  };
 
   return (
     <div className="w-full bg-lightgrey">
@@ -57,16 +76,9 @@ function Videos() {
                   </td>
                   <td className="border text-center last:rounded-br-[10px]">
                     <button
+                      id={video.id}
                       type="button"
-                      onClick={() =>
-                        videoFetcher
-                          .deleteVideoById(video.id)
-                          .then(() =>
-                            videoFetcher
-                              .getVideos()
-                              .then((data) => setVideos(data))
-                          )
-                      }
+                      onClick={handleItemToDelete}
                     >
                       🗑️
                     </button>
@@ -81,6 +93,12 @@ function Videos() {
           <Image src={plus} alt="logo-plus" />
         </a>
       </div>
+      {showModal && (
+        <ModalOnDelete
+          handleDeleteConfirmed={handleDeleteConfirmed}
+          handleDeleteCancelled={handleDeleteCancelled}
+        />
+      )}
     </div>
   );
 }
