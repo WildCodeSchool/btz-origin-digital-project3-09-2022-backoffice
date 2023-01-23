@@ -52,7 +52,7 @@ export default function Table({
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
+          {rows.map((row) => {
             prepareRow(row);
             return (
               <tr className="hover:bg-gray-100" {...row.getRowProps()}>

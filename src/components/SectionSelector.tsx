@@ -16,8 +16,8 @@ export default function SectionSelector() {
             className={
               typeof window !== "undefined" &&
               localStorage.getItem("sectionName") === item.name
-                ? "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around underline"
-                : "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] items-center justify-around hover:underline"
+                ? "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] last:border-r-[2px] items-center justify-around underline"
+                : "h-[60px] px-4 flex text-xl border-x-[1px] first:border-l-[2px] last:border-r-[2px] items-center justify-around hover:underline"
             }
           >
             <Link href={item.url} onClick={() => handleClick(item)}>

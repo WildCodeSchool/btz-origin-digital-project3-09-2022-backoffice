@@ -39,7 +39,7 @@ function NewSection() {
           max: +data.max,
           isHero: nameOfSection === "Hero Slider",
         });
-        router.push(`/sections/${typeOfSection}`);
+        router.push(`/sections`);
         break;
 
       case "dynamic-sections":
@@ -50,7 +50,7 @@ function NewSection() {
           isGrid: nameOfSection === "Grid Dynamic",
           categoryId: data.categoryId,
         });
-        router.push(`/sections/${typeOfSection}`);
+        router.push(`/sections`);
         break;
 
       case "advertisings":
@@ -59,7 +59,7 @@ function NewSection() {
         formData.append("linkTo", data.linkTo);
         formData.append("file", data.file[0]);
         axios.post("http://localhost:4000/api/v1/advertisings", formData);
-        router.push(`/sections/${typeOfSection}`);
+        router.push(`/sections`);
         break;
       default:
         // alert("please select a type");

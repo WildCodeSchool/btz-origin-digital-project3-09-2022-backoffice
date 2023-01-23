@@ -4,15 +4,34 @@ import { TVideo } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
 import videoFetcher from "../../services/videoFetcher";
 import plus from "../../src/assets/plus.svg";
+import ModalOnDelete from "../../src/components/modal/ModalOnDelete";
 
 function Videos() {
   const [videos, setVideos] = useState<TVideo[]>([]);
+  const [itemToDelete, setItemToDelete] = useState<string | null>();
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     videoFetcher.getVideos().then((response) => {
       setVideos(response);
     });
   }, []);
+
+  const handleItemToDelete = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    setShowModal(true);
+    setItemToDelete(e.currentTarget.id);
+  };
+
+  const handleDeleteConfirmed = (): void => {
+    videoFetcher
+      .deleteVideoById(itemToDelete as string)
+      .then(() => videoFetcher.getVideos().then((data) => setVideos(data)));
+    setShowModal(false);
+  };
+
+  const handleDeleteCancelled = (): void => {
+    setShowModal(false);
+  };
 
   return (
     <div className="w-full bg-lightgrey">
@@ -31,46 +50,41 @@ function Videos() {
             <th>Delete</th>
           </thead>
           <tbody className="rounded-b-[10px]">
-            {videos.map((video) => (
-              <tr
-                key={video.id}
-                className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
-              >
-                <td className="border border-black px-5 last:rounded-bl-[10px]">
-                  {video.title}
-                </td>
-                <td className="border px-5">{video.description}</td>
-                <td className="border px-5">{video.duration}</td>
-                <td className="border p-2">
-                  <video controls className="m-auto" width="200" height="200">
-                    <source src={video.videoUrl} type="video/mp4" />
-                    <track src={video.videoUrl} kind="captions" />
-                  </video>
-                </td>
-                <td className="border px-5">{video.display}</td>
-                <td className="border px-5">{video.isPublic}</td>
-                <td className="border px-5">{video.nbViews}</td>
-                <td className="border text-center">
-                  <a href={`/videos/${video.id}`}>📝</a>
-                </td>
-                <td className="border text-center last:rounded-br-[10px]">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      videoFetcher
-                        .deleteVideoById(video.id)
-                        .then(() =>
-                          videoFetcher
-                            .getVideos()
-                            .then((data) => setVideos(data))
-                        )
-                    }
-                  >
-                    🗑️
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {videos
+              .sort((a, b) => (a.title > b.title ? 1 : -1))
+              .map((video) => (
+                <tr
+                  key={video.id}
+                  className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
+                >
+                  <td className="border border-black px-5 last:rounded-bl-[10px]">
+                    {video.title}
+                  </td>
+                  <td className="border px-5">{video.description}</td>
+                  <td className="border px-5">{video.duration}</td>
+                  <td className="border p-2">
+                    <video controls className="m-auto" width="200" height="200">
+                      <source src={video.videoUrl} type="video/mp4" />
+                      <track src={video.videoUrl} kind="captions" />
+                    </video>
+                  </td>
+                  <td className="border px-5">{video.display}</td>
+                  <td className="border px-5">{video.isPublic}</td>
+                  <td className="border px-5">{video.nbViews}</td>
+                  <td className="border text-center">
+                    <a href={`/videos/${video.id}`}>📝</a>
+                  </td>
+                  <td className="border text-center last:rounded-br-[10px]">
+                    <button
+                      id={video.id}
+                      type="button"
+                      onClick={handleItemToDelete}
+                    >
+                      🗑️
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -79,6 +93,12 @@ function Videos() {
           <Image src={plus} alt="logo-plus" />
         </a>
       </div>
+      {showModal && (
+        <ModalOnDelete
+          handleDeleteConfirmed={handleDeleteConfirmed}
+          handleDeleteCancelled={handleDeleteCancelled}
+        />
+      )}
     </div>
   );
 }

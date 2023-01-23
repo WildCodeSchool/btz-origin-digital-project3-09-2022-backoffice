@@ -113,11 +113,13 @@ function NewVideo() {
                 >
                   <option value="">---</option>
                   {categories &&
-                    categories.map((e) => (
-                      <option key={e.id} value={e.id}>
-                        {e.name}
-                      </option>
-                    ))}
+                    categories
+                      .sort((a, b) => (a.name > b.name ? 1 : -1))
+                      .map((e) => (
+                        <option key={e.id} value={e.id}>
+                          {e.name}
+                        </option>
+                      ))}
                 </select>
                 {errors.category && (
                   <p className="font-normal text-[#FF0000]">
