@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect, ChangeEvent } from "react";
 import Image from "next/image";
-import { string } from "zod";
-import { TSection, TNewPage } from "../../src/types/types";
+import { TSection, TNewPage, TPage } from "../../src/types/types";
 import plus from "../../src/assets/plus.svg";
 import sectionsTypes from "../../src/types/sectionsTypes";
 import sectionFetcher from "../../services/sectionFetcher";
@@ -23,8 +22,8 @@ export default function SectionItem() {
   const [createMode, setCreateMode] = useState<boolean>(false);
   const [itemToEdit, setItemToEdit] = useState<TSectionItem>();
 
-  const [currentRow, setCurrentRow] = useState<Partial<TSectionItem>>();
   const [title, setTitle] = useState<string>("");
+  const [currentRow, setCurrentRow] = useState<Partial<TSectionItem>>();
   const [rows, setRows] = useState<TSectionItem[]>([]);
   const [rowCounter, setRowCounter] = useState<number>(1);
 
@@ -84,10 +83,36 @@ export default function SectionItem() {
     setRowCounter(rowCounter + 1);
   };
 
+  const moveRowUp = (row: TSectionItem) => {
+    const index = rows.indexOf(row);
+    if (index > 0) {
+      const temp = rows[index - 1];
+      const tempPosition = rows[index - 1].position;
+      rows[index - 1] = rows[index];
+      rows[index - 1].position = tempPosition;
+      rows[index] = temp;
+      rows[index].position = index + 1;
+      setRows([...rows]);
+    }
+  };
+
+  const moveRowDown = (row: TSectionItem) => {
+    const index = rows.indexOf(row);
+    if (index < rows.length - 1) {
+      const temp = rows[index + 1];
+      const tempPosition = rows[index + 1].position;
+      rows[index + 1] = rows[index];
+      rows[index + 1].position = tempPosition;
+      rows[index] = temp;
+      rows[index].position = index + 1;
+      setRows([...rows]);
+    }
+  };
+
   const handleItemToCreate = () => {
-    const pagesSectionsStaticData = [];
-    const pagesSectionsDynamicData = [];
-    const pagesAdvertisingsData = [];
+    const pagesSectionsStaticData: { id: string; position: number }[] = [];
+    const pagesSectionsDynamicData: { id: string; position: number }[] = [];
+    const pagesAdvertisingsData: { id: string; position: number }[] = [];
     rows.forEach((row) => {
       if (row.type === "static-sections") {
         pagesSectionsStaticData.push({
@@ -246,14 +271,14 @@ export default function SectionItem() {
                         <button
                           className="w-4 h-4"
                           type="button"
-                          onClick={() => console.log("up")}
+                          onClick={() => moveRowUp(row)}
                         >
                           ⬆️
                         </button>
                         <button
                           className="w-4 h-4"
                           type="button"
-                          onClick={() => console.log("down")}
+                          onClick={() => moveRowDown(row)}
                         >
                           ⬇️
                         </button>
