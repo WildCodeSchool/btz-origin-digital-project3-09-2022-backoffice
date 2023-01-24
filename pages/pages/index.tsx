@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import pageFetcher from "../../services/pageFetcher";
 import plus from "../../src/assets/plus.svg";
 import { TPage } from "../../src/types/types";
@@ -12,6 +13,7 @@ export default function index() {
   const [itemToEdit, setItemToEdit] = useState<string | null>();
   const [itemToDelete, setItemToDelete] = useState<string | null>();
   const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     pageFetcher.getPages().then((response) => {
@@ -89,7 +91,7 @@ export default function index() {
         </table>
       </div>
       <div className="w-[50px] mt-[1em] ml-[5%]">
-        <button type="button" onClick={() => setCreateMode(!createMode)}>
+        <button type="button" onClick={() => router.push("/pages/new-page")}>
           <Image src={plus} alt="logo-plus" />
         </button>
       </div>

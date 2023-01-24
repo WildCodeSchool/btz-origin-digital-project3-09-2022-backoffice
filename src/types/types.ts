@@ -119,7 +119,22 @@ export type TPage = {
   title: string;
   createdAt?: Date;
   updatedAt?: Date;
-  pagesSectionsStatic?: { id: string; status: boolean }[];
-  pagesSectionsDynamic?: { id: string; status: boolean }[];
-  pagesAdvertisings?: { id: string; status: boolean }[];
+  pagesSectionsStatic?: { id: string; position: number; status?: boolean }[];
+  pagesSectionsDynamic?: { id: string; position: number; status?: boolean }[];
+  pagesAdvertisings?: { id: string; position: number; status?: boolean }[];
+};
+
+export type TNewPage = {
+  title: string;
+  pagesSectionsStaticData?: {
+    id: string;
+    position: number;
+    status?: boolean;
+  }[];
+  pagesSectionsDynamicData?: {
+    id: string;
+    position: number;
+    status?: boolean;
+  }[];
+  pagesAdvertisingsData?: { id: string; position: number; status?: boolean }[];
 };

@@ -4,10 +4,7 @@ import axiosInstance from "./axiosinstance";
 const pageFetcher = {
   createPage: async (data: string) => {
     try {
-      await axiosInstance.post<TPage>(
-        `/pages`,
-        JSON.parse(JSON.stringify({ name: data }))
-      );
+      await axiosInstance.post<TPage>(`/pages/new-with-sections`, data);
     } catch (err) {
       console.error(err);
       throw new Error(err);

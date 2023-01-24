@@ -1,202 +1,389 @@
-import React, { useEffect, useState } from "react";
-import { FieldValues, useForm } from "react-hook-form";
-import { useRouter } from "next/router";
-import axios from "axios";
+"use client";
+
+import React, { useState, useEffect, ChangeEvent } from "react";
+import Image from "next/image";
+import { string } from "zod";
+import { TSection, TNewPage } from "../../src/types/types";
+import plus from "../../src/assets/plus.svg";
 import sectionsTypes from "../../src/types/sectionsTypes";
 import sectionFetcher from "../../services/sectionFetcher";
-import { TCategory } from "../../src/types/types";
-import categoryFetcher from "../../services/categoryFetcher";
+import pageFetcher from "../../services/pageFetcher";
 
-function NewSection() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-  const [typeOfSection, setTypeOfSection] = useState<string>("");
-  const [nameOfSection, setNameOfSection] = useState<string>("");
-  const [categories, setCategories] = useState<TCategory[]>([]);
-  const router = useRouter();
-  const formData = new FormData();
+export type TSectionItem = {
+  type: string;
+  typeLatest: string;
+  sectionName: string;
+  sectionId: string;
+  position: number;
+  sectionCount: number;
+};
 
-  useEffect(() => {
-    categoryFetcher.getCategories().then((data) => setCategories(data));
-  }, []);
+export default function SectionItem() {
+  const [sections, setSections] = useState<Partial<TSection[]>>();
+  const [createMode, setCreateMode] = useState<boolean>(false);
+  const [itemToEdit, setItemToEdit] = useState<TSectionItem>();
 
-  const handleChange = (e: FieldValues) => {
-    setTypeOfSection(e.target.value.split("/")[0]);
-    setNameOfSection(e.target.value.split("/")[1]);
-  };
+  const [currentRow, setCurrentRow] = useState<Partial<TSectionItem>>();
+  const [title, setTitle] = useState<string>("");
+  const [rows, setRows] = useState<TSectionItem[]>([]);
+  const [rowCounter, setRowCounter] = useState<number>(1);
 
-  const handleData = (data: FieldValues) => {
-    // const { title, description, max, file, linkTo, categoryId } = data;
-    switch (typeOfSection) {
+  const feedSectionSelector = (event: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+    const type = value.split("/")[0];
+    let typeLatest = "";
+    switch (type) {
       case "static-sections":
-        sectionFetcher.createSection(typeOfSection, {
-          title: data.title,
-          description: data.description,
-          max: +data.max,
-          isHero: nameOfSection === "Hero Slider",
-        });
-        router.push(`/sections`);
+        if (value.split("/")[1] === "true") {
+          typeLatest = "Hero Slider";
+        } else {
+          typeLatest = "Carrousel Static";
+        }
         break;
-
       case "dynamic-sections":
-        sectionFetcher.createSection(typeOfSection, {
-          title: data.title,
-          description: data.description,
-          max: +data.max,
-          isGrid: nameOfSection === "Grid Dynamic",
-          categoryId: data.categoryId,
-        });
-        router.push(`/sections`);
+        if (value.split("/")[1] === "true") {
+          typeLatest = "Grid Dynamic";
+        } else {
+          typeLatest = "Carrousel Dynamic";
+        }
         break;
-
       case "advertisings":
-        formData.append("title", data.title);
-        formData.append("description", data.description);
-        formData.append("linkTo", data.linkTo);
-        formData.append("file", data.file[0]);
-        axios.post("http://localhost:4000/api/v1/advertisings", formData);
-        router.push(`/sections`);
+        typeLatest = "Advertising";
         break;
       default:
-        // alert("please select a type");
-        break;
+        typeLatest = "";
     }
 
-    reset();
+    const status = /true/.test(value!.split("/")[1]);
+    sectionFetcher
+      .getSectionByTypeAndStatus(type as string, status)
+      .then((response) => {
+        setSections(response);
+      });
+    setCurrentRow({
+      ...currentRow,
+      type: type as string,
+      typeLatest: typeLatest as string,
+    });
+  };
+
+  const sectionSelect = (event: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+    setCurrentRow({
+      ...currentRow,
+      sectionId: value.split("/")[0],
+      sectionName: value.split("/")[1],
+      position: rowCounter,
+      sectionCount: rowCounter,
+    });
+  };
+
+  const rowSave = () => {
+    setCreateMode(!createMode);
+    setRows([...rows, currentRow]);
+    setRowCounter(rowCounter + 1);
+  };
+
+  const handleItemToCreate = () => {
+    const pagesSectionsStaticData = [];
+    const pagesSectionsDynamicData = [];
+    const pagesAdvertisingsData = [];
+    rows.forEach((row) => {
+      if (row.type === "static-sections") {
+        pagesSectionsStaticData.push({
+          id: row.sectionId,
+          position: row.position,
+        });
+      }
+      if (row.type === "dynamic-sections") {
+        pagesSectionsDynamicData.push({
+          id: row.sectionId,
+          position: row.position,
+        });
+      }
+      if (row.type === "advertisings") {
+        pagesAdvertisingsData.push({
+          id: row.sectionId,
+          position: row.position,
+        });
+      }
+    });
+    const page = {
+      title,
+      pagesSectionsStaticData,
+      pagesSectionsDynamicData,
+      pagesAdvertisingsData,
+    };
+    console.log("page :", page);
+    pageFetcher.createPage(page as TNewPage);
+  };
+
+  const handleItemToCancel = () => {
+    setCreateMode(!createMode);
   };
 
   return (
-    <div className="w-full h-full flex">
-      <form
-        className="w-full h-full flex flex-col items-center"
-        onSubmit={handleSubmit((data) => handleData(data))}
-      >
-        <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-          <label htmlFor="type" className="w-[80%] text-[20px] font-bold">
-            Type of section
-            <select
-              id="type"
-              placeholder="Please choose a type of section"
-              className="w-[100%] h-[50px] flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
-              {...register("type", { required: true })}
-              onChange={(e) => handleChange(e)}
-            >
-              <option>Please choose a type of section</option>
-              {sectionsTypes.map((section) => (
-                <option
-                  key={section.id}
-                  value={`${section.section}/${section.name}`}
-                >
-                  {section.name}
-                </option>
-              ))}
-            </select>
-            {errors.category && (
-              <p className="font-normal text-[#FF0000]">
-                Type of section is required.
-              </p>
-            )}
-          </label>
-        </div>
+    <div>
+      <div className="container-fields ml-[5%] mt-[5%]">
+        <label htmlFor="title" className="title-field">
+          Page title
+          <input
+            className="input-field"
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </label>
+      </div>
 
-        <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-          <label
-            htmlFor="title"
-            className="flex flex-col w-[80%] text-[20px] font-bold"
-          >
-            Title
-            <input type="text" {...register("title")} />
-          </label>
-        </div>
+      <div className="w-full bg-lightgrey">
+        <div className="rounded-xl">
+          <table className="w-[90%] h-[50px] mt-[3em] ml-[5%] text-xl border border-black border-1 rounded-[10px] bg-white  drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
+            <thead className="h-[50px] rounded-t-[10px]">
+              <tr>
+                <th>Type</th>
+                <th>Section</th>
+                <th>Position</th>
+                <th>Move</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody className="rounded-b-[10px]">
+              {rows &&
+                rows.map((row) =>
+                  itemToEdit && itemToEdit.id === row.id ? (
+                    <tr className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]">
+                      <td className="border border-black px-5 last:rounded-bl-[10px]">
+                        <select
+                          className="w-full"
+                          onChange={(e) => feedSectionSelector(e)}
+                        >
+                          <option className="w-full" value="0">
+                            Select section type
+                          </option>
+                          {sectionsTypes
+                            .sort((a, b) => (a.name > b.name ? 1 : -1))
+                            .map((type) => (
+                              <option
+                                className="w-full"
+                                key={type.id}
+                                value={`${type.section}/${
+                                  type.isHero || type.isGrid || false
+                                }`}
+                              >
+                                {type.name}
+                              </option>
+                            ))}
+                        </select>
+                      </td>
+                      <td className="border border-black px-5 last:rounded-bl-[10px]">
+                        <select
+                          className="w-full"
+                          onChange={(e) => sectionSelect(e)}
+                        >
+                          <option className="w-full" value="0">
+                            Select section
+                          </option>
+                          {sections &&
+                            sections
+                              .sort((a, b) => (a.title > b.title ? 1 : -1))
+                              .map((section) => (
+                                <option
+                                  className="w-full"
+                                  key={section.id}
+                                  value={`${section.id}/${section.title}`}
+                                >
+                                  {section.title}
+                                </option>
+                              ))}
+                        </select>
+                      </td>
+                      <td className="border text-center">{rowCounter}</td>
+                      <td className="h-full w-full border-t flex justify-around items-center">
+                        <button
+                          className="w-4 h-4"
+                          type="button"
+                          onClick={() => console.log("up")}
+                        >
+                          ⬆️
+                        </button>
+                        <button
+                          className="w-4 h-4"
+                          type="button"
+                          onClick={() => console.log("down")}
+                        >
+                          ⬇️
+                        </button>
+                      </td>
+                      <td className="px-2 border text-center bg-[#008000]">
+                        <button
+                          className="w-full h-full"
+                          type="button"
+                          onClick={handleItemToCreate}
+                        >
+                          SAVE
+                        </button>
+                      </td>
+                      <td className="px-2 border text-center bg-[#FF0000]">
+                        <button
+                          className="w-full h-full bg-red"
+                          type="button"
+                          onClick={handleItemToCancel}
+                        >
+                          CANCEL
+                        </button>
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]">
+                      <td className="border border-black px-5 last:rounded-bl-[10px]">
+                        <p className="w-full">{row.typeLatest}</p>
+                      </td>
+                      <td className="border border-black px-5 last:rounded-bl-[10px]">
+                        <p className="w-full">{row.sectionName}</p>
+                      </td>
+                      <td className="border text-center">{row.position}</td>
+                      <td className="h-full w-full border-t flex justify-around items-center">
+                        <button
+                          className="w-4 h-4"
+                          type="button"
+                          onClick={() => console.log("up")}
+                        >
+                          ⬆️
+                        </button>
+                        <button
+                          className="w-4 h-4"
+                          type="button"
+                          onClick={() => console.log("down")}
+                        >
+                          ⬇️
+                        </button>
+                      </td>
+                      <td className="px-2 border text-center">
+                        <button
+                          className="w-full h-full"
+                          type="button"
+                          onClick={handleItemToCreate}
+                        >
+                          📝
+                        </button>
+                      </td>
+                      <td className="px-2 border text-center">
+                        <button
+                          className="w-full h-full bg-red"
+                          type="button"
+                          onClick={handleItemToCancel}
+                        >
+                          🗑️
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                )}
 
-        <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-          <label
-            htmlFor="description"
-            className="flex flex-col w-[80%] text-[20px] font-bold"
-          >
-            Description
-            <input className="h-[10em]" {...register("description")} />
-          </label>
-        </div>
-
-        {typeOfSection === "dynamic-sections" && (
-          <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-            <label
-              htmlFor="max"
-              className="flex flex-col w-[80%] text-[20px] font-bold"
-            >
-              Max videos (10 by default)
-              <input {...register("max")} />
-            </label>
-          </div>
-        )}
-
-        {typeOfSection === "dynamic-sections" && (
-          <div className="flex flex-col w-[80%] mt-[2em] text-[20px] font-bold">
-            <label htmlFor="category" className="w-[80%] text-[20px] font-bold">
-              Please choose a category
-              <select
-                id="category"
-                placeholder="Please choose a category"
-                className="w-[100%] h-[50px] flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
-                {...register("categoryId", { required: true })}
-              >
-                <option>...</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-              {errors.category && (
-                <p className="font-normal text-[#FF0000]">
-                  Category is required.
-                </p>
+              {createMode && (
+                <tr className="h-[45px] odd:bg-lightgrey even:bg-white">
+                  <td className="border border-black px-5">
+                    <select
+                      className="w-full"
+                      onChange={(e) => feedSectionSelector(e)}
+                    >
+                      <option className="w-full" value="0">
+                        Select section type
+                      </option>
+                      {sectionsTypes
+                        .sort((a, b) => (a.name > b.name ? 1 : -1))
+                        .map((type) => (
+                          <option
+                            className="w-full"
+                            key={type.id}
+                            value={`${type.section}/${
+                              type.isHero || type.isGrid || false
+                            }`}
+                          >
+                            {type.name}
+                          </option>
+                        ))}
+                    </select>
+                  </td>
+                  <td className="border border-black px-5 last:rounded-bl-[10px]">
+                    <select
+                      className="w-full"
+                      onChange={(e) => sectionSelect(e)}
+                    >
+                      <option className="w-full" value="0">
+                        Select section
+                      </option>
+                      {sections &&
+                        sections
+                          .sort((a, b) => (a.title > b.title ? 1 : -1))
+                          .map((section) => (
+                            <option
+                              className="w-full"
+                              key={section.id}
+                              value={`${section.id}/${section.title}`}
+                            >
+                              {section.title}
+                            </option>
+                          ))}
+                    </select>
+                  </td>
+                  <td className="border text-center">{rowCounter}</td>
+                  <td className="h-full w-full border-t flex justify-around items-center">
+                    <button
+                      className="w-4 h-4"
+                      type="button"
+                      onClick={() => console.log("up")}
+                    >
+                      ⬆️
+                    </button>
+                    <button
+                      className="w-4 h-4"
+                      type="button"
+                      onClick={() => console.log("down")}
+                    >
+                      ⬇️
+                    </button>
+                  </td>
+                  <td className="px-2 border text-center bg-[#008000]">
+                    <button
+                      className="w-full h-full"
+                      type="button"
+                      onClick={rowSave}
+                    >
+                      SAVE
+                    </button>
+                  </td>
+                  <td className="px-2 border text-center bg-[#FF0000]">
+                    <button
+                      className="w-full h-full bg-red"
+                      type="button"
+                      onClick={handleItemToCancel}
+                    >
+                      CANCEL
+                    </button>
+                  </td>
+                </tr>
               )}
-            </label>
-          </div>
-        )}
-
-        {/* {typeOfSection === "advertisings" && (
-          <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-            <input type="file" {...register("file", { required: true })} />
-          </div>
-        )} */}
-
-        {typeOfSection === "advertisings" && (
-          <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-            <input type="file" {...register("file", { required: true })} />
-            <label
-              htmlFor="linkTo"
-              className="flex flex-col w-[80%] text-[20px] font-bold"
-            >
-              Link to
-              <input
-                type="text"
-                placeholder="Please insert here the link you want the user follows"
-                {...register("linkTo")}
-              />
-            </label>
-          </div>
-        )}
-
-        <div className="flex flex-col my-[2em] w-[100%] justify-center items-center">
+            </tbody>
+          </table>
+        </div>
+        <div className="flex w-[full mt-[1em] ml-[5%]">
           <button
-            id="submit"
+            className="mr-10"
             type="button"
-            onClick={handleSubmit(handleData)}
-            className="w-[50%] h-[50px] bg-[#D9D9D9] border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
+            onClick={() => setCreateMode(!createMode)}
           >
-            Envoyer
+            <Image src={plus} width={50} height={50} alt="logo-plus" />
           </button>
         </div>
-      </form>
+        <div className="flex justify-around w-full">
+          <input
+            className="submit-btn"
+            type="submit"
+            onClick={() => handleItemToCreate()}
+          />
+        </div>
+      </div>
     </div>
   );
 }
-
-export default NewSection;
