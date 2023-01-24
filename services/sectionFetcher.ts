@@ -116,7 +116,7 @@ const sectionFetcher = {
 
   getSectionByTypeAndStatus: async (
     type: string | string[],
-    status: string
+    status: boolean
   ) => {
     try {
       const sectionByTitle: TSection[] | null = [];

@@ -1,8 +1,8 @@
-import { TPage } from "../src/types/types";
+import { TPage, TNewPage } from "../src/types/types";
 import axiosInstance from "./axiosinstance";
 
 const pageFetcher = {
-  createPage: async (data: string) => {
+  createPage: async (data: TNewPage) => {
     try {
       await axiosInstance.post<TPage>(`/pages/new-with-sections`, data);
     } catch (err) {
