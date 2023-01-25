@@ -59,7 +59,7 @@ function VideoEdit() {
       }
     }
     if ("sectionsStatics" in row) {
-      if (row.sectionsStatics.isGrid === true) {
+      if (row.sectionsStatics.isHero === true) {
         response = "Hero Slider";
       } else {
         response = "Carrousel Static";
