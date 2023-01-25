@@ -28,7 +28,6 @@ function Section() {
   const handleItemToDelete = (e: React.MouseEvent<HTMLButtonElement>): void => {
     setShowModal(true);
     setItemToDelete(e.currentTarget.id);
-    console.log(router.query.section, itemToDelete);
   };
 
   const handleDeleteConfirmed = (): void => {

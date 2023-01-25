@@ -114,24 +114,48 @@ const sectionFetcher = {
     }
   },
 
-  getSectionByTitle: async (type: string | string[], title: string) => {
+  getSectionByTypeAndStatus: async (
+    type: string | string[],
+    status: boolean
+  ) => {
     try {
       const sectionByTitle: TSection[] | null = [];
       const resp = await axiosInstance.get(`/${type}`);
       if (resp.data !== null) {
-        resp.data.forEach((element: TSection) => {
-          if (element.title === title) {
-            sectionByTitle.push({
-              id: element.id,
-              title: element.title,
-              description: element.description,
-              section: type as string,
-              isGrid: element.isGrid,
-              isHero: element.isHero,
+        switch (type) {
+          case "advertisings":
+            return resp.data;
+          case "dynamic-sections":
+            resp.data.forEach((element: TSectionDynamic) => {
+              if (element.isGrid === status) {
+                sectionByTitle.push({
+                  id: element.id,
+                  title: element.title,
+                  description: element.description,
+                  section: "dynamic-sections",
+                  isGrid: element.isGrid,
+                });
+              }
             });
-          }
-        });
+            break;
+          case "static-sections":
+            resp.data.forEach((element: TSectionStatic) => {
+              if (element.isHero === status) {
+                sectionByTitle.push({
+                  id: element.id,
+                  title: element.title,
+                  description: element.description,
+                  section: "static-sections",
+                  isHero: element.isHero,
+                });
+              }
+            });
+            break;
+          default:
+            return null;
+        }
       }
+
       return sectionByTitle;
     } catch (err) {
       console.error(err);
