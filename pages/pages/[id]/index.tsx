@@ -6,6 +6,7 @@ import pageFetcher from "../../../services/pageFetcher";
 import plus from "../../../src/assets/plus.svg";
 import sectionsTypes from "../../../src/types/sectionsTypes";
 import sectionFetcher from "../../../services/sectionFetcher";
+import ModalAlert from "../../../src/components/modal/ModalAlert";
 
 function VideoEdit() {
   const router = useRouter();
@@ -17,6 +18,8 @@ function VideoEdit() {
   const [createMode, setCreateMode] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<Partial<TSectionItem>>();
   const [sections, setSections] = useState<Partial<TSection[]>>();
+
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (id) {
@@ -217,22 +220,25 @@ function VideoEdit() {
       pagesAdvertisingsData,
     };
     if (
-      page.title === "" ||
-      page.pagesAdvertisingsData.length +
-        page.pagesSectionsDynamicData.length +
-        page.pagesSectionsStaticData.length ===
+      page.title.length === 0 ||
+      +page.pagesAdvertisingsData.length +
+        +page.pagesSectionsDynamicData.length +
+        +page.pagesSectionsStaticData.length ===
         0
     ) {
-      alert("Please fill the title and at least one section");
+      setShowModal(true);
       return;
     }
     pageFetcher.deletePageById(id as string);
-    pageFetcher.createPage(page);
-    router.push("/pages");
+    pageFetcher.createPage(page).then(() => router.push("/pages"));
   };
 
   const handleItemToCancel = () => {
     setCreateMode(!createMode);
+  };
+
+  const handleDeleteCancelled = (): void => {
+    setShowModal(false);
   };
 
   return (
@@ -241,6 +247,7 @@ function VideoEdit() {
         <label htmlFor="title" className="title-field">
           Page title
           <input
+            type="text"
             className="input-field"
             defaultValue={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -375,13 +382,9 @@ function VideoEdit() {
                     </button>
                   </td>
                   <td className="px-2 border text-center bg-[#FF0000]">
-                    <button
-                      className="w-full h-full bg-red"
-                      type="button"
-                      onClick={handleItemToCancel}
-                    >
+                    <buttonmessage onClick={handleItemToCancel}>
                       CANCEL
-                    </button>
+                    </buttonmessage>
                   </td>
                 </tr>
               )}
@@ -410,6 +413,12 @@ function VideoEdit() {
           />
         </div>
       </div>
+      {showModal && (
+        <ModalAlert
+          message="Please fill the title and at least one section"
+          handleDeleteCancelled={handleDeleteCancelled}
+        />
+      )}
     </div>
   );
 }
