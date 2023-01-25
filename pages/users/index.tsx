@@ -53,12 +53,14 @@ function Users() {
       <div className="rounded-xl">
         <table className="w-[90%] h-[50px] mt-[3em] ml-[5%] text-xl border border-black border-1 rounded-[10px] bg-white  drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
           <thead className="h-[50px] rounded-t-[10px]">
-            <th className="rounded-tl-[10px]">First name</th>
-            <th>Last name</th>
-            <th>User name</th>
-            <th>Email</th>
-            <th>Edit</th>
-            <th className="rounded-tr-[10px]">Delete</th>
+            <tr>
+              <th className="rounded-tl-[10px]">First name</th>
+              <th>Last name</th>
+              <th>User name</th>
+              <th>Email</th>
+              <th>Edit</th>
+              <th className="rounded-tr-[10px]">Delete</th>
+            </tr>
           </thead>
           <tbody className="rounded-b-[10px]">
             {users.map((user) => (

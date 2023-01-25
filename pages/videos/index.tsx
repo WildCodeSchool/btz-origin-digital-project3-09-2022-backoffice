@@ -39,15 +39,17 @@ function Videos() {
       <div className="rounded-xl">
         <table className="w-[90%] h-[50px] mt-[3em] ml-[5%] text-xl border border-black rounded-[10px] bg-white  drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
           <thead className="h-[50px] rounded-t-[10px]">
-            <th>Title</th>
-            <th>Description</th>
-            <th>Duration</th>
-            <th>Video</th>
-            <th>Display</th>
-            <th>Is public</th>
-            <th>Views</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Duration</th>
+              <th>Video</th>
+              <th>Display</th>
+              <th>Is public</th>
+              <th>Views</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
           </thead>
           <tbody className="rounded-b-[10px]">
             {videos
