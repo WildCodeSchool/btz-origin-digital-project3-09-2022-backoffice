@@ -73,6 +73,7 @@ export default function SectionItem() {
     if (currentRow?.type !== undefined && currentRow?.sectionId !== undefined) {
       setCreateMode(!createMode);
       setRows([...rows, currentRow as TSectionItem]);
+      console.log(...rows);
     }
   };
 
@@ -149,6 +150,7 @@ export default function SectionItem() {
       pagesSectionsDynamicData,
       pagesAdvertisingsData,
     };
+
     pageFetcher.createPage(page);
     router.push("/pages");
   };

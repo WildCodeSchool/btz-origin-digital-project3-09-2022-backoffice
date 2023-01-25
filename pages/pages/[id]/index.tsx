@@ -12,7 +12,7 @@ function VideoEdit() {
 
   const [title, setTitle] = useState<string>("");
   const [currentRow, setCurrentRow] = useState<Partial<TSectionItem>>();
-  const [rows, setRows] = useState<Partial<TPage>[]>([]);
+  const [rows, setRows] = useState<TSectionItem[]>([]);
   const [rowCounter, setRowCounter] = useState<number>(1);
 
   useEffect(() => {
@@ -24,17 +24,46 @@ function VideoEdit() {
           pagesSectionsDynamic,
           pagesAdvertisings,
         } = response;
-
+        setRows([]);
         setTitle(pageTitle);
-        const rowsInit: Partial<TPage>[] = [];
-        pagesSectionsStatic.forEach((row) => {
-          rowsInit.push(row);
+        const rowsInit: TSectionItem[] = [];
+        pagesSectionsStatic.forEach((row: Partial<TPage>) => {
+          const typeLatest =
+            row.sectionsStatics.isHero === true
+              ? "Hero Slider"
+              : "Carrousel Static";
+          rowsInit.push({
+            type: "static-sections",
+            typeLatest,
+            sectionName: row.sectionsStatics.title,
+            sectionId: row.sectionsStatics.id,
+            position: row.position,
+            sectionCount: rowCounter,
+          });
         });
         pagesSectionsDynamic.forEach((row) => {
-          rowsInit.push(row);
+          const typeLatest =
+            row.sectionsDynamic.isGrid === true
+              ? "Grid Dynamic"
+              : "Carrousel Dynamic";
+          rowsInit.push({
+            type: "dynamic-sections",
+            typeLatest,
+            sectionName: row.sectionsDynamic.title,
+            sectionId: row.sectionsDynamic.id,
+            position: row.position,
+            sectionCount: rowCounter,
+          });
         });
         pagesAdvertisings.forEach((row) => {
-          rowsInit.push(row);
+          rowsInit.push({
+            type: "advertisings",
+            typeLatest: "Advertising",
+            sectionName: row.advertisings.title,
+            sectionId: row.advertisings.id,
+            position: row.position,
+            sectionCount: rowCounter,
+          });
         });
         rowsInit.sort((a, b) => {
           const keyA = new Date(a.position);
@@ -42,6 +71,11 @@ function VideoEdit() {
           if (keyA < keyB) return -1;
           if (keyA > keyB) return 1;
           return 0;
+        });
+        rowsInit.forEach((row, index) => {
+          const item: TSectionItem = row;
+          item.sectionCount = index + 1;
+          return item;
         });
         setRows(rowsInit);
         console.log("rows:", rowsInit);
@@ -71,7 +105,7 @@ function VideoEdit() {
     return response;
   };
 
-  const rowSection = (row: Partial<TPage>) => {
+  const rowSection = (row: TSectionItem) => {
     let response = "";
     if ("sectionsDynamic" in row) {
       if (row.sectionsDynamic.isGrid === true) {
@@ -123,10 +157,10 @@ function VideoEdit() {
                 rows.map((row) => (
                   <tr className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]">
                     <td className="border border-black px-5 last:rounded-bl-[10px]">
-                      <p className="w-full">{rowType(row)}</p>
+                      <p className="w-full">{row.typeLatest}</p>
                     </td>
                     <td className="border border-black px-5 last:rounded-bl-[10px]">
-                      <p className="w-full">{rowSection(row)}</p>
+                      <p className="w-full">{row.sectionName}</p>
                     </td>
                     <td className="border text-center">{row.position}</td>
                     <td className="h-full w-full border-t flex justify-around items-center">
