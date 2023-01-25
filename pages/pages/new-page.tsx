@@ -3,20 +3,11 @@
 import React, { useState, ChangeEvent } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { TSection } from "../../src/types/types";
+import { TSection, TSectionItem } from "../../src/types/types";
 import plus from "../../src/assets/plus.svg";
 import sectionsTypes from "../../src/types/sectionsTypes";
 import sectionFetcher from "../../services/sectionFetcher";
 import pageFetcher from "../../services/pageFetcher";
-
-export type TSectionItem = {
-  type: string;
-  typeLatest: string;
-  sectionName: string;
-  sectionId: string;
-  position: number;
-  sectionCount: number;
-};
 
 export default function SectionItem() {
   const router = useRouter();

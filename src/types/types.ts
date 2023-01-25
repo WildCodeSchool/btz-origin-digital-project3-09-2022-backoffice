@@ -119,9 +119,9 @@ export type TPage = {
   title: string;
   createdAt?: Date;
   updatedAt?: Date;
-  pagesSectionsStatic?: { id: string; position: number; status?: boolean }[];
-  pagesSectionsDynamic?: { id: string; position: number; status?: boolean }[];
-  pagesAdvertisings?: { id: string; position: number; status?: boolean }[];
+  pagesSectionsStatic?: TSectionItem[];
+  pagesSectionsDynamic?: TSectionItem[];
+  pagesAdvertisings?: TSectionItem[];
 };
 
 export type TNewPage = {
@@ -137,4 +137,13 @@ export type TNewPage = {
     status?: boolean;
   }[];
   pagesAdvertisingsData?: { id: string; position: number; status?: boolean }[];
+};
+
+export type TSectionItem = {
+  type: string;
+  typeLatest: string;
+  sectionName: string;
+  sectionId: string;
+  position: number;
+  sectionCount: number;
 };
