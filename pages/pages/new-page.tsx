@@ -150,7 +150,16 @@ export default function SectionItem() {
       pagesSectionsDynamicData,
       pagesAdvertisingsData,
     };
-
+    if (
+      page.title === "" ||
+      page.pagesAdvertisingsData.length +
+        page.pagesSectionsDynamicData.length +
+        page.pagesSectionsStaticData.length ===
+        0
+    ) {
+      alert("Please fill the title and at least one section");
+      return;
+    }
     pageFetcher.createPage(page);
     router.push("/pages");
   };

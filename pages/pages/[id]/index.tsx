@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { TPage, TSectionItem } from "../../../src/types/types";
+import { TPage, TSectionItem, TSection } from "../../../src/types/types";
 import pageFetcher from "../../../services/pageFetcher";
 import plus from "../../../src/assets/plus.svg";
+import sectionsTypes from "../../../src/types/sectionsTypes";
+import sectionFetcher from "../../../services/sectionFetcher";
 
 function VideoEdit() {
   const router = useRouter();
   const { id } = router.query;
-  const [page, setPage] = useState<TPage>({});
-
   const [title, setTitle] = useState<string>("");
-  const [currentRow, setCurrentRow] = useState<Partial<TSectionItem>>();
   const [rows, setRows] = useState<TSectionItem[]>([]);
   const [rowCounter, setRowCounter] = useState<number>(1);
+
+  const [createMode, setCreateMode] = useState<boolean>(false);
+  const [currentRow, setCurrentRow] = useState<Partial<TSectionItem>>();
+  const [sections, setSections] = useState<Partial<TSection[]>>();
 
   useEffect(() => {
     if (id) {
@@ -78,53 +81,158 @@ function VideoEdit() {
           return item;
         });
         setRows(rowsInit);
-        console.log("rows:", rowsInit);
       });
     }
   }, [router]);
 
-  const rowType = (row: Partial<TPage>) => {
-    let response = "";
-    if ("sectionsDynamic" in row) {
-      if (row.sectionsDynamic.isGrid === true) {
-        response = "Grid Dynamic";
-      } else {
-        response = "Carrousel Dynamic";
-      }
+  const feedSectionSelector = (event: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+    const type = value.split("/")[0];
+    let typeLatest = "";
+    switch (type) {
+      case "static-sections":
+        if (value.split("/")[1] === "true") {
+          typeLatest = "Hero Slider";
+        } else {
+          typeLatest = "Carrousel Static";
+        }
+        break;
+      case "dynamic-sections":
+        if (value.split("/")[1] === "true") {
+          typeLatest = "Grid Dynamic";
+        } else {
+          typeLatest = "Carrousel Dynamic";
+        }
+        break;
+      case "advertisings":
+        typeLatest = "Advertising";
+        break;
+      default:
+        typeLatest = "";
     }
-    if ("sectionsStatics" in row) {
-      if (row.sectionsStatics.isHero === true) {
-        response = "Hero Slider";
-      } else {
-        response = "Carrousel Static";
-      }
-    }
-    if ("advertisings" in row) {
-      response = "Advertising";
-    }
-    return response;
+
+    const status = /true/.test(value.split("/")[1] as string);
+    sectionFetcher
+      .getSectionByTypeAndStatus(type as string, status)
+      .then((response) => {
+        setSections(response);
+      });
+    setCurrentRow({
+      ...currentRow,
+      type: type as string,
+      typeLatest: typeLatest as string,
+    });
   };
 
-  const rowSection = (row: TSectionItem) => {
-    let response = "";
-    if ("sectionsDynamic" in row) {
-      if (row.sectionsDynamic.isGrid === true) {
-        response = row.sectionsDynamic.title;
-      } else {
-        response = row.sectionsDynamic.title;
+  const sectionSelect = (event: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+    setCurrentRow({
+      ...currentRow,
+      sectionId: value.split("/")[0],
+      sectionName: value.split("/")[1],
+      position: rowCounter,
+      sectionCount: rowCounter,
+    });
+  };
+
+  const rowSave = () => {
+    if (currentRow?.type !== undefined && currentRow?.sectionId !== undefined) {
+      setCreateMode(!createMode);
+      setRows([...rows, currentRow as TSectionItem]);
+      console.log(...rows);
+    }
+  };
+
+  const moveRowUp = (row: TSectionItem) => {
+    const index = rows.indexOf(row);
+    if (index > 0) {
+      const temp = rows[index - 1];
+      const tempPosition = rows[index - 1].position;
+      rows[index - 1] = rows[index];
+      rows[index - 1].position = tempPosition;
+      rows[index] = temp;
+      rows[index].position = index + 1;
+      setRows([...rows]);
+    }
+  };
+
+  const moveRowDown = (row: TSectionItem) => {
+    const index = rows.indexOf(row);
+    if (index < rows.length - 1) {
+      const temp = rows[index + 1];
+      const tempPosition = rows[index + 1].position;
+      rows[index + 1] = rows[index];
+      rows[index + 1].position = tempPosition;
+      rows[index] = temp;
+      rows[index].position = index + 1;
+      setRows([...rows]);
+    }
+  };
+
+  const refreshRowPosition = () => {
+    rows.forEach((row, index) => {
+      const updatedRow = { ...row };
+      updatedRow.position = index + 1;
+      rows[index] = updatedRow;
+    });
+    setRows([...rows]);
+  };
+
+  const deleteRow = (row: TSectionItem) => {
+    const index = rows.indexOf(row);
+    rows.splice(index, 1);
+    refreshRowPosition();
+    setRows([...rows]);
+    setRowCounter(rows.length + 1);
+  };
+
+  const handleItemToCreate = () => {
+    const pagesSectionsStaticData: { id: string; position: number }[] = [];
+    const pagesSectionsDynamicData: { id: string; position: number }[] = [];
+    const pagesAdvertisingsData: { id: string; position: number }[] = [];
+    rows.forEach((row) => {
+      if (row.type === "static-sections") {
+        pagesSectionsStaticData.push({
+          id: row.sectionId,
+          position: row.position,
+        });
       }
-    }
-    if ("sectionsStatics" in row) {
-      if (row.sectionsStatics.isGrid === true) {
-        response = row.sectionsStatics.title;
-      } else {
-        response = row.sectionsStatics.title;
+      if (row.type === "dynamic-sections") {
+        pagesSectionsDynamicData.push({
+          id: row.sectionId,
+          position: row.position,
+        });
       }
+      if (row.type === "advertisings") {
+        pagesAdvertisingsData.push({
+          id: row.sectionId,
+          position: row.position,
+        });
+      }
+    });
+    const page = {
+      title,
+      pagesSectionsStaticData,
+      pagesSectionsDynamicData,
+      pagesAdvertisingsData,
+    };
+    if (
+      page.title === "" ||
+      page.pagesAdvertisingsData.length +
+        page.pagesSectionsDynamicData.length +
+        page.pagesSectionsStaticData.length ===
+        0
+    ) {
+      alert("Please fill the title and at least one section");
+      return;
     }
-    if ("advertisings" in row) {
-      response = row.advertisings.title;
-    }
-    return response;
+    pageFetcher.deletePageById(id as string);
+    pageFetcher.createPage(page);
+    router.push("/pages");
+  };
+
+  const handleItemToCancel = () => {
+    setCreateMode(!createMode);
   };
 
   return (
@@ -191,7 +299,7 @@ function VideoEdit() {
                   </tr>
                 ))}
 
-              {/* {createMode && (
+              {createMode && (
                 <tr className="h-[45px] odd:bg-lightgrey even:bg-white">
                   <td className="border border-black px-5">
                     <select
@@ -276,7 +384,7 @@ function VideoEdit() {
                     </button>
                   </td>
                 </tr>
-              )} */}
+              )}
             </tbody>
           </table>
         </div>
