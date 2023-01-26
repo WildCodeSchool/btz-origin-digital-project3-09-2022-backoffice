@@ -1,13 +1,23 @@
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../../src/context/UserContext";
 
 export default function Signin() {
-  const { signIn } = useAuth();
+  const { signIn, user } = useAuth();
   const [credentials, setCredentials] = React.useState({
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      console.log(user?.role);
+
+      if (user) {
+        window.location.href = "/";
+      }
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({
@@ -39,6 +49,7 @@ export default function Signin() {
             id="password"
             name="password"
             placeholder="Enter your password..."
+            autoComplete="password"
             value={credentials.password}
             onChange={handleChange}
             required
