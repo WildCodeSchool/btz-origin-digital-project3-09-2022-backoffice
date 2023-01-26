@@ -6,6 +6,7 @@ import cloud from "../../src/assets/cloud.svg";
 import categoryFetcher from "../../services/categoryFetcher";
 import { TCategory } from "../../src/types/types";
 import axiosInstance from "../../services/axiosinstance";
+import getVideoInfos from "../../services/getVideosInfos";
 
 function NewVideo() {
   const router = useRouter();
@@ -23,10 +24,11 @@ function NewVideo() {
     });
   }, []);
 
-  const handleData = (data: FieldValues) => {
+  const handleData = async (data: FieldValues) => {
     const formData = new FormData();
     if (data) {
       const dataOk = [];
+
       if (data.file[0].name.substring(0, 2) !== "vi") {
         dataOk.push(data.file[0]);
       }
@@ -45,16 +47,18 @@ function NewVideo() {
       if (data.file[2].name.substring(0, 2) === "vi") {
         dataOk.push(data.file[2]);
       }
+      const infos = await getVideoInfos(dataOk[2]);
       formData.append("title", data.title);
       formData.append("description", data.description);
       formData.append("categoryId", data.category);
       formData.append("display", data.display);
       formData.append("isPublic", data.public);
+      formData.append("duration", infos.duration.toString().replace(".", ","));
       formData.append("files", dataOk[0]);
       formData.append("files", dataOk[1]);
       formData.append("files", dataOk[2]);
 
-      axiosInstance.post("/videos", formData);
+      await axiosInstance.post("/videos", formData);
       reset();
       router.push("/videos");
     }
