@@ -2,7 +2,8 @@ import axios from "axios";
 
 // On met l'url principale de l'API dans une contante
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4000/api/v1",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "SERVER_URL",
+  withCredentials: true,
 });
 
 export default axiosInstance;
