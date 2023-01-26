@@ -21,8 +21,8 @@ const videoFetcher = {
     }
   },
 
-  updateVideo: async (id: string, data: TNewVideo) =>
-    axiosInstance.put<TNewVideo>(`/videos/${id}`, data),
+  updateVideo: async (id: string, data: Partial<TNewVideo>) =>
+    axiosInstance.put<TVideo>(`/videos/${id}`, data),
 
   deleteVideoById: async (id: string) =>
     axiosInstance

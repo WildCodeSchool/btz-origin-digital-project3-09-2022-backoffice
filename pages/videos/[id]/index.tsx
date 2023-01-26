@@ -1,28 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { GetServerSideProps } from "next";
+import axios from "axios";
 import { TVideo } from "../../../src/types/types";
-import videoFetcher from "../../../services/videoFetcher";
+import EditVideo from "../../../src/components/EditVideo";
 
-export default function Video() {
-  const router = useRouter();
-
-  const [video, setVideo] = useState<TVideo>({});
-
-  useEffect(() => {
-    if (router.query.id) {
-      videoFetcher
-        .getVideoById(router.query.id)
-        .then((response) => setVideo(response));
-    }
-  }, [router]);
-
-  return (
-    <div>
-      <h1>{video.id}</h1>
-      <h1>{video.title}</h1>
-      <h1>{video.description}</h1>
-      <h1>{video.duration}</h1>
-      <h1>{video.videoUrl}</h1>
-    </div>
-  );
+interface IProps {
+  video: TVideo;
 }
+
+export default function Video({ video }: IProps) {
+  return <EditVideo video={video} />;
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const { data } = await axios.get(
+    `http://localhost:4000/api/v1/videos/${query.id}`
+  );
+
+  return {
+    props: {
+      video: data,
+    },
+  };
+};
