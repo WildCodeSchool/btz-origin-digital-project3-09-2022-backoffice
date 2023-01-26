@@ -11,7 +11,7 @@ function Navbar() {
   return (
     <div className="w-screen h-[10%] flex p-5 bg-bg1 text-text1 text-xl">
       <ul className="flex flex-row w-full">
-        <li className="w-1/3 flex justify-center items-center align-middle flex-col">
+        <li className="w-1/3 flex justify-center flex-col ml-[3%]">
           DASHBOARD
         </li>
         <li className="w-1/3 flex justify-center items-center align-middle flex-col">
@@ -23,11 +23,10 @@ function Navbar() {
             onClick={() => router.push("/")}
           />
         </li>
-
         {isAuth === true ? (
-          <li className="w-1/3 flex justify-center items-center align-middle flex-col">
+          <li className="flex flex-row-reverse w-1/3 mr-[3%]">
             <button
-              className=" text-primary_font px-5 py-1 border-solid border-[text-primary_font] border-2 "
+              className="flex flex-col justify-center text-primary_font px-5 py-1 border-solid border-[text-primary_font] border-2 "
               type="button"
               onClick={signOut}
             >
@@ -35,9 +34,9 @@ function Navbar() {
             </button>
           </li>
         ) : (
-          <li className="w-1/3 flex justify-center items-center align-middle flex-col">
+          <li className="flex flex-row-reverse w-1/3 mr-[3%]">
             <Link
-              className=" text-primary_font px-5 py-1 border-solid border-[text-primary_font] border-2 "
+              className="flex flex-col justify-center text-primary_font px-5 py-1 border-solid border-[text-primary_font] border-2 "
               href="/auth/signin"
             >
               SIGN IN
