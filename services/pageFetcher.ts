@@ -36,7 +36,7 @@ const pageFetcher = {
 
   getPageById: async (id: string) => {
     try {
-      const resp = await axiosInstance.get<TPage>(`/${id}`);
+      const resp = await axiosInstance.get<TPage>(`/pages/${id}`);
       return resp.data;
     } catch (err) {
       console.error(err);
