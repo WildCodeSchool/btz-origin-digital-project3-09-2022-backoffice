@@ -5,6 +5,7 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useState } from "react";
+import { cookies } from "next/headers"; // Import cookies
 import { TUserWithoutPassword, TCredentials, AuthState } from "../types/types";
 import axiosInstance from "../../services/axiosinstance";
 
@@ -13,6 +14,7 @@ interface IUserContext {
   isAuth: boolean;
   signIn: (credentials: TCredentials) => Promise<void>;
   signOut: () => Promise<void>;
+  signMe: () => Promise<void>;
 }
 
 const UserContext = createContext<IUserContext | null>(null);
@@ -53,6 +55,29 @@ function UserContextProvider({ children }: TUserContextProviderProps) {
     router.push("/");
   };
 
+  const signMe = async () => {
+    try {
+      // Récupération du token ou cookie d'authentification
+      const token = cookies().get("token");
+      if (!token) {
+        router.push("/signin");
+        return;
+      }
+      axiosInstance.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${token}`;
+      const { data } = await axiosInstance.get("auth/signme");
+      setAuthState(() => ({
+        isAuth: true,
+        user: data,
+      }));
+    } catch (error) {
+      console.log(error);
+      // Si l'authentification échoue, rediriger vers la page de connexion
+      router.push("/signin");
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -60,6 +85,7 @@ function UserContextProvider({ children }: TUserContextProviderProps) {
         isAuth: authState.isAuth,
         signIn,
         signOut,
+        signMe,
       }}
     >
       {children}

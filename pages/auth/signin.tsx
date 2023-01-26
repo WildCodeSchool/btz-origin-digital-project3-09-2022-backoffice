@@ -1,22 +1,13 @@
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../src/context/UserContext";
 
 export default function Signin() {
-  const { signIn, user } = useAuth();
+  const { signIn } = useAuth();
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      console.log(user);
-      if (user) {
-        window.location.href = "/";
-      }
-    }
-  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({
