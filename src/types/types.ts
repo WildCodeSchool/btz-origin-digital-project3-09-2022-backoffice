@@ -139,6 +139,30 @@ export type TNewPage = {
   pagesAdvertisingsData?: { id: string; position: number; status?: boolean }[];
 };
 
+
+// Types for the authentification
+export type TUserWithoutPassword = {
+  id: string;
+  firstname: string;
+  lastname: string;
+  username: string;
+  email: string;
+  imageUrl: string;
+  createdAt: Date;
+  updatedAt: Date;
+  role: string;
+  favorites_videos?: TVideo[];
+};
+
+export type TCredentials = {
+  email: string;
+  password: string;
+};
+
+export type AuthState = {
+  user: TUserWithoutPassword | null;
+  isAuth: boolean;
+
 export type TSectionItem = {
   type: string;
   typeLatest: string;
@@ -146,4 +170,5 @@ export type TSectionItem = {
   sectionId: string;
   position: number;
   sectionCount: number;
+
 };

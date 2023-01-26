@@ -1,3 +1,11 @@
+import { useAuth } from "../src/context/UserContext";
+
 export default function Home() {
-  return <div>TEMPLATE</div>;
+  const { user } = useAuth();
+  console.log(user?.role);
+  return (
+    <div>
+      <h1>Home</h1>
+    </div>
+  );
 }
