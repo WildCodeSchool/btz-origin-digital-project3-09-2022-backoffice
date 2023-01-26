@@ -1,18 +1,17 @@
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../src/context/UserContext";
 
 export default function Signin() {
   const { signIn, user } = useAuth();
-  const [credentials, setCredentials] = React.useState({
+  const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      console.log(user?.role);
-
+      console.log(user);
       if (user) {
         window.location.href = "/";
       }
@@ -25,6 +24,7 @@ export default function Signin() {
       [e.target.name]: e.target.value,
     });
   };
+
   return (
     <div className="flex justify-center items-center align-middle flex-col text-black flex-grow w-screen h-full bg-bg1 absolute left-0">
       <form className="flex space-y-5 flex-col mt-[-30%]">
@@ -69,7 +69,7 @@ export default function Signin() {
       <div>
         <button
           className="text-text1 bg-footer px-5 py-1 rounded-lg"
-          type="submit"
+          type="button"
           onClick={() => signIn(credentials)}
         >
           SIGN IN

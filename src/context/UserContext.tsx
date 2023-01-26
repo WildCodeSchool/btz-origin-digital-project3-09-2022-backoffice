@@ -34,7 +34,6 @@ function UserContextProvider({ children }: TUserContextProviderProps) {
         email,
         password,
       });
-      console.log(data);
       setAuthState(() => ({
         isAuth: true,
         user: data,

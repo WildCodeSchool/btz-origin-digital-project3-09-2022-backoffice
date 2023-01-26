@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import Link from "next/link";
 import { useAuth } from "../context/UserContext";
 
 function Navbar() {
@@ -23,11 +24,11 @@ function Navbar() {
           />
         </li>
 
-        {isAuth ? (
+        {isAuth === true ? (
           <li className="w-1/3 flex justify-center items-center align-middle flex-col">
             <button
               className=" text-primary_font px-5 py-1 border-solid border-[text-primary_font] border-2 "
-              type="submit"
+              type="button"
               onClick={signOut}
             >
               SIGN OUT
@@ -35,13 +36,12 @@ function Navbar() {
           </li>
         ) : (
           <li className="w-1/3 flex justify-center items-center align-middle flex-col">
-            <button
+            <Link
               className=" text-primary_font px-5 py-1 border-solid border-[text-primary_font] border-2 "
-              type="submit"
-              onClick={() => router.push("/auth/signin")}
+              href="/auth/signin"
             >
               SIGN IN
-            </button>
+            </Link>
           </li>
         )}
       </ul>
