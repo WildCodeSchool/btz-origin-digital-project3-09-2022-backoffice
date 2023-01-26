@@ -14,13 +14,7 @@ interface IProps {
 function EditVideo({ video }: IProps) {
   const router = useRouter();
   const [categories, setCategories] = useState<TCategory[]>([]);
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, setValue } = useForm();
 
   const { mutate } = useMutation(
     (data: FieldValues) =>
