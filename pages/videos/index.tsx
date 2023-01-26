@@ -5,6 +5,7 @@ import SearchBar from "../../src/components/SearchBar";
 import videoFetcher from "../../services/videoFetcher";
 import plus from "../../src/assets/plus.svg";
 import ModalOnDelete from "../../src/components/modal/ModalOnDelete";
+import secondsToHms from "../../services/secondsToHms";
 
 function Videos() {
   const [videos, setVideos] = useState<TVideo[]>([]);
@@ -63,7 +64,12 @@ function Videos() {
                     {video.title}
                   </td>
                   {/* <td className="border px-5">{video.description}</td> */}
-                  <td className="border px-5">{video.duration}</td>
+
+
+                  <td className="border px-5">
+                    {secondsToHms(video.duration)}
+                  </td>
+
                   <td className="border p-2">
                     <video controls className="m-auto" width="200" height="200">
                       <source src={video.videoUrl} type="video/mp4" />
