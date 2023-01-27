@@ -5,6 +5,7 @@ import SearchBar from "../../src/components/SearchBar";
 import videoFetcher from "../../services/videoFetcher";
 import plus from "../../src/assets/plus.svg";
 import ModalOnDelete from "../../src/components/modal/ModalOnDelete";
+import secondsToHms from "../../services/secondsToHms";
 
 function Videos() {
   const [videos, setVideos] = useState<TVideo[]>([]);
@@ -41,12 +42,12 @@ function Videos() {
           <thead className="h-[50px] rounded-t-[10px]">
             <tr>
               <th>Title</th>
-              <th>Description</th>
+              {/* <th>Description</th> */}
               <th>Duration</th>
               <th>Video</th>
-              <th>Display</th>
-              <th>Is public</th>
-              <th>Views</th>
+              {/* <th>Display</th>
+              <th>Is public</th> */}
+              {/* <th>Views</th> */}
               <th>Edit</th>
               <th>Delete</th>
             </tr>
@@ -62,17 +63,21 @@ function Videos() {
                   <td className="border border-black px-5 last:rounded-bl-[10px]">
                     {video.title}
                   </td>
-                  <td className="border px-5">{video.description}</td>
-                  <td className="border px-5">{video.duration}</td>
+                  {/* <td className="border px-5">{video.description}</td> */}
+
+                  <td className="border px-5">
+                    {secondsToHms(video.duration)}
+                  </td>
+
                   <td className="border p-2">
                     <video controls className="m-auto" width="200" height="200">
                       <source src={video.videoUrl} type="video/mp4" />
                       <track src={video.videoUrl} kind="captions" />
                     </video>
                   </td>
-                  <td className="border px-5">{video.display}</td>
-                  <td className="border px-5">{video.isPublic}</td>
-                  <td className="border px-5">{video.nbViews}</td>
+                  {/* <td className="border px-5">{video.display}</td>
+                  <td className="border px-5">{video.isPublic}</td> */}
+                  {/* <td className="border px-5">{video.nbViews}</td> */}
                   <td className="border text-center">
                     <a href={`/videos/${video.id}`}>📝</a>
                   </td>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import pageFetcher from "../../services/pageFetcher";
 import plus from "../../src/assets/plus.svg";
 import { TPage } from "../../src/types/types";
@@ -9,8 +10,6 @@ import ModalOnDelete from "../../src/components/modal/ModalOnDelete";
 
 export default function index() {
   const [pages, setPages] = useState<Partial<TPage>[]>([]);
-  const [createMode, setCreateMode] = useState<boolean>(false);
-  const [itemToEdit, setItemToEdit] = useState<string | null>();
   const [itemToDelete, setItemToDelete] = useState<string | null>();
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
@@ -20,11 +19,6 @@ export default function index() {
       setPages(response);
     });
   }, []);
-
-  const handleItemToEdit = (e: React.MouseEvent<HTMLButtonElement>): void => {
-    setItemToEdit(e.currentTarget.id);
-    console.log(itemToEdit);
-  };
 
   const handleItemToDelete = (e: React.MouseEvent<HTMLButtonElement>): void => {
     setShowModal(true);
@@ -69,12 +63,8 @@ export default function index() {
                   </td>
 
                   <td className="border text-center">
-                    <button
-                      id={page.id}
-                      type="button"
-                      onClick={handleItemToEdit}
-                    >
-                      📝
+                    <button id={page.id} type="button">
+                      <Link href={`/pages/${page.id}`}>📝</Link>
                     </button>
                   </td>
 

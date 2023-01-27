@@ -2,6 +2,7 @@ import Head from "next/head";
 import React from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import UserContextProvider from "../context/UserContext";
 
 type TChildren = { children: React.ReactNode };
 
@@ -14,13 +15,15 @@ function Layout({ children }: TChildren) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="w-screen fixed flex flex-col h-screen">
-        <Navbar />
-        <div className="w-full  h-[90%] flex bg-lightgrey">
-          <Sidebar />
-          <div className="w-full h-full overflow-auto">{children}</div>
+      <UserContextProvider>
+        <div className="w-screen fixed flex flex-col h-screen">
+          <Navbar />
+          <div className="w-full  h-[90%] flex bg-lightgrey">
+            <Sidebar />
+            <div className="w-full h-full overflow-auto">{children}</div>
+          </div>
         </div>
-      </div>
+      </UserContextProvider>
     </>
   );
 }

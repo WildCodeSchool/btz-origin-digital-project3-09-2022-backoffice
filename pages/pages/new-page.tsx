@@ -3,20 +3,11 @@
 import React, { useState, ChangeEvent } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { TSection } from "../../src/types/types";
+import { TSection, TSectionItem } from "../../src/types/types";
 import plus from "../../src/assets/plus.svg";
 import sectionsTypes from "../../src/types/sectionsTypes";
 import sectionFetcher from "../../services/sectionFetcher";
 import pageFetcher from "../../services/pageFetcher";
-
-export type TSectionItem = {
-  type: string;
-  typeLatest: string;
-  sectionName: string;
-  sectionId: string;
-  position: number;
-  sectionCount: number;
-};
 
 export default function SectionItem() {
   const router = useRouter();
@@ -82,6 +73,7 @@ export default function SectionItem() {
     if (currentRow?.type !== undefined && currentRow?.sectionId !== undefined) {
       setCreateMode(!createMode);
       setRows([...rows, currentRow as TSectionItem]);
+      console.log(...rows);
     }
   };
 
@@ -158,6 +150,16 @@ export default function SectionItem() {
       pagesSectionsDynamicData,
       pagesAdvertisingsData,
     };
+    if (
+      page.title === "" ||
+      page.pagesAdvertisingsData.length +
+        page.pagesSectionsDynamicData.length +
+        page.pagesSectionsStaticData.length ===
+        0
+    ) {
+      alert("Please fill the title and at least one section");
+      return;
+    }
     pageFetcher.createPage(page);
     router.push("/pages");
   };

@@ -119,9 +119,9 @@ export type TPage = {
   title: string;
   createdAt?: Date;
   updatedAt?: Date;
-  pagesSectionsStatic?: { id: string; position: number; status?: boolean }[];
-  pagesSectionsDynamic?: { id: string; position: number; status?: boolean }[];
-  pagesAdvertisings?: { id: string; position: number; status?: boolean }[];
+  pagesSectionsStatic?: TSectionItem[];
+  pagesSectionsDynamic?: TSectionItem[];
+  pagesAdvertisings?: TSectionItem[];
 };
 
 export type TNewPage = {
@@ -137,4 +137,37 @@ export type TNewPage = {
     status?: boolean;
   }[];
   pagesAdvertisingsData?: { id: string; position: number; status?: boolean }[];
+};
+
+// Types for the authentification
+export type TUserWithoutPassword = {
+  id: string;
+  firstname: string;
+  lastname: string;
+  username: string;
+  email: string;
+  imageUrl: string;
+  createdAt: Date;
+  updatedAt: Date;
+  role: string;
+  favorites_videos?: TVideo[];
+};
+
+export type TCredentials = {
+  email: string;
+  password: string;
+};
+
+export type AuthState = {
+  user: TUserWithoutPassword | null;
+  isAuth: boolean;
+};
+
+export type TSectionItem = {
+  type: string;
+  typeLatest: string;
+  sectionName: string;
+  sectionId: string;
+  position: number;
+  sectionCount: number;
 };
