@@ -28,6 +28,7 @@ function NewVideo() {
   };
   const [categories, setCategories] = useState<TCategory[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -80,9 +81,10 @@ function NewVideo() {
       formData.append("files", dataOk[1]);
       formData.append("files", dataOk[2]);
 
-      await axiosInstance.post("/videos", formData);
-      reset();
-      router.push("/videos");
+      setIsLoading(true);
+      await axiosInstance
+        .post("/videos", formData)
+        .then(() => router.push("/videos"));
     }
   };
 
@@ -186,7 +188,7 @@ function NewVideo() {
           <div className=" w-full h-full flex flex-col content-around mt-[10%]">
             <div
               onDragEnter={handleDrag}
-              className="flex flex-col  w-[70%] h-[60%] bg-[#D9D9D9] border-dashed border-2 my-5 border-black rounded-xl drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
+              className="flex flex-col  w-[70%] h-auto bg-[#D9D9D9] border-dashed border-2 my-5 p-5 border-black rounded-xl drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
             >
               {dragActive && (
                 <div
@@ -222,7 +224,7 @@ function NewVideo() {
                 Object.entries(selectedFiles).map((e) => (
                   <div
                     key={e[1].name}
-                    className="flex flex-col font-medium text-sm w-full m-2"
+                    className="flex flex-col font-medium text-sm w-full my-2 ml-5"
                   >
                     {e[1].name}
                   </div>
@@ -235,10 +237,16 @@ function NewVideo() {
         </div>
 
         <div className="flex flex-col  w-[100%] justify-center items-center">
-          <input
-            type="submit"
-            className="w-[50%] h-[50px] bg-[#D9D9D9] border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
-          />
+          {isLoading ? (
+            <p>Video uploading...</p>
+          ) : (
+            <button
+              type="submit"
+              className="w-[50%] h-[50px] bg-[#D9D9D9] border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
+            >
+              Upload
+            </button>
+          )}
         </div>
       </form>
     </div>
