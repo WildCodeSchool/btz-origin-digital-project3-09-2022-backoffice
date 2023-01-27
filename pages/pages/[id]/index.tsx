@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { TPage, TSectionItem, TSection } from "../../../src/types/types";
 import pageFetcher from "../../../services/pageFetcher";
-import plus from "../../../src/assets/plus.svg";
 import sectionsTypes from "../../../src/types/sectionsTypes";
 import sectionFetcher from "../../../services/sectionFetcher";
 import ModalAlert from "../../../src/components/modal/ModalAlert";
@@ -402,7 +401,7 @@ function VideoEdit() {
               setCreateMode(!createMode);
             }}
           >
-            <Image src={plus} width={50} height={50} alt="logo-plus" />
+            <Image width={50} height={50} src="/plus.svg" alt="logo-plus" />
           </button>
         </div>
         <div className="flex justify-around w-full">

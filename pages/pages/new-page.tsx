@@ -4,7 +4,6 @@ import React, { useState, ChangeEvent } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { TSection, TSectionItem } from "../../src/types/types";
-import plus from "../../src/assets/plus.svg";
 import sectionsTypes from "../../src/types/sectionsTypes";
 import sectionFetcher from "../../services/sectionFetcher";
 import pageFetcher from "../../services/pageFetcher";
@@ -226,7 +225,7 @@ export default function SectionItem() {
                         onClick={() => deleteRow(row)}
                       >
                         🗑️
-                      </button>
+                      </button>{" "}
                     </td>
                   </tr>
                 ))}
@@ -247,9 +246,7 @@ export default function SectionItem() {
                           <option
                             className="w-full"
                             key={type.id}
-                            value={`${type.section}/${
-                              type.isHero || type.isGrid || false
-                            }`}
+                            value={`${type.section}`}
                           >
                             {type.name}
                           </option>
@@ -331,7 +328,7 @@ export default function SectionItem() {
               setCreateMode(!createMode);
             }}
           >
-            <Image src={plus} width={50} height={50} alt="logo-plus" />
+            <Image src="/plus.svg" width={50} height={50} alt="logo-plus" />
           </button>
         </div>
         <div className="flex justify-around w-full">

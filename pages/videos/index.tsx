@@ -3,7 +3,6 @@ import Image from "next/image";
 import { TVideo } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
 import videoFetcher from "../../services/videoFetcher";
-import plus from "../../src/assets/plus.svg";
 import ModalOnDelete from "../../src/components/modal/ModalOnDelete";
 import secondsToHms from "../../services/secondsToHms";
 
@@ -97,7 +96,7 @@ function Videos() {
       </div>
       <div className="w-[50px] mt-[1em] ml-[5%]">
         <a href="/videos/new-video">
-          <Image src={plus} alt="logo-plus" />
+          <Image width={50} height={50} src="/plus.svg" alt="logo-plus" />
         </a>
       </div>
       {showModal && (

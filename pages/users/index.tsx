@@ -4,8 +4,6 @@ import Image from "next/image";
 import { TUser } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
 import userFetcher from "../../services/userFetcher";
-import plus from "../../src/assets/plus.svg";
-import csv_icon from "../../src/assets/csv-icon.svg";
 import ModalOnDelete from "../../src/components/modal/ModalOnDelete";
 
 function Users() {
@@ -93,11 +91,11 @@ function Users() {
       </div>
       <div className="mt-[1em] ml-[5%] flex">
         <a className="m-3" href="/users/new-user">
-          <Image width={50} height={50} src={plus} alt="logo-plus" />
+          <Image width={50} height={50} src="/plus.svg" alt="logo-plus" />
         </a>
 
         <button type="submit" onClick={exportToCsv}>
-          <Image width={50} height={50} src={csv_icon} alt="logo-csv" />
+          <Image width={50} height={50} src="/csv-icon.svg" alt="logo-plus" />
         </button>
 
         {/* ... */}

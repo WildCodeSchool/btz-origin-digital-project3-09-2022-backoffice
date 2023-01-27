@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import sectionFetcher from "../../services/sectionFetcher";
-import plus from "../../src/assets/plus.svg";
 import { TSection } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
 import SectionSelector from "../../src/components/SectionSelector";
@@ -85,7 +84,7 @@ function Sections() {
       </div>
       <div className="w-[50px] mt-[1em] ml-[5%]">
         <a href="/sections/new-section">
-          <Image src={plus} alt="logo-plus" />
+          <Image width={50} height={50} src="/plus.svg" alt="logo-plus" />
         </a>
       </div>
       {showModal && (

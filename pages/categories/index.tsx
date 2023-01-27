@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import categoryFetcher from "../../services/categoryFetcher";
-import plus from "../../src/assets/plus.svg";
 import { TCategory } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
 import ModalOnDelete from "../../src/components/modal/ModalOnDelete";
@@ -180,7 +179,7 @@ export default function index() {
       </div>
       <div className="w-[50px] mt-[1em] ml-[5%]">
         <button type="button" onClick={() => setCreateMode(!createMode)}>
-          <Image src={plus} alt="logo-plus" />
+          <Image width={50} height={50} src="/plus.svg" alt="logo-plus" />
         </button>
       </div>
       {showModal && (
