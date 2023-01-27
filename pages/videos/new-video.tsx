@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { DragEvent, useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -9,13 +9,35 @@ import axiosInstance from "../../services/axiosinstance";
 
 function NewVideo() {
   const router = useRouter();
+  const [dragActive, setDragActive] = useState(false);
+
+  const handleDrag = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+  };
   const [categories, setCategories] = useState<TCategory[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
     reset,
   } = useForm();
+
+  useEffect(() => {
+    setSelectedFiles(watch("file"));
+  }, [watch("file")]);
 
   useEffect(() => {
     categoryFetcher.getCategories().then((data) => {
@@ -53,12 +75,12 @@ function NewVideo() {
       formData.append("files", dataOk[0]);
       formData.append("files", dataOk[1]);
       formData.append("files", dataOk[2]);
-
       axiosInstance.post("/videos", formData);
       reset();
       router.push("/videos");
     }
   };
+
   return (
     <div className="w-full h-screen flex ">
       <form
@@ -156,8 +178,20 @@ function NewVideo() {
               </label>
             </div>
           </div>
-          <div className=" w-full h-full flex justify-center align-middle content-around mt-[10%]">
-            <div className="flex flex-col  w-[70%] h-[60%] bg-[#D9D9D9] border-dashed border-2 my-5 border-black rounded-xl drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
+          <div className=" w-full h-full flex flex-col content-around mt-[10%]">
+            <div
+              onDragEnter={handleDrag}
+              className="flex flex-col  w-[70%] h-[60%] bg-[#D9D9D9] border-dashed border-2 my-5 border-black rounded-xl drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
+            >
+              {dragActive && (
+                <div
+                  className="absolute w-screen h-screen top-0 right-0 bottom-0 left-0 "
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                />
+              )}
               <input
                 className="absolute w-full h-full z-50 opacity-0"
                 type="file"
@@ -169,10 +203,25 @@ function NewVideo() {
                 alt="cloud"
                 className="w-[80%] h-full self-center bg-slate-300 p-5 "
               />
-              <p className="text-[20px] self-center font-bold p-5 ">
-                Please select your thumbnail file, your teaser file and your
-                video file
-              </p>
+              {Object.entries(selectedFiles).length !== 0 ? (
+                <p className="text-[20px] self-center font-bold p-5 ">
+                  Selected Files :
+                </p>
+              ) : (
+                <p className="text-[20px] self-center font-bold p-5 ">
+                  Please select your thumbnail file, your teaser file and your
+                  video file
+                </p>
+              )}
+              {selectedFiles &&
+                Object.entries(selectedFiles).map((e) => (
+                  <div
+                    key={e[1].name}
+                    className="flex flex-col font-medium text-sm w-full m-2"
+                  >
+                    {e[1].name}
+                  </div>
+                ))}
               {errors.file && (
                 <p className="self-center">Please provide a file</p>
               )}
