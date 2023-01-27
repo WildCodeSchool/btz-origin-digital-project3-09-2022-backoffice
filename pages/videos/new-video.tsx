@@ -34,7 +34,6 @@ function NewVideo() {
     handleSubmit,
     formState: { errors },
     watch,
-    reset,
   } = useForm();
 
   useEffect(() => {
@@ -49,27 +48,24 @@ function NewVideo() {
 
   const handleData = async (data: FieldValues) => {
     const formData = new FormData();
-    if (data) {
-      const dataOk = [];
 
-      if (data.file[0].name.substring(0, 2) !== "vi") {
-        dataOk.push(data.file[0]);
-      }
-      if (data.file[1].name.substring(0, 2) !== "vi") {
-        dataOk.push(data.file[1]);
-      }
-      if (data.file[2].name.substring(0, 2) !== "vi") {
-        dataOk.push(data.file[2]);
-      }
-      if (data.file[0].name.substring(0, 2) === "vi") {
-        dataOk.push(data.file[0]);
-      }
-      if (data.file[1].name.substring(0, 2) === "vi") {
-        dataOk.push(data.file[1]);
-      }
-      if (data.file[2].name.substring(0, 2) === "vi") {
-        dataOk.push(data.file[2]);
-      }
+    if (data.file.length === 3) {
+      const dataArray: [string, File][] = Object.entries(data.file);
+      const dataOk = [];
+      const video = dataArray.filter(
+        (e: [string, File]) => e[1].name.substring(0, 2) === "vi"
+      );
+      const teaser = dataArray.filter(
+        (e) => e[1].name.substring(0, 2) === "te"
+      );
+      const thumbnail = dataArray.filter(
+        (e) => e[1].name.substring(0, 2) === "tn"
+      );
+
+      if (!teaser[0] || !thumbnail[0] || !video[0]) return;
+      dataOk.push(thumbnail[0][1], teaser[0][1], video[0][1]);
+
+      if (!dataOk[0] || !dataOk[1] || !dataOk[2]) return;
       const infos = await getVideoInfos(dataOk[2]);
       formData.append("title", data.title);
       formData.append("description", data.description);
