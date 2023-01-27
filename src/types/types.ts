@@ -139,7 +139,6 @@ export type TNewPage = {
   pagesAdvertisingsData?: { id: string; position: number; status?: boolean }[];
 };
 
-
 // Types for the authentification
 export type TUserWithoutPassword = {
   id: string;
@@ -162,6 +161,7 @@ export type TCredentials = {
 export type AuthState = {
   user: TUserWithoutPassword | null;
   isAuth: boolean;
+};
 
 export type TSectionItem = {
   type: string;
@@ -170,5 +170,4 @@ export type TSectionItem = {
   sectionId: string;
   position: number;
   sectionCount: number;
-
 };
