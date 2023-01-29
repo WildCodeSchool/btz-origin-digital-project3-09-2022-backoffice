@@ -84,9 +84,9 @@ function Sections() {
         </table>
       </div>
       <div className="w-[50px] mt-[1em] ml-[5%]">
-        <a href="/sections/new-section">
+        <Link href="/sections/new-section">
           <Image width={50} height={50} src="/plus.svg" alt="logo-plus" />
-        </a>
+        </Link>
       </div>
       {showModal && (
         <ModalOnDelete

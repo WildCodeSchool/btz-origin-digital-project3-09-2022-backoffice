@@ -81,7 +81,7 @@ function Users() {
                   <td className="border px-5">{user.username}</td>
                   <td className="border px-5">{user.email}</td>
                   <td className="border text-center">
-                    <a href={`/users/${user.id}`}>📝</a>
+                    <Link href={`/users/${user.id}`}>📝</Link>
                   </td>
                   <td className="border text-center last:rounded-br-[10px]">
                     <button
@@ -99,9 +99,9 @@ function Users() {
         </div>
       )}
       <div className="mt-[1em] ml-[5%] flex">
-        <Link className="m-3" href="/users/new-user">
+        {/* <Link className="m-3" href="/users/new-user">
           <Image width={50} height={50} src="/plus.svg" alt="logo-plus" />
-        </Link>
+        </Link> */}
 
         <button type="submit" onClick={exportToCsv}>
           <Image width={50} height={50} src="/csv-icon.svg" alt="logo-plus" />

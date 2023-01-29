@@ -5,6 +5,7 @@ import userFetcher from "../../../services/userFetcher";
 
 export default function User() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
   const [user, setUser] = useState<TUser>({});
 
@@ -13,16 +14,23 @@ export default function User() {
       userFetcher
         .getUserById(router.query.id)
         .then((response) => setUser(response));
+      setIsLoading(false);
     }
   }, [router]);
 
   return (
     <div>
-      <h1>{user.firstname}</h1>
-      <h1>{user.lastname}</h1>
-      <h1>{user.username}</h1>
-      <h1>{user.email}</h1>
-      <h1>{user.role}</h1>
+      {isLoading ? (
+        <h1>Loading...</h1>
+      ) : (
+        <div>
+          <h1>{user.firstname}</h1>
+          <h1>{user.lastname}</h1>
+          <h1>{user.username}</h1>
+          <h1>{user.email}</h1>
+          <h1>{user.role}</h1>
+        </div>
+      )}
     </div>
   );
 }

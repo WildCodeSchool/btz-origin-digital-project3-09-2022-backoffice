@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { TPage, TSectionItem, TSection } from "../../../src/types/types";
+import { TSectionItem, TSection, TSectionRow } from "../../../src/types/types";
 import pageFetcher from "../../../services/pageFetcher";
 import sectionsTypes from "../../../src/types/sectionsTypes";
 import sectionFetcher from "../../../services/sectionFetcher";
@@ -23,69 +23,79 @@ function VideoEdit() {
   useEffect(() => {
     if (id) {
       const data = pageFetcher.getPageById(id as string).then((response) => {
-        const {
-          title: pageTitle,
-          pagesSectionsStatic,
-          pagesSectionsDynamic,
-          pagesAdvertisings,
-        } = response;
-        setRows([]);
-        setTitle(pageTitle);
-        const rowsInit: TSectionItem[] = [];
-        pagesSectionsStatic.forEach((row: Partial<TPage>) => {
-          const typeLatest =
-            row.sectionsStatics.isHero === true
-              ? "Hero Slider"
-              : "Carrousel Static";
-          rowsInit.push({
-            type: "static-sections",
-            typeLatest,
-            sectionName: row.sectionsStatics.title,
-            sectionId: row.sectionsStatics.id,
-            position: row.position,
-            sectionCount: rowCounter,
+        if (response !== null) {
+          const {
+            title: pageTitle,
+            pagesSectionsStatic,
+            pagesSectionsDynamic,
+            pagesAdvertisings,
+          } = response;
+          console.log(response);
+
+          setRows([]);
+          setTitle(pageTitle);
+          const rowsInit: TSectionItem[] = [];
+          pagesSectionsStatic?.forEach((row: TSectionRow) => {
+            if (row.sectionsStatics !== undefined) {
+              const typeLatest =
+                row.sectionsStatics.isHero === true
+                  ? "Hero Slider"
+                  : "Carrousel Static";
+              rowsInit.push({
+                type: "static-sections",
+                typeLatest,
+                sectionName: row.sectionsStatics.title,
+                sectionId: row.sectionsStatics.id,
+                position: row.position,
+                sectionCount: rowCounter,
+              });
+            }
           });
-        });
-        pagesSectionsDynamic.forEach((row) => {
-          const typeLatest =
-            row.sectionsDynamic.isGrid === true
-              ? "Grid Dynamic"
-              : "Carrousel Dynamic";
-          rowsInit.push({
-            type: "dynamic-sections",
-            typeLatest,
-            sectionName: row.sectionsDynamic.title,
-            sectionId: row.sectionsDynamic.id,
-            position: row.position,
-            sectionCount: rowCounter,
+          pagesSectionsDynamic?.forEach((row: TSectionRow) => {
+            if (row.sectionsDynamic !== undefined) {
+              const typeLatest =
+                row.sectionsDynamic.isGrid === true
+                  ? "Grid Dynamic"
+                  : "Carrousel Dynamic";
+              rowsInit.push({
+                type: "dynamic-sections",
+                typeLatest,
+                sectionName: row.sectionsDynamic.title,
+                sectionId: row.sectionsDynamic.id,
+                position: row.position,
+                sectionCount: rowCounter,
+              });
+            }
           });
-        });
-        pagesAdvertisings.forEach((row) => {
-          rowsInit.push({
-            type: "advertisings",
-            typeLatest: "Advertising",
-            sectionName: row.advertisings.title,
-            sectionId: row.advertisings.id,
-            position: row.position,
-            sectionCount: rowCounter,
+          pagesAdvertisings?.forEach((row) => {
+            if (row.advertisings !== undefined) {
+              rowsInit.push({
+                type: "advertisings",
+                typeLatest: "Advertising",
+                sectionName: row.advertisings.title,
+                sectionId: row.advertisings.id,
+                position: row.position,
+                sectionCount: rowCounter,
+              });
+            }
           });
-        });
-        rowsInit.sort((a, b) => {
-          const keyA = new Date(a.position);
-          const keyB = new Date(b.position);
-          if (keyA < keyB) return -1;
-          if (keyA > keyB) return 1;
-          return 0;
-        });
-        rowsInit.forEach((row, index) => {
-          const item: TSectionItem = row;
-          item.sectionCount = index + 1;
-          return item;
-        });
-        setRows(rowsInit);
+          rowsInit.sort((a, b) => {
+            const keyA = new Date(a.position);
+            const keyB = new Date(b.position);
+            if (keyA < keyB) return -1;
+            if (keyA > keyB) return 1;
+            return 0;
+          });
+          rowsInit.forEach((row, index) => {
+            const item: TSectionItem = row;
+            item.sectionCount = index + 1;
+            return item;
+          });
+          setRows(rowsInit);
+        }
       });
     }
-  }, [router]);
+  }, [id]);
 
   const feedSectionSelector = (event: ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target;
@@ -145,32 +155,6 @@ function VideoEdit() {
     }
   };
 
-  const moveRowUp = (row: TSectionItem) => {
-    const index = rows.indexOf(row);
-    if (index > 0) {
-      const temp = rows[index - 1];
-      const tempPosition = rows[index - 1].position;
-      rows[index - 1] = rows[index];
-      rows[index - 1].position = tempPosition;
-      rows[index] = temp;
-      rows[index].position = index + 1;
-      setRows([...rows]);
-    }
-  };
-
-  const moveRowDown = (row: TSectionItem) => {
-    const index = rows.indexOf(row);
-    if (index < rows.length - 1) {
-      const temp = rows[index + 1];
-      const tempPosition = rows[index + 1].position;
-      rows[index + 1] = rows[index];
-      rows[index + 1].position = tempPosition;
-      rows[index] = temp;
-      rows[index].position = index + 1;
-      setRows([...rows]);
-    }
-  };
-
   const refreshRowPosition = () => {
     rows.forEach((row, index) => {
       const updatedRow = { ...row };
@@ -178,6 +162,36 @@ function VideoEdit() {
       rows[index] = updatedRow;
     });
     setRows([...rows]);
+  };
+
+  const moveRowUp = (row: TSectionItem) => {
+    if (!rows) return;
+
+    const index = rows.indexOf(row);
+    if (index < 1) return;
+
+    const [prevRow] = rows.slice(index - 1, index);
+    if (!prevRow) return;
+
+    rows[index - 1] = row;
+    rows[index] = prevRow;
+    setRows([...rows]);
+    refreshRowPosition();
+  };
+
+  const moveRowDown = (row: TSectionItem) => {
+    if (!rows) return;
+
+    const index = rows.indexOf(row);
+    if (index === -1 || index === rows.length - 1) return;
+
+    const [nextRow] = rows.slice(index + 1, index + 2);
+    if (!nextRow) return;
+
+    rows[index + 1] = row;
+    rows[index] = nextRow;
+    setRows([...rows]);
+    refreshRowPosition();
   };
 
   const deleteRow = (row: TSectionItem) => {
@@ -338,18 +352,29 @@ function VideoEdit() {
                       <option className="w-full" value="0">
                         Select section
                       </option>
-                      {sections &&
+                      {sections !== undefined &&
+                        sections.length > 0 &&
                         sections
-                          .sort((a, b) => (a.title > b.title ? 1 : -1))
-                          .map((section) => (
-                            <option
-                              className="w-full"
-                              key={section.id}
-                              value={`${section.id}/${section.title}`}
-                            >
-                              {section.title}
-                            </option>
-                          ))}
+                          .sort((a, b) => {
+                            if (a !== undefined && b !== undefined) {
+                              return a.title > b.title ? 1 : -1;
+                            }
+                            return 0;
+                          })
+                          .map((section) => {
+                            if (section !== undefined) {
+                              return (
+                                <option
+                                  className="w-full"
+                                  key={section.id}
+                                  value={`${section.id}/${section.title}`}
+                                >
+                                  {section.title}
+                                </option>
+                              );
+                            }
+                            return null;
+                          })}
                     </select>
                   </td>
                   <td className="border text-center">{rowCounter}</td>
@@ -358,14 +383,14 @@ function VideoEdit() {
                       <button
                         className="w-4 h-4"
                         type="button"
-                        onClick={() => moveRowUp(row)}
+                        onClick={() => moveRowUp(row as TSectionItem)}
                       >
                         ⬆️
                       </button>
                       <button
                         className="w-4 h-4"
                         type="button"
-                        onClick={() => moveRowDown(row)}
+                        onClick={() => moveRowDown(row as TSectionItem)}
                       >
                         ⬇️
                       </button>
@@ -381,9 +406,9 @@ function VideoEdit() {
                     </button>
                   </td>
                   <td className="px-2 border text-center bg-[#FF0000]">
-                    <buttonmessage onClick={handleItemToCancel}>
+                    <button type="button" onClick={handleItemToCancel}>
                       CANCEL
-                    </buttonmessage>
+                    </button>
                   </td>
                 </tr>
               )}
