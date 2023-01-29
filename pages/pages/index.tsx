@@ -46,6 +46,7 @@ export default function index() {
               <th>Name</th>
               <th>Edit</th>
               <th>Delete</th>
+              <th>Preview</th>
             </tr>
           </thead>
           <tbody className="rounded-b-[10px]">
@@ -76,6 +77,16 @@ export default function index() {
                     >
                       🗑️
                     </button>
+                  </td>
+                  <td className="border text-center last:rounded-br-[10px]">
+                    {/* <Link href={`${process.env.PROD_URL}/pages/${page.id}`}> */}
+                    <a
+                      target="_blank"
+                      rel="noreferrer"
+                      href={`${process.env.NEXT_PUBLIC_PROD_URL}/pages/${page.id}`}
+                    >
+                      👁️
+                    </a>
                   </td>
                 </tr>
               ))}
