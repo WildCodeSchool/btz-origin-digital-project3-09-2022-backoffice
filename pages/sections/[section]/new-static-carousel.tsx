@@ -169,7 +169,7 @@ export default function SectionItem() {
                   videos={videos}
                   videoIds={videoIds}
                   setVideoIds={setVideoIds}
-                  sectionItems={undefined}
+                  sectionItem={undefined}
                 />
               </div>
             )}

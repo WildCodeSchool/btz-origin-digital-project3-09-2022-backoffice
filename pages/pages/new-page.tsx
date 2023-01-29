@@ -72,11 +72,10 @@ export default function SectionItem() {
     if (currentRow?.type !== undefined && currentRow?.sectionId !== undefined) {
       setCreateMode(!createMode);
       setRows([...rows, currentRow as TSectionItem]);
-      console.log(...rows);
     }
   };
 
-  const moveRowUp = (row: TSectionItem) => {
+  const moveRowUp = (row: TSectionItem): void => {
     const index = rows.indexOf(row);
     if (index > 0) {
       const temp = rows[index - 1];
@@ -89,7 +88,7 @@ export default function SectionItem() {
     }
   };
 
-  const moveRowDown = (row: TSectionItem) => {
+  const moveRowDown = (row: TSectionItem): void => {
     const index = rows.indexOf(row);
     if (index < rows.length - 1) {
       const temp = rows[index + 1];
@@ -102,7 +101,7 @@ export default function SectionItem() {
     }
   };
 
-  const refreshRowPosition = () => {
+  const refreshRowPosition = (): void => {
     rows.forEach((row, index) => {
       const updatedRow = { ...row };
       updatedRow.position = index + 1;
@@ -246,7 +245,9 @@ export default function SectionItem() {
                           <option
                             className="w-full"
                             key={type.id}
-                            value={`${type.section}`}
+                            value={`${type.section}/${
+                              type.isHero || type.isGrid || false
+                            }`}
                           >
                             {type.name}
                           </option>

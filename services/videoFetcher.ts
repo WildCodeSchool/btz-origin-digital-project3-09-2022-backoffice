@@ -18,6 +18,7 @@ const videoFetcher = {
       return resp.data;
     } catch (err) {
       console.error(err);
+      throw new Error(err);
     }
   },
 
