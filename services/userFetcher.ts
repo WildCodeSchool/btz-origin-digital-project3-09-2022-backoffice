@@ -8,7 +8,8 @@ const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 const userFetcher = {
   createUser: async (data: TNewUser) => {
     try {
-      await axiosInstance.post<TNewUser>(`/auth/signup`, data);
+      const resp = await axiosInstance.post<TNewUser>(`/auth/signup`, data);
+      return resp.data;
     } catch (err) {
       console.error(err);
       throw new Error(err as string);
@@ -19,7 +20,10 @@ const userFetcher = {
 
   getUsers: async () => {
     try {
-      await axiosInstance.get<TUser[]>(`/users`).then(responseBody);
+      const resp = await axiosInstance
+        .get<TUser[]>(`/users`)
+        .then(responseBody);
+      return resp;
     } catch (err) {
       console.error(err);
       throw new Error(err as string);

@@ -4,10 +4,11 @@ import axiosInstance from "./axiosinstance";
 const categoryFetcher = {
   createCategory: async (data: string) => {
     try {
-      await axiosInstance.post<TCategory>(
+      const resp = await axiosInstance.post<TCategory>(
         `/categories`,
         JSON.parse(JSON.stringify({ name: data }))
       );
+      return resp.data;
     } catch (err) {
       console.error(err);
       throw new Error(err as string);
@@ -31,7 +32,7 @@ const categoryFetcher = {
       return allCategories;
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("getCategories successful");
     }
@@ -43,7 +44,7 @@ const categoryFetcher = {
       return resp.data;
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("getCategoryById successful");
     }
@@ -59,7 +60,7 @@ const categoryFetcher = {
         .then(() => console.log("Update successful", data));
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("updateCategoryById successful");
     }
@@ -72,7 +73,7 @@ const categoryFetcher = {
         .then(() => console.log("Delete successful"));
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("deleteCategoryById successful");
     }

@@ -17,9 +17,12 @@ const videoFetcher = {
     }
   },
 
-  getVideos: async () => {
+  getVideos: async (): Promise<TVideo[]> => {
     try {
-      await axiosInstance.get<TVideo[]>(`/videos`).then(responseBody);
+      const resp = await axiosInstance
+        .get<TVideo[]>(`/videos`)
+        .then(responseBody);
+      return resp;
     } catch (err) {
       console.error(err);
       throw new Error(err as string);
