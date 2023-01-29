@@ -6,11 +6,27 @@ import axiosInstance from "./axiosinstance";
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 const videoFetcher = {
-  createVideo: async (data: TNewVideo) =>
-    axiosInstance.post<TNewVideo>(`/videos`, data),
+  createVideo: async (data: TNewVideo) => {
+    try {
+      await axiosInstance.post<TNewVideo>(`/videos`, data);
+    } catch (err) {
+      console.error(err);
+      throw new Error(err as string);
+    } finally {
+      console.log("createVideo successful");
+    }
+  },
 
-  getVideos: async () =>
-    axiosInstance.get<TVideo[]>(`/videos`).then(responseBody),
+  getVideos: async () => {
+    try {
+      await axiosInstance.get<TVideo[]>(`/videos`).then(responseBody);
+    } catch (err) {
+      console.error(err);
+      throw new Error(err as string);
+    } finally {
+      console.log("getVideos successful");
+    }
+  },
 
   getVideoById: async (id: string) => {
     try {
@@ -18,17 +34,35 @@ const videoFetcher = {
       return resp.data;
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
+    } finally {
+      console.log("getVideoById successful");
     }
   },
 
-  updateVideo: async (id: string, data: Partial<TNewVideo>) =>
-    axiosInstance.put<TVideo>(`/videos/${id}`, data),
+  updateVideo: async (id: string, data: Partial<TNewVideo>) => {
+    try {
+      await axiosInstance.put<TVideo>(`/videos/${id}`, data);
+    } catch (err) {
+      console.error(err);
+      throw new Error(err as string);
+    } finally {
+      console.log("updateVideo successful", data);
+    }
+  },
 
-  deleteVideoById: async (id: string) =>
-    axiosInstance
-      .delete<TVideo>(`/videos/${id}`)
-      .then(() => console.log("Delete successful")),
+  deleteVideoById: async (id: string) => {
+    try {
+      await axiosInstance
+        .delete<TVideo>(`/videos/${id}`)
+        .then(() => console.log("Delete successful"));
+    } catch (err) {
+      console.error(err);
+      throw new Error(err as string);
+    } finally {
+      console.log("deleteVideoById successful");
+    }
+  },
 };
 
 export default videoFetcher;

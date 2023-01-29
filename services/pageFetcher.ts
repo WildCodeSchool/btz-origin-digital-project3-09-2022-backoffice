@@ -7,7 +7,7 @@ const pageFetcher = {
       await axiosInstance.post<TPage>(`/pages/new-with-sections`, data);
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("createPage successful");
     }
@@ -28,7 +28,7 @@ const pageFetcher = {
       return allPages;
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("getPages successful");
     }
@@ -40,7 +40,7 @@ const pageFetcher = {
       return resp.data;
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("getPageById successful");
     }
@@ -53,7 +53,7 @@ const pageFetcher = {
         .then(() => console.log("Update successful", data));
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("updatePageById successful");
     }
@@ -66,7 +66,7 @@ const pageFetcher = {
         .then(() => console.log("Delete successful"));
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("deletePageById successful");
     }

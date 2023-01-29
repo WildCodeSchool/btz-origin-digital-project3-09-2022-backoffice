@@ -10,7 +10,7 @@ const categoryFetcher = {
       );
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("createCategory successful");
     }
