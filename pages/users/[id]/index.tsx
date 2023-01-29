@@ -7,7 +7,7 @@ export default function User() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
-  const [user, setUser] = useState<TUser>({});
+  const [user, setUser] = useState<TUser | null>();
 
   useEffect(() => {
     if (router.query.id) {
@@ -20,7 +20,7 @@ export default function User() {
 
   return (
     <div>
-      {isLoading ? (
+      {isLoading || !user ? (
         <h1>Loading...</h1>
       ) : (
         <div>
