@@ -383,14 +383,14 @@ function VideoEdit() {
                       <button
                         className="w-4 h-4"
                         type="button"
-                        onClick={() => moveRowUp(row as TSectionItem)}
+                        onClick={(row: any) => moveRowUp(row)}
                       >
                         ⬆️
                       </button>
                       <button
                         className="w-4 h-4"
                         type="button"
-                        onClick={() => moveRowDown(row as TSectionItem)}
+                        onClick={(row: any) => moveRowDown(row)}
                       >
                         ⬇️
                       </button>
