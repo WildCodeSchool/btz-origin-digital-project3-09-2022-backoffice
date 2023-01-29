@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import sectionFetcher from "../../services/sectionFetcher";
 import { TSection } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
@@ -64,9 +65,9 @@ function Sections() {
                   </td>
                   <td className="border px-5">{section.description}</td>
                   <td className="border text-center">
-                    <a href={`/sections/${section.section}/${section.id}`}>
+                    <Link href={`/sections/${section.section}/${section.id}`}>
                       📝
-                    </a>
+                    </Link>
                   </td>
                   <td className="border text-center last:rounded-br-[10px]">
                     <button

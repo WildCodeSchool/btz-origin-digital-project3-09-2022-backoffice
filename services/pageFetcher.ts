@@ -1,7 +1,15 @@
 import { TPage, TNewPage } from "../src/types/types";
 import axiosInstance from "./axiosinstance";
 
-const pageFetcher = {
+interface PageFetcher {
+  createPage: (data: TNewPage) => Promise<void>;
+  getPages: () => Promise<TPage[]>;
+  getPageById: (id: string) => Promise<TPage | null>;
+  updatePageById: (id: string, data: string) => Promise<void>;
+  deletePageById: (id: string) => Promise<void>;
+}
+
+const pageFetcher: PageFetcher = {
   createPage: async (data: TNewPage) => {
     try {
       await axiosInstance.post<TPage>(`/pages/new-with-sections`, data);

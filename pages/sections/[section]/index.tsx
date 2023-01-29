@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import sectionFetcher from "../../../services/sectionFetcher";
 import { TSection } from "../../../src/types/types";
 import SearchBar from "../../../src/components/SearchBar";
@@ -94,7 +95,9 @@ function Section() {
                       </td>
                       <td className="border px-5">{item.description}</td>
                       <td className="border text-center">
-                        <a href={`/sections/${item.section}/${item.id}`}>📝</a>
+                        <Link href={`/sections/${item.section}/${item.id}`}>
+                          📝
+                        </Link>
                       </td>
                       <td className="border text-center last:rounded-br-[10px]">
                         <button
@@ -112,54 +115,54 @@ function Section() {
           </div>
           <div className="w-[50px] mt-[1em] ml-[5%]">
             {localStorage.getItem("sectionName") === "Hero Slider" && (
-              <a href="/sections/static-sections/new-hero-slider">
+              <Link href="/sections/static-sections/new-hero-slider">
                 <Image
                   src="/plus.svg"
                   width={50}
                   height={50}
                   alt="add-button"
                 />
-              </a>
+              </Link>
             )}
             {localStorage.getItem("sectionName") === "Carrousel Static" && (
-              <a href="/sections/static-sections/new-static-carousel">
+              <Link href="/sections/static-sections/new-static-carousel">
                 <Image
                   src="/plus.svg"
                   width={50}
                   height={50}
                   alt="add-button"
                 />
-              </a>
+              </Link>
             )}
             {localStorage.getItem("sectionName") === "Carrousel Dynamic" && (
-              <a href="/sections/new-section">
+              <Link href="/sections/new-section">
                 <Image
                   src="/plus.svg"
                   width={50}
                   height={50}
                   alt="add-button"
                 />
-              </a>
+              </Link>
             )}
             {localStorage.getItem("sectionName") === "Grid Dynamic" && (
-              <a href="/sections/new-section">
+              <Link href="/sections/new-section">
                 <Image
                   src="/plus.svg"
                   width={50}
                   height={50}
                   alt="add-button"
                 />
-              </a>
+              </Link>
             )}
             {localStorage.getItem("sectionName") === "Advertising" && (
-              <a href="/sections/new-section">
+              <Link href="/sections/new-section">
                 <Image
                   src="/plus.svg"
                   width={50}
                   height={50}
                   alt="add-button"
                 />
-              </a>
+              </Link>
             )}
           </div>
         </>

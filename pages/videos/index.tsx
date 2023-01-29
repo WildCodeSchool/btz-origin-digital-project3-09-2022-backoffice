@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { TVideo } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
 import videoFetcher from "../../services/videoFetcher";
@@ -79,7 +80,7 @@ function Videos() {
                       </video>
                     </td>
                     <td className="border text-center">
-                      <a href={`/videos/${video.id}`}>📝</a>
+                      <Link href={`/videos/${video.id}`}>📝</Link>
                     </td>
                     <td className="border text-center last:rounded-br-[10px]">
                       <button
@@ -97,9 +98,9 @@ function Videos() {
         </div>
       )}
       <div className="w-[50px] mt-[1em] ml-[5%]">
-        <a href="/videos/new-video">
+        <Link href="/videos/new-video">
           <Image width={50} height={50} src="/plus.svg" alt="logo-plus" />
-        </a>
+        </Link>
       </div>
       {showModal && (
         <ModalOnDelete
