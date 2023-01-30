@@ -17,7 +17,6 @@ export default function index() {
   useEffect(() => {
     pageFetcher.getPages().then((response) => {
       setPages(response);
-      console.log(response);
     });
   }, []);
 
