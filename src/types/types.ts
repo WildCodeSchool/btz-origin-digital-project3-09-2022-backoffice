@@ -119,6 +119,7 @@ export type TCategory = {
 export type TPage = {
   id: string;
   title: string;
+  display: boolean;
   createdAt?: Date;
   updatedAt?: Date;
   pagesSectionsStatic?: TSectionRow[];
@@ -128,6 +129,7 @@ export type TPage = {
 
 export type TNewPage = {
   title: string;
+  display: boolean;
   pagesSectionsStaticData?: {
     id: string;
     position: number;

@@ -18,6 +18,8 @@ function VideoEdit() {
   const [currentRow, setCurrentRow] = useState<Partial<TSectionItem>>();
   const [sections, setSections] = useState<Partial<TSection[]>>();
 
+  const [display, setDisplay] = useState<boolean>(false);
+
   const [showModal, setShowModal] = useState<boolean>(false);
 
   useEffect(() => {
@@ -30,7 +32,6 @@ function VideoEdit() {
             pagesSectionsDynamic,
             pagesAdvertisings,
           } = response;
-          console.log(response);
 
           setRows([]);
           setTitle(pageTitle);
@@ -151,7 +152,6 @@ function VideoEdit() {
     if (currentRow?.type !== undefined && currentRow?.sectionId !== undefined) {
       setCreateMode(!createMode);
       setRows([...rows, currentRow as TSectionItem]);
-      console.log(...rows);
     }
   };
 
@@ -228,6 +228,7 @@ function VideoEdit() {
     });
     const page = {
       title,
+      display,
       pagesSectionsStaticData,
       pagesSectionsDynamicData,
       pagesAdvertisingsData,
@@ -243,6 +244,7 @@ function VideoEdit() {
       return;
     }
     pageFetcher.deletePageById(id as string);
+    console.log(page);
     pageFetcher.createPage(page).then(() => router.push("/pages"));
   };
 
@@ -254,23 +256,45 @@ function VideoEdit() {
     setShowModal(false);
   };
 
+  const handleChangeCheckBoxDisplay = (e: ChangeEvent<HTMLInputElement>) => {
+    setDisplay(e.target.checked);
+  };
+
   return (
-    <div>
-      <div className="container-fields ml-[5%] mt-[5%]">
-        <label htmlFor="title" className="title-field">
-          Page title
-          <input
-            type="text"
-            className="input-field"
-            defaultValue={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </label>
+    <div className="w-full h-full flex flex-col">
+      <div className="flex w-[90%] self-center">
+        <div className="container-fields w-[80%]">
+          <label htmlFor="title" className="title-field">
+            Page title
+            <input
+              type="text"
+              className="input-field"
+              defaultValue={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </label>
+        </div>
+        <div className="container-fields w-[20%] border-black flex flex-col">
+          <label
+            htmlFor="title"
+            className="w-full  title-field m-auto text-center"
+          >
+            Display
+            <div className="w-full flex self-center">
+              <input
+                className="w-6 h-6 m-auto my-[0.5em]"
+                type="checkbox"
+                defaultChecked={display}
+                onChange={(e) => handleChangeCheckBoxDisplay(e)}
+              />
+            </div>
+          </label>
+        </div>
       </div>
 
       <div className="w-full bg-lightgrey">
         <div className="rounded-xl">
-          <table className="w-[90%] h-[50px] mt-[3em] ml-[5%] text-xl border border-black border-1 rounded-[10px] bg-white  drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
+          <table className="w-[90%] h-[50px] mt-[3em] ml-[5%] text-xl border border-black bg-white  drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
             <thead className="h-[50px] rounded-t-[10px]">
               <tr>
                 <th>Type</th>
