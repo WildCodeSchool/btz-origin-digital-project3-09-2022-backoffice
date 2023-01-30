@@ -12,7 +12,7 @@ const sectionFetcher = {
       await axiosInstance.post(`/${type}`, data);
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("createSection successful");
     }
@@ -26,7 +26,7 @@ const sectionFetcher = {
       await axiosInstance.post(`/${type}/new-with-videos`, data);
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("createSectionWithVideos successful");
     }
@@ -69,7 +69,7 @@ const sectionFetcher = {
       return allSections;
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("getSections successful");
     }
@@ -94,7 +94,7 @@ const sectionFetcher = {
       return sectionContent;
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("getSectionContent successful");
     }
@@ -108,7 +108,7 @@ const sectionFetcher = {
       return resp.data;
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("getSectionById successful");
     }
@@ -159,7 +159,7 @@ const sectionFetcher = {
       return sectionByTitle;
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("getSectionByTitle successful");
     }
@@ -174,7 +174,7 @@ const sectionFetcher = {
       await axiosInstance.put(`/${type}/${id}`, data);
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("updateSectionById successful");
     }
@@ -189,7 +189,7 @@ const sectionFetcher = {
       await axiosInstance.put(`/${type}/${id}/add-video`, data);
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("updateSectionByIdAddVideo successful");
     }
@@ -204,7 +204,7 @@ const sectionFetcher = {
       await axiosInstance.put(`/${type}/${id}/remove-video`, data);
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("updateSectionByIdRemoveVideo successful");
     }
@@ -215,7 +215,7 @@ const sectionFetcher = {
       await axiosInstance.delete(`/${type}/${id}`);
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("Delete successful");
     }

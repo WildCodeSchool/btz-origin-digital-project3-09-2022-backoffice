@@ -1,13 +1,21 @@
 import { TPage, TNewPage } from "../src/types/types";
 import axiosInstance from "./axiosinstance";
 
-const pageFetcher = {
+interface PageFetcher {
+  createPage: (data: TNewPage) => Promise<void>;
+  getPages: () => Promise<TPage[]>;
+  getPageById: (id: string) => Promise<TPage | null>;
+  updatePageById: (id: string, data: string) => Promise<void>;
+  deletePageById: (id: string) => Promise<void>;
+}
+
+const pageFetcher: PageFetcher = {
   createPage: async (data: TNewPage) => {
     try {
       await axiosInstance.post<TPage>(`/pages/new-with-sections`, data);
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("createPage successful");
     }
@@ -28,7 +36,7 @@ const pageFetcher = {
       return allPages;
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("getPages successful");
     }
@@ -40,7 +48,7 @@ const pageFetcher = {
       return resp.data;
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("getPageById successful");
     }
@@ -53,7 +61,7 @@ const pageFetcher = {
         .then(() => console.log("Update successful", data));
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("updatePageById successful");
     }
@@ -66,7 +74,7 @@ const pageFetcher = {
         .then(() => console.log("Delete successful"));
     } catch (err) {
       console.error(err);
-      throw new Error(err);
+      throw new Error(err as string);
     } finally {
       console.log("deletePageById successful");
     }

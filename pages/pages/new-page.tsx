@@ -4,10 +4,10 @@ import React, { useState, ChangeEvent } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { TSection, TSectionItem } from "../../src/types/types";
-import plus from "../../src/assets/plus.svg";
 import sectionsTypes from "../../src/types/sectionsTypes";
 import sectionFetcher from "../../services/sectionFetcher";
 import pageFetcher from "../../services/pageFetcher";
+import ModalAlert from "../../src/components/modal/ModalAlert";
 
 export default function SectionItem() {
   const router = useRouter();
@@ -18,6 +18,8 @@ export default function SectionItem() {
   const [currentRow, setCurrentRow] = useState<Partial<TSectionItem>>();
   const [rows, setRows] = useState<TSectionItem[]>([]);
   const [rowCounter, setRowCounter] = useState<number>(1);
+
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const feedSectionSelector = (event: ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target;
@@ -73,43 +75,46 @@ export default function SectionItem() {
     if (currentRow?.type !== undefined && currentRow?.sectionId !== undefined) {
       setCreateMode(!createMode);
       setRows([...rows, currentRow as TSectionItem]);
-      console.log(...rows);
     }
   };
 
-  const moveRowUp = (row: TSectionItem) => {
-    const index = rows.indexOf(row);
-    if (index > 0) {
-      const temp = rows[index - 1];
-      const tempPosition = rows[index - 1].position;
-      rows[index - 1] = rows[index];
-      rows[index - 1].position = tempPosition;
-      rows[index] = temp;
-      rows[index].position = index + 1;
-      setRows([...rows]);
-    }
-  };
-
-  const moveRowDown = (row: TSectionItem) => {
-    const index = rows.indexOf(row);
-    if (index < rows.length - 1) {
-      const temp = rows[index + 1];
-      const tempPosition = rows[index + 1].position;
-      rows[index + 1] = rows[index];
-      rows[index + 1].position = tempPosition;
-      rows[index] = temp;
-      rows[index].position = index + 1;
-      setRows([...rows]);
-    }
-  };
-
-  const refreshRowPosition = () => {
+  const refreshRowPosition = (): void => {
     rows.forEach((row, index) => {
       const updatedRow = { ...row };
       updatedRow.position = index + 1;
       rows[index] = updatedRow;
     });
     setRows([...rows]);
+  };
+
+  const moveRowUp = (row: TSectionItem) => {
+    if (!rows) return;
+
+    const index = rows.indexOf(row);
+    if (index < 1) return;
+
+    const [prevRow] = rows.slice(index - 1, index);
+    if (!prevRow) return;
+
+    rows[index - 1] = row;
+    rows[index] = prevRow;
+    setRows([...rows]);
+    refreshRowPosition();
+  };
+
+  const moveRowDown = (row: TSectionItem) => {
+    if (!rows) return;
+
+    const index = rows.indexOf(row);
+    if (index === -1 || index === rows.length - 1) return;
+
+    const [nextRow] = rows.slice(index + 1, index + 2);
+    if (!nextRow) return;
+
+    rows[index + 1] = row;
+    rows[index] = nextRow;
+    setRows([...rows]);
+    refreshRowPosition();
   };
 
   const deleteRow = (row: TSectionItem) => {
@@ -157,15 +162,18 @@ export default function SectionItem() {
         page.pagesSectionsStaticData.length ===
         0
     ) {
-      alert("Please fill the title and at least one section");
+      setShowModal(true);
       return;
     }
-    pageFetcher.createPage(page);
-    router.push("/pages");
+    pageFetcher.createPage(page).then(() => router.push("/pages"));
   };
 
   const handleItemToCancel = () => {
     setCreateMode(!createMode);
+  };
+
+  const handleDeleteCancelled = (): void => {
+    setShowModal(false);
   };
 
   return (
@@ -226,7 +234,7 @@ export default function SectionItem() {
                         onClick={() => deleteRow(row)}
                       >
                         🗑️
-                      </button>
+                      </button>{" "}
                     </td>
                   </tr>
                 ))}
@@ -266,16 +274,26 @@ export default function SectionItem() {
                       </option>
                       {sections &&
                         sections
-                          .sort((a, b) => (a.title > b.title ? 1 : -1))
-                          .map((section) => (
-                            <option
-                              className="w-full"
-                              key={section.id}
-                              value={`${section.id}/${section.title}`}
-                            >
-                              {section.title}
-                            </option>
-                          ))}
+                          .sort((a, b) => {
+                            if (a !== undefined && b !== undefined) {
+                              return a.title > b.title ? 1 : -1;
+                            }
+                            return 0;
+                          })
+                          .map((section) => {
+                            if (section !== undefined) {
+                              return (
+                                <option
+                                  className="w-full"
+                                  key={section.id}
+                                  value={`${section.id}/${section.title}`}
+                                >
+                                  {section.title}
+                                </option>
+                              );
+                            }
+                            return null;
+                          })}
                     </select>
                   </td>
                   <td className="border text-center">{rowCounter}</td>
@@ -284,14 +302,14 @@ export default function SectionItem() {
                       <button
                         className="w-4 h-4"
                         type="button"
-                        onClick={() => moveRowUp(row)}
+                        onClick={(row: any) => moveRowUp(row)}
                       >
                         ⬆️
                       </button>
                       <button
                         className="w-4 h-4"
                         type="button"
-                        onClick={() => moveRowDown(row)}
+                        onClick={(row: any) => moveRowDown(row)}
                       >
                         ⬇️
                       </button>
@@ -331,7 +349,7 @@ export default function SectionItem() {
               setCreateMode(!createMode);
             }}
           >
-            <Image src={plus} width={50} height={50} alt="logo-plus" />
+            <Image src="/plus.svg" width={50} height={50} alt="logo-plus" />
           </button>
         </div>
         <div className="flex justify-around w-full">
@@ -342,6 +360,12 @@ export default function SectionItem() {
           />
         </div>
       </div>
+      {showModal && (
+        <ModalAlert
+          message="Please fill the title and at least one section"
+          handleDeleteCancelled={handleDeleteCancelled}
+        />
+      )}
     </div>
   );
 }

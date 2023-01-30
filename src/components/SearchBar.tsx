@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import magnifyingGlass from "../assets/Magnifying_glass.svg";
 
 export default function SearchBar() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onChange = handleSubmit((data) => setQuery(data));
+  const onChange = handleSubmit((data) => setQuery(data.search));
 
   return (
     <div className="w-[75%] h-[60px] mt-[3em] ml-[5%] flex justify-between bg-white border border-solid border-black border-1 rounded-[10px] drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
@@ -20,6 +20,7 @@ export default function SearchBar() {
           placeholder="search"
           className="w-[100%] pl-[2%] text-[20px] text-bold rounded-l-[10px]"
         />
+
         {errors?.search && <p>Not founded !</p>}
       </form>
       <Image

@@ -66,6 +66,8 @@ export type TSection = {
   createdAt?: Date;
   updatedAt?: Date;
   videoIds?: TVideoIds[];
+  categoryId?: string;
+  videos?: TVideo[];
 };
 
 export type TAdvertsing = {
@@ -119,9 +121,9 @@ export type TPage = {
   title: string;
   createdAt?: Date;
   updatedAt?: Date;
-  pagesSectionsStatic?: TSectionItem[];
-  pagesSectionsDynamic?: TSectionItem[];
-  pagesAdvertisings?: TSectionItem[];
+  pagesSectionsStatic?: TSectionRow[];
+  pagesSectionsDynamic?: TSectionRow[];
+  pagesAdvertisings?: TSectionRow[];
 };
 
 export type TNewPage = {
@@ -137,6 +139,18 @@ export type TNewPage = {
     status?: boolean;
   }[];
   pagesAdvertisingsData?: { id: string; position: number; status?: boolean }[];
+};
+
+export type TSectionRow = {
+  id: string;
+  pageId: string;
+  position: number;
+  sectionsStaticId?: string;
+  sectionsStatics?: TSectionStatic;
+  sectionsDynamicId?: string;
+  sectionsDynamic?: TSectionDynamic;
+  advertisingsId?: string;
+  advertisings?: TAdvertsing;
 };
 
 // Types for the authentification

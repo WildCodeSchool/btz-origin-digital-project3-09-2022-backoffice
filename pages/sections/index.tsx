@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import sectionFetcher from "../../services/sectionFetcher";
-import plus from "../../src/assets/plus.svg";
 import { TSection } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
 import SectionSelector from "../../src/components/SectionSelector";
@@ -65,9 +65,9 @@ function Sections() {
                   </td>
                   <td className="border px-5">{section.description}</td>
                   <td className="border text-center">
-                    <a href={`/sections/${section.section}/${section.id}`}>
+                    <Link href={`/sections/${section.section}/${section.id}`}>
                       📝
-                    </a>
+                    </Link>
                   </td>
                   <td className="border text-center last:rounded-br-[10px]">
                     <button
@@ -84,9 +84,9 @@ function Sections() {
         </table>
       </div>
       <div className="w-[50px] mt-[1em] ml-[5%]">
-        <a href="/sections/new-section">
-          <Image src={plus} alt="logo-plus" />
-        </a>
+        <Link href="/sections/new-section">
+          <Image width={50} height={50} src="/plus.svg" alt="logo-plus" />
+        </Link>
       </div>
       {showModal && (
         <ModalOnDelete
