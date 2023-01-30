@@ -12,6 +12,7 @@ export default function index() {
   const [itemToDelete, setItemToDelete] = useState<string | null>();
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     pageFetcher.getPages().then((response) => {
@@ -35,6 +36,10 @@ export default function index() {
     setShowModal(false);
   };
 
+  const handleChangeCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(e.target.checked);
+  };
+
   return (
     <div className="w-full bg-lightgrey">
       <SearchBar />
@@ -43,6 +48,7 @@ export default function index() {
           <thead className="h-[50px] rounded-t-[10px]">
             <tr>
               <th>Name</th>
+              <th>Display</th>
               <th>Edit</th>
               <th>Delete</th>
               <th>Preview</th>
@@ -56,10 +62,12 @@ export default function index() {
               .map((page) => (
                 <tr
                   key={page.id}
-                  className="h-[45px] odd:bg-lightgrey even:bg-white last:rounded-b-[10px]"
+                  className="h-[45px] odd:bg-lightgrey even:bg-white"
                 >
-                  <td className="border border-black px-5 last:rounded-bl-[10px]">
-                    {page.title}
+                  <td className="border border-black px-5">{page.title}</td>
+
+                  <td className="border text-center">
+                    {page.display ? <p>✔️</p> : <p>❌</p>}
                   </td>
 
                   <td className="border text-center">
@@ -68,7 +76,7 @@ export default function index() {
                     </button>
                   </td>
 
-                  <td className="border text-center last:rounded-br-[10px]">
+                  <td className="border text-center">
                     <button
                       id={page.id}
                       type="button"
@@ -77,7 +85,7 @@ export default function index() {
                       🗑️
                     </button>
                   </td>
-                  <td className="border text-center last:rounded-br-[10px]">
+                  <td className="border text-center ">
                     {/* <Link href={`${process.env.PROD_URL}/pages/${page.id}`}> */}
                     <a
                       target="_blank"

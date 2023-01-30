@@ -19,6 +19,8 @@ export default function SectionItem() {
   const [rows, setRows] = useState<TSectionItem[]>([]);
   const [rowCounter, setRowCounter] = useState<number>(1);
 
+  const [display, setDisplay] = useState<boolean>(false);
+
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const feedSectionSelector = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -151,6 +153,7 @@ export default function SectionItem() {
     });
     const page = {
       title,
+      display,
       pagesSectionsStaticData,
       pagesSectionsDynamicData,
       pagesAdvertisingsData,
@@ -176,16 +179,40 @@ export default function SectionItem() {
     setShowModal(false);
   };
 
+  const handleChangeCheckBoxDisplay = (e: ChangeEvent<HTMLInputElement>) => {
+    setDisplay(e.target.checked);
+  };
+
   return (
-    <div>
-      <div className="container-fields ml-[5%] mt-[5%]">
-        <label htmlFor="title" className="title-field">
-          Page title
-          <input
-            className="input-field"
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </label>
+    <div className="w-full h-full flex flex-col">
+      <div className="flex w-[90%] self-center">
+        <div className="container-fields w-[80%]">
+          <label htmlFor="title" className="title-field">
+            Page title
+            <input
+              type="text"
+              className="input-field"
+              defaultValue={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </label>
+        </div>
+        <div className="container-fields w-[20%] border-black flex flex-col">
+          <label
+            htmlFor="title"
+            className="w-full  title-field m-auto text-center"
+          >
+            Display
+            <div className="w-full flex self-center">
+              <input
+                className="w-6 h-6 m-auto my-[0.5em]"
+                type="checkbox"
+                defaultChecked={display}
+                onChange={(e) => handleChangeCheckBoxDisplay(e)}
+              />
+            </div>
+          </label>
+        </div>
       </div>
 
       <div className="w-full bg-lightgrey">

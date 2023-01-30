@@ -30,6 +30,7 @@ const pageFetcher: PageFetcher = {
           allPages.push({
             id: element.id,
             title: element.title,
+            display: element.display,
           });
         });
       }
