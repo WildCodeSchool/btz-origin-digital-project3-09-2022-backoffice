@@ -2,7 +2,7 @@ import { useTable, useSortBy } from "react-table";
 
 export type TColumns = {
   Header: string;
-  accessor: "select" | "title" | "video";
+  accessor: keyof TData;
 };
 
 export type TData = {

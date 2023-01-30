@@ -67,6 +67,7 @@ export type TSection = {
   updatedAt?: Date;
   videoIds?: TVideoIds[];
   categoryId?: string;
+  videos?: TVideo[];
 };
 
 export type TAdvertsing = {

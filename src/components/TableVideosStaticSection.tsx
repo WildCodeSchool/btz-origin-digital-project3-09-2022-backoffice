@@ -21,15 +21,15 @@ export default function TableVideos({
   const columns = [
     {
       Header: "Select",
-      accessor: "select",
+      accessor: "select" as keyof TData,
     },
     {
       Header: "Title",
-      accessor: "title",
+      accessor: "title" as keyof TData,
     },
     {
       Header: "Video",
-      accessor: "video",
+      accessor: "video" as keyof TData,
     },
   ];
 
@@ -62,7 +62,8 @@ export default function TableVideos({
               type="checkbox"
               value={video.id}
               defaultChecked={
-                typeof sectionItem !== "undefined"
+                typeof sectionItem !== "undefined" &&
+                typeof sectionItem.videos !== "undefined"
                   ? sectionItem.videos.filter((e) => e.id === video.id).length >
                     0
                   : false
