@@ -49,8 +49,8 @@ export default function index() {
           <thead className="h-[50px] rounded-t-[10px]">
             <tr>
               <th>Name</th>
-              <th>Edit</th>
               <th>Display</th>
+              <th>Edit</th>
               <th>Delete</th>
               <th>Preview</th>
             </tr>

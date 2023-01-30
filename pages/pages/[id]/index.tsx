@@ -22,17 +22,21 @@ function VideoEdit() {
 
   const [showModal, setShowModal] = useState<boolean>(false);
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   useEffect(() => {
     if (id) {
       const data = pageFetcher.getPageById(id as string).then((response) => {
         if (response !== null) {
           const {
             title: pageTitle,
+            display: pageDisplay,
             pagesSectionsStatic,
             pagesSectionsDynamic,
             pagesAdvertisings,
           } = response;
 
+          setDisplay(pageDisplay);
           setRows([]);
           setTitle(pageTitle);
           const rowsInit: TSectionItem[] = [];
@@ -93,6 +97,7 @@ function VideoEdit() {
             return item;
           });
           setRows(rowsInit);
+          setIsLoading(false);
         }
       });
     }
@@ -244,7 +249,6 @@ function VideoEdit() {
       return;
     }
     pageFetcher.deletePageById(id as string);
-    console.log(page);
     pageFetcher.createPage(page).then(() => router.push("/pages"));
   };
 
@@ -274,22 +278,26 @@ function VideoEdit() {
             />
           </label>
         </div>
-        <div className="container-fields w-[20%] border-black flex flex-col">
-          <label
-            htmlFor="title"
-            className="w-full  title-field m-auto text-center"
-          >
-            Display
-            <div className="w-full flex self-center">
-              <input
-                className="w-6 h-6 m-auto my-[0.5em]"
-                type="checkbox"
-                defaultChecked={display}
-                onChange={(e) => handleChangeCheckBoxDisplay(e)}
-              />
-            </div>
-          </label>
-        </div>
+        {isLoading ? (
+          <div>Is loading...</div>
+        ) : (
+          <div className="container-fields w-[20%] border-black flex flex-col">
+            <label
+              htmlFor="title"
+              className="w-full  title-field m-auto text-center"
+            >
+              Display
+              <div className="w-full flex self-center">
+                <input
+                  className="w-6 h-6 m-auto my-[0.5em]"
+                  type="checkbox"
+                  defaultChecked={display}
+                  onChange={(e) => handleChangeCheckBoxDisplay(e)}
+                />
+              </div>
+            </label>
+          </div>
+        )}
       </div>
 
       <div className="w-full bg-lightgrey">
