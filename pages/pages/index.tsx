@@ -67,13 +67,7 @@ export default function index() {
                   <td className="border border-black px-5">{page.title}</td>
 
                   <td className="border text-center">
-                    <input
-                      className="w-6 h-6 m-[2em]"
-                      type="checkbox"
-                      value={page.id}
-                      checked={page.display}
-                      onChange={(e) => handleChangeCheckBox(e)}
-                    />
+                    {page.display ? <p>✔️</p> : <p>❌</p>}
                   </td>
 
                   <td className="border text-center">
