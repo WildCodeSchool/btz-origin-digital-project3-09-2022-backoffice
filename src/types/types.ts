@@ -187,3 +187,7 @@ export type TSectionItem = {
   position: number;
   sectionCount: number;
 };
+
+export type TRole = {
+  role: "USER" | "ADMIN" | "SUPER_ADMIN";
+};

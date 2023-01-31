@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { TNewUser, TUser } from "../src/types/types";
+import { TRole, TNewUser, TUser } from "../src/types/types";
 import axiosInstance from "./axiosinstance";
 
 // Creation of the "userFetcher" object which contains the different API call methods
@@ -44,14 +44,25 @@ const userFetcher = {
     }
   },
 
-  updateUser: async (id: string, data: TNewUser) => {
+  updateUserById: async (id: string, data: TNewUser) => {
     try {
-      await axiosInstance.put<TNewUser>(`/users/${id}`, data);
+      await axiosInstance.put<Partial<TNewUser>>(`/users/${id}`, data);
     } catch (err) {
       console.error(err);
       throw new Error(err as string);
     } finally {
-      console.log("updateUser successful", data);
+      console.log("updateUser successful");
+    }
+  },
+
+  updateUsersRoleById: async (id: string, data: TRole) => {
+    try {
+      await axiosInstance.patch<TRole>(`/users/${id}`, { role: data });
+    } catch (err) {
+      console.error(err);
+      throw new Error(err as string);
+    } finally {
+      console.log("updateUsersRoleById successful");
     }
   },
 
