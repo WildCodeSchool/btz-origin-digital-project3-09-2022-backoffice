@@ -64,6 +64,7 @@ function Users() {
                 <th>Last name</th>
                 <th>User name</th>
                 <th>Email</th>
+                <th>Role</th>
                 <th>Edit</th>
                 <th className="rounded-tr-[10px]">Delete</th>
               </tr>
@@ -80,6 +81,7 @@ function Users() {
                   <td className="border px-5">{user.lastname}</td>
                   <td className="border px-5">{user.username}</td>
                   <td className="border px-5">{user.email}</td>
+                  <td className="border px-5 text-center">{user.role}</td>
                   <td className="border text-center">
                     <Link href={`/users/${user.id}`}>📝</Link>
                   </td>
