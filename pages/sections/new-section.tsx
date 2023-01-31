@@ -22,6 +22,13 @@ function NewSection() {
 
   useEffect(() => {
     categoryFetcher.getCategories().then((data) => setCategories(data));
+    if (
+      localStorage.getItem("section") &&
+      localStorage.getItem("sectionName")
+    ) {
+      setTypeOfSection(localStorage.getItem("section") as string);
+      setNameOfSection(localStorage.getItem("sectionName") as string);
+    }
   }, []);
 
   const handleChange = (e: FieldValues) => {
@@ -30,7 +37,6 @@ function NewSection() {
   };
 
   const handleData = (data: FieldValues) => {
-    // const { title, description, max, file, linkTo, categoryId } = data;
     switch (typeOfSection) {
       case "static-sections":
         sectionFetcher.createSection(typeOfSection, {
@@ -75,17 +81,20 @@ function NewSection() {
         className="w-full h-full flex flex-col items-center"
         onSubmit={handleSubmit((data) => handleData(data))}
       >
-        <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
+        <div className="flex flex-col mt-[1.5em] w-[100%] justify-center items-center">
           <label htmlFor="type" className="w-[80%] text-[20px] font-bold">
             Type of section
             <select
               id="type"
               placeholder="Please choose a type of section"
-              className="w-[100%] h-[50px] flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
+              className="w-[100%] py-3 px-4 flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
               {...register("type", { required: true })}
               onChange={(e) => handleChange(e)}
+              value={`${localStorage.getItem("section")}/${localStorage.getItem(
+                "sectionName"
+              )}`}
             >
-              <option>Please choose a type of section</option>
+              <option value="default">Please choose a type of section</option>
               {sectionsTypes.map((section) => (
                 <option
                   key={section.id}
@@ -103,46 +112,59 @@ function NewSection() {
           </label>
         </div>
 
-        <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
+        <div className="flex flex-col mt-[1.5em] w-[100%] justify-center items-center">
           <label
             htmlFor="title"
             className="flex flex-col w-[80%] text-[20px] font-bold"
           >
             Title
-            <input type="text" {...register("title")} />
+            <input
+              type="text"
+              className="py-3 px-4 border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
+              {...register("title")}
+            />
           </label>
         </div>
 
-        <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
+        <div className="flex flex-col mt-[1.5em] w-[100%] justify-center items-center">
           <label
             htmlFor="description"
             className="flex flex-col w-[80%] text-[20px] font-bold"
           >
             Description
-            <input className="h-[10em]" {...register("description")} />
+            <textarea
+              className="h-[10em] input-field overflow-y-auto overflow-x-hidden text-left text-top"
+              {...register("description")}
+            />
           </label>
         </div>
 
-        {typeOfSection === "dynamic-sections" && (
-          <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
+        {(localStorage.getItem("section") === "dynamic-sections" ||
+          typeOfSection === "dynamic-sections") && (
+          <div className="flex flex-col mt-[1.5em] w-[100%] justify-center items-center">
             <label
               htmlFor="max"
               className="flex flex-col w-[80%] text-[20px] font-bold"
             >
               Max videos (10 by default)
-              <input {...register("max")} />
+              <input
+                type="number"
+                className="py-3 px-4 border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)] font-normal"
+                {...register("max")}
+              />
             </label>
           </div>
         )}
 
-        {typeOfSection === "dynamic-sections" && (
-          <div className="flex flex-col w-[80%] mt-[2em] text-[20px] font-bold">
-            <label htmlFor="category" className="w-[80%] text-[20px] font-bold">
+        {(localStorage.getItem("section") === "dynamic-sections" ||
+          typeOfSection === "dynamic-sections") && (
+          <div className="flex flex-col w-[80%] mt-[1.5em] text-[20px] font-bold">
+            <label htmlFor="category" className="w-full text-[20px] font-bold">
               Please choose a category
               <select
                 id="category"
                 placeholder="Please choose a category"
-                className="w-[100%] h-[50px] flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
+                className="w-[100%] py-3 px-4 flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
                 {...register("categoryId", { required: true })}
               >
                 <option>...</option>
@@ -161,23 +183,26 @@ function NewSection() {
           </div>
         )}
 
-        {/* {typeOfSection === "advertisings" && (
-          <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-            <input type="file" {...register("file", { required: true })} />
-          </div>
-        )} */}
-
-        {typeOfSection === "advertisings" && (
-          <div className="flex flex-col mt-[2em] w-[100%] justify-center items-center">
-            <input type="file" {...register("file", { required: true })} />
+        {(localStorage.getItem("section") === "advertisings" ||
+          typeOfSection === "advertisings") && (
+          <div className="flex flex-col mt-[1.5em] w-[100%] justify-center items-center">
+            <p className="flex flex-col w-[80%] text-[20px] font-bold">
+              File to upload
+            </p>
+            <input
+              className=" w-[80%] py-3 px-4 border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)] font-normal"
+              type="file"
+              {...register("file", { required: true })}
+            />
             <label
               htmlFor="linkTo"
-              className="flex flex-col w-[80%] text-[20px] font-bold"
+              className="flex flex-col w-[80%] mt-[1.5em] text-[20px] font-bold"
             >
               Link to
               <input
                 type="text"
                 placeholder="Please insert here the link you want the user follows"
+                className="py-3 px-4 border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)] font-normal"
                 {...register("linkTo")}
               />
             </label>
