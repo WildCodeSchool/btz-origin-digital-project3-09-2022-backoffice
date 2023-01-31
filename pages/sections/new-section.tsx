@@ -18,16 +18,17 @@ function NewSection() {
   const [nameOfSection, setNameOfSection] = useState<string>("");
   const [categories, setCategories] = useState<TCategory[]>([]);
   const router = useRouter();
-  const formData = new FormData();
 
   useEffect(() => {
-    categoryFetcher.getCategories().then((data) => setCategories(data));
-    if (
-      localStorage.getItem("section") &&
-      localStorage.getItem("sectionName")
-    ) {
-      setTypeOfSection(localStorage.getItem("section") as string);
-      setNameOfSection(localStorage.getItem("sectionName") as string);
+    if (typeof window !== "undefined") {
+      categoryFetcher.getCategories().then((data) => setCategories(data));
+      if (
+        localStorage.getItem("section") &&
+        localStorage.getItem("sectionName")
+      ) {
+        setTypeOfSection(localStorage.getItem("section") as string);
+        setNameOfSection(localStorage.getItem("sectionName") as string);
+      }
     }
   }, []);
 
@@ -37,6 +38,8 @@ function NewSection() {
   };
 
   const handleData = (data: FieldValues) => {
+    const formData = new FormData();
+
     switch (typeOfSection) {
       case "static-sections":
         sectionFetcher.createSection(typeOfSection, {
@@ -74,6 +77,10 @@ function NewSection() {
 
     reset();
   };
+
+  if (typeof window === "undefined" || !localStorage.getItem("section")) {
+    return <div>Server side</div>;
+  }
 
   return (
     <div className="w-full h-full flex">
@@ -139,7 +146,8 @@ function NewSection() {
           </label>
         </div>
 
-        {(localStorage.getItem("section") === "dynamic-sections" ||
+        {((typeof window !== "undefined" &&
+          localStorage.getItem("section") === "dynamic-sections") ||
           typeOfSection === "dynamic-sections") && (
           <div className="flex flex-col mt-[1.5em] w-[100%] justify-center items-center">
             <label
@@ -156,7 +164,8 @@ function NewSection() {
           </div>
         )}
 
-        {(localStorage.getItem("section") === "dynamic-sections" ||
+        {((typeof window !== "undefined" &&
+          localStorage.getItem("section") === "dynamic-sections") ||
           typeOfSection === "dynamic-sections") && (
           <div className="flex flex-col w-[80%] mt-[1.5em] text-[20px] font-bold">
             <label htmlFor="category" className="w-full text-[20px] font-bold">
@@ -183,7 +192,8 @@ function NewSection() {
           </div>
         )}
 
-        {(localStorage.getItem("section") === "advertisings" ||
+        {((typeof window !== "undefined" &&
+          localStorage.getItem("section") === "advertisings") ||
           typeOfSection === "advertisings") && (
           <div className="flex flex-col mt-[1.5em] w-[100%] justify-center items-center">
             <p className="flex flex-col w-[80%] text-[20px] font-bold">
