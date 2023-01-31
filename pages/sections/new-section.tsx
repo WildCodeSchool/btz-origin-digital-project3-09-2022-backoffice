@@ -78,7 +78,9 @@ function NewSection() {
     reset();
   };
 
-  if (typeof window === "undefined") return <div>Server side</div>;
+  if (typeof window === "undefined" || !localStorage.getItem("section")) {
+    return <div>Server side</div>;
+  }
 
   return (
     <div className="w-full h-full flex">
