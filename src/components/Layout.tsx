@@ -3,6 +3,7 @@ import React from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import UserContextProvider from "../context/UserContext";
+import MainContent from "./MainContent";
 
 type TChildren = { children: React.ReactNode };
 
@@ -20,7 +21,7 @@ function Layout({ children }: TChildren) {
           <Navbar />
           <div className="w-full  h-[90%] flex bg-lightgrey">
             <Sidebar />
-            <div className="w-full h-full overflow-auto">{children}</div>
+            <MainContent>{children}</MainContent>
           </div>
         </div>
       </UserContextProvider>

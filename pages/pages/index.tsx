@@ -12,7 +12,6 @@ export default function index() {
   const [itemToDelete, setItemToDelete] = useState<string | null>();
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
-  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     pageFetcher.getPages().then((response) => {
@@ -34,10 +33,6 @@ export default function index() {
 
   const handleDeleteCancelled = (): void => {
     setShowModal(false);
-  };
-
-  const handleChangeCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(e.target.checked);
   };
 
   return (
