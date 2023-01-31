@@ -190,4 +190,5 @@ export type TSectionItem = {
 
 export type TRole = {
   role: "USER" | "ADMIN" | "SUPER_ADMIN";
+  usersRequiringRole: "USER" | "ADMIN" | "SUPER_ADMIN";
 };

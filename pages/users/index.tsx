@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
 import json2csv from "json2csv";
 import Image from "next/image";
-import Link from "next/link";
 import { TRole, TUser } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
 import userFetcher from "../../services/userFetcher";
 import ModalOnDelete from "../../src/components/modal/ModalOnDelete";
+import { useAuth } from "../../src/context/UserContext";
+import ModalAlert from "../../src/components/modal/ModalAlert";
 
 function Users() {
   const [users, setUsers] = useState<TUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [itemToEdit, setItemToEdit] = useState<string | null>();
-  const [userRole, setUserRole] = useState<TRole>();
+  const [userRole, setUserRole] = useState<"USER" | "ADMIN" | "SUPER_ADMIN">(
+    "USER"
+  );
+  const { user } = useAuth();
 
   useEffect(() => {
     userFetcher.getUsers().then((response) => {
@@ -36,6 +40,10 @@ function Users() {
   const [showModal, setShowModal] = useState(false);
 
   const handleItemToEdit = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    if (user && user.role !== "SUPER_ADMIN") {
+      setShowModal(true);
+      return;
+    }
     if (editMode) {
       setEditMode(false);
     }
@@ -49,8 +57,14 @@ function Users() {
   };
 
   const handleItemToUpdate = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    const body: TRole = {
+      role: userRole,
+      usersRequiringRole: user?.role as "USER" | "ADMIN" | "SUPER_ADMIN",
+    };
+    console.log(body);
+
     if (userRole) {
-      userFetcher.updateUsersRoleById(e.currentTarget.id, userRole).then(() => {
+      userFetcher.updateUsersRoleById(e.currentTarget.id, body).then(() => {
         userFetcher.getUsers().then((data) => setUsers(data));
       });
     }
@@ -95,22 +109,26 @@ function Users() {
               </tr>
             </thead>
             <tbody className="rounded-b-[10px]">
-              {users.map((user) => (
+              {users.map((item) => (
                 <tr
-                  key={user.id}
+                  key={item.id}
                   className="h-[45px] odd:bg-lightgrey even:bg-white"
                 >
-                  <td className="border border-black px-5">{user.firstname}</td>
-                  <td className="border px-5">{user.lastname}</td>
-                  <td className="border px-5">{user.username}</td>
-                  <td className="border px-5">{user.email}</td>
+                  <td className="border border-black px-5">{item.firstname}</td>
+                  <td className="border px-5">{item.lastname}</td>
+                  <td className="border px-5">{item.username}</td>
+                  <td className="border px-5">{item.email}</td>
 
-                  {editMode && itemToEdit === user.id ? (
+                  {editMode && itemToEdit === item.id ? (
                     <td className="border border-black px-5">
                       <select
                         className="w-full bg-green-200"
-                        onChange={(e) => setUserRole(e.target.value)}
-                        defaultValue={user.role}
+                        onChange={(e) =>
+                          setUserRole(
+                            e.target.value as "USER" | "ADMIN" | "SUPER_ADMIN"
+                          )
+                        }
+                        defaultValue={item.role}
                       >
                         <option className="w-full bg-green-200" value="ADMIN">
                           ADMIN
@@ -127,12 +145,12 @@ function Users() {
                       </select>
                     </td>
                   ) : (
-                    <td className="border px-5 text-center">{user.role}</td>
+                    <td className="border px-5 text-center">{item.role}</td>
                   )}
-                  {editMode && itemToEdit === user.id ? (
+                  {editMode && itemToEdit === item.id ? (
                     <td className="border text-center bg-[#008000]">
                       <button
-                        id={user.id}
+                        id={item.id}
                         type="button"
                         onClick={handleItemToUpdate}
                       >
@@ -142,7 +160,7 @@ function Users() {
                   ) : (
                     <td className="border text-center">
                       <button
-                        id={user.id}
+                        id={item.id}
                         type="button"
                         onClick={handleItemToEdit}
                       >
@@ -150,8 +168,8 @@ function Users() {
                       </button>
                     </td>
                   )}
-                  {editMode && itemToEdit === user.id ? (
-                    <td className="border text-center last:rounded-br-[10px] bg-[#FF0000]">
+                  {editMode && itemToEdit === item.id ? (
+                    <td className="border text-center bg-[#FF0000]">
                       <button
                         className="w-full h-full bg-red"
                         type="button"
@@ -161,9 +179,9 @@ function Users() {
                       </button>
                     </td>
                   ) : (
-                    <td className="border text-center last:rounded-br-[10px]">
+                    <td className="border text-center">
                       <button
-                        id={user.id}
+                        id={item.id}
                         type="button"
                         onClick={handleItemToDelete}
                       >
@@ -182,9 +200,15 @@ function Users() {
           <Image width={50} height={50} src="/csv-icon.svg" alt="logo-plus" />
         </button>
       </div>
-      {showModal && (
+      {user && showModal && user.role === "SUPER_ADMIN" && (
         <ModalOnDelete
           handleDeleteConfirmed={handleDeleteConfirmed}
+          handleDeleteCancelled={handleDeleteCancelled}
+        />
+      )}
+      {user && showModal && user.role !== "SUPER_ADMIN" && (
+        <ModalAlert
+          message="You are not allowed to do that !"
           handleDeleteCancelled={handleDeleteCancelled}
         />
       )}

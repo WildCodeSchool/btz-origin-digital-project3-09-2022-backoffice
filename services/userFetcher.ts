@@ -57,7 +57,10 @@ const userFetcher = {
 
   updateUsersRoleById: async (id: string, data: TRole) => {
     try {
-      await axiosInstance.patch<TRole>(`/users/${id}`, { role: data });
+      await axiosInstance.patch<TRole>(`/users/${id}`, {
+        role: data.role,
+        usersRequiringRole: data.usersRequiringRole,
+      });
     } catch (err) {
       console.error(err);
       throw new Error(err as string);
