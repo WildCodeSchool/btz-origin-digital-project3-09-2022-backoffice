@@ -18,7 +18,6 @@ function NewSection() {
   const [nameOfSection, setNameOfSection] = useState<string>("");
   const [categories, setCategories] = useState<TCategory[]>([]);
   const router = useRouter();
-  const formData = new FormData();
 
   useEffect(() => {
     categoryFetcher.getCategories().then((data) => setCategories(data));
@@ -37,6 +36,8 @@ function NewSection() {
   };
 
   const handleData = (data: FieldValues) => {
+    const formData = new FormData();
+
     switch (typeOfSection) {
       case "static-sections":
         sectionFetcher.createSection(typeOfSection, {
