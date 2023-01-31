@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import json2csv from "json2csv";
 import Image from "next/image";
-import { TRole, TUser } from "../../src/types/types";
+import { TRole, TUser, TUserRequiringRole } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
 import userFetcher from "../../services/userFetcher";
 import ModalOnDelete from "../../src/components/modal/ModalOnDelete";
@@ -61,7 +61,6 @@ function Users() {
       role: userRole,
       usersRequiringRole: user?.role as "USER" | "ADMIN" | "SUPER_ADMIN",
     };
-    console.log(body);
 
     if (userRole) {
       userFetcher.updateUsersRoleById(e.currentTarget.id, body).then(() => {
