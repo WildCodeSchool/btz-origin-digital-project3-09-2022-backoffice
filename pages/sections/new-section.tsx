@@ -20,13 +20,15 @@ function NewSection() {
   const router = useRouter();
 
   useEffect(() => {
-    categoryFetcher.getCategories().then((data) => setCategories(data));
-    if (
-      localStorage.getItem("section") &&
-      localStorage.getItem("sectionName")
-    ) {
-      setTypeOfSection(localStorage.getItem("section") as string);
-      setNameOfSection(localStorage.getItem("sectionName") as string);
+    if (typeof window !== "undefined") {
+      categoryFetcher.getCategories().then((data) => setCategories(data));
+      if (
+        localStorage.getItem("section") &&
+        localStorage.getItem("sectionName")
+      ) {
+        setTypeOfSection(localStorage.getItem("section") as string);
+        setNameOfSection(localStorage.getItem("sectionName") as string);
+      }
     }
   }, []);
 
