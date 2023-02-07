@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import json2csv from "json2csv";
 import Image from "next/image";
-import { TRole, TUser, TUserRequiringRole } from "../../src/types/types";
+import { TRole, TUser } from "../../src/types/types";
 import SearchBar from "../../src/components/SearchBar";
 import userFetcher from "../../services/userFetcher";
 import ModalOnDelete from "../../src/components/modal/ModalOnDelete";
@@ -17,6 +17,7 @@ function Users() {
     "USER"
   );
   const { user } = useAuth();
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     userFetcher.getUsers().then((response) => {
@@ -88,9 +89,13 @@ function Users() {
     setShowModal(false);
   };
 
+  const handleSearch = (search: string) => {
+    setQuery(search);
+  };
+
   return (
     <div className="w-full bg-lightgrey">
-      <SearchBar />
+      <SearchBar onSearch={handleSearch} />
       {isLoading ? (
         <div className="text-xl mt-3">Is loading...</div>
       ) : (
@@ -108,88 +113,107 @@ function Users() {
               </tr>
             </thead>
             <tbody className="rounded-b-[10px]">
-              {users.map((item) => (
-                <tr
-                  key={item.id}
-                  className="h-[45px] odd:bg-lightgrey even:bg-white"
-                >
-                  <td className="border border-black px-5">{item.firstname}</td>
-                  <td className="border px-5">{item.lastname}</td>
-                  <td className="border px-5">{item.username}</td>
-                  <td className="border px-5">{item.email}</td>
-
-                  {editMode && itemToEdit === item.id ? (
+              {users
+                .filter((item) => {
+                  if (query === "") {
+                    return user;
+                  }
+                  if (
+                    item.firstname
+                      .toLowerCase()
+                      .includes(query.toLowerCase()) ||
+                    item.lastname.toLowerCase().includes(query.toLowerCase()) ||
+                    item.username.toLowerCase().includes(query.toLowerCase()) ||
+                    item.email.toLowerCase().includes(query.toLowerCase())
+                  ) {
+                    return item;
+                  }
+                  return null;
+                })
+                .map((item) => (
+                  <tr
+                    key={item.id}
+                    className="h-[45px] odd:bg-lightgrey even:bg-white"
+                  >
                     <td className="border border-black px-5">
-                      <select
-                        className="w-full bg-green-200"
-                        onChange={(e) =>
-                          setUserRole(
-                            e.target.value as "USER" | "ADMIN" | "SUPER_ADMIN"
-                          )
-                        }
-                        defaultValue={item.role}
-                      >
-                        <option className="w-full bg-green-200" value="ADMIN">
-                          ADMIN
-                        </option>
-                        <option className="w-full bg-green-200" value="USER">
-                          USER
-                        </option>
-                        <option
+                      {item.firstname}
+                    </td>
+                    <td className="border px-5">{item.lastname}</td>
+                    <td className="border px-5">{item.username}</td>
+                    <td className="border px-5">{item.email}</td>
+
+                    {editMode && itemToEdit === item.id ? (
+                      <td className="border border-black px-5">
+                        <select
                           className="w-full bg-green-200"
-                          value="SUPER_ADMIN"
+                          onChange={(e) =>
+                            setUserRole(
+                              e.target.value as "USER" | "ADMIN" | "SUPER_ADMIN"
+                            )
+                          }
+                          defaultValue={item.role}
                         >
-                          SUPER_ADMIN
-                        </option>
-                      </select>
-                    </td>
-                  ) : (
-                    <td className="border px-5 text-center">{item.role}</td>
-                  )}
-                  {editMode && itemToEdit === item.id ? (
-                    <td className="border text-center bg-[#008000]">
-                      <button
-                        id={item.id}
-                        type="button"
-                        onClick={handleItemToUpdate}
-                      >
-                        SAVE
-                      </button>
-                    </td>
-                  ) : (
-                    <td className="border text-center">
-                      <button
-                        id={item.id}
-                        type="button"
-                        onClick={handleItemToEdit}
-                      >
-                        📝
-                      </button>
-                    </td>
-                  )}
-                  {editMode && itemToEdit === item.id ? (
-                    <td className="border text-center bg-[#FF0000]">
-                      <button
-                        className="w-full h-full bg-red"
-                        type="button"
-                        onClick={handleItemToEditCancel}
-                      >
-                        CANCEL
-                      </button>
-                    </td>
-                  ) : (
-                    <td className="border text-center">
-                      <button
-                        id={item.id}
-                        type="button"
-                        onClick={handleItemToDelete}
-                      >
-                        🗑️
-                      </button>
-                    </td>
-                  )}
-                </tr>
-              ))}
+                          <option className="w-full bg-green-200" value="ADMIN">
+                            ADMIN
+                          </option>
+                          <option className="w-full bg-green-200" value="USER">
+                            USER
+                          </option>
+                          <option
+                            className="w-full bg-green-200"
+                            value="SUPER_ADMIN"
+                          >
+                            SUPER_ADMIN
+                          </option>
+                        </select>
+                      </td>
+                    ) : (
+                      <td className="border px-5 text-center">{item.role}</td>
+                    )}
+                    {editMode && itemToEdit === item.id ? (
+                      <td className="border text-center bg-[#008000]">
+                        <button
+                          id={item.id}
+                          type="button"
+                          onClick={handleItemToUpdate}
+                        >
+                          SAVE
+                        </button>
+                      </td>
+                    ) : (
+                      <td className="border text-center">
+                        <button
+                          id={item.id}
+                          type="button"
+                          onClick={handleItemToEdit}
+                        >
+                          📝
+                        </button>
+                      </td>
+                    )}
+                    {editMode && itemToEdit === item.id ? (
+                      <td className="border text-center bg-[#FF0000]">
+                        <button
+                          className="w-full h-full bg-red"
+                          type="button"
+                          onClick={handleItemToEditCancel}
+                        >
+                          CANCEL
+                        </button>
+                      </td>
+                    ) : (
+                      <td className="border text-center">
+                        <button
+                          id={item.id}
+                          type="button"
+                          onClick={handleItemToDelete}
+                        >
+                          🗑️
+                        </button>
+                      </td>
+                    )}
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

@@ -13,6 +13,7 @@ export default function index() {
   const [itemToEdit, setItemToEdit] = useState<string | null>();
   const [itemToDelete, setItemToDelete] = useState<string | null>();
   const [showModal, setShowModal] = useState(false);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     categoryFetcher.getCategories().then((response) => {
@@ -69,9 +70,13 @@ export default function index() {
     setShowModal(false);
   };
 
+  const handleSearch = (search: string) => {
+    setQuery(search);
+  };
+
   return (
     <div className="w-full bg-lightgrey">
-      <SearchBar />
+      <SearchBar onSearch={handleSearch} />
       <div className="rounded-xl">
         <table className="w-[90%] h-[50px] mt-[3em] ml-[5%] text-xl border border-black border-1 rounded-[10px] bg-white  drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
           <thead className="h-[50px] rounded-t-[10px]">
@@ -83,6 +88,9 @@ export default function index() {
           </thead>
           <tbody className="rounded-b-[10px]">
             {categories
+              .filter((category) =>
+                category.name.toLowerCase().includes(query.toLowerCase())
+              )
               .sort((a, b) => (a.name > b.name ? 1 : -1))
               .map((category: TCategory) => (
                 <tr
