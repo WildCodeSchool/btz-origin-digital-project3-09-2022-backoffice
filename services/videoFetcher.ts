@@ -46,6 +46,7 @@ const videoFetcher = {
   updateVideo: async (id: string, data: Partial<TNewVideo>) => {
     try {
       await axiosInstance.put<TVideo>(`/videos/${id}`, data);
+      console.log(data, "id", id);
     } catch (err) {
       console.error(err);
       throw new Error(err as string);

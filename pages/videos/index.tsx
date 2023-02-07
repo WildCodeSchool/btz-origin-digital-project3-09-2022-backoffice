@@ -12,6 +12,7 @@ function Videos() {
   const [itemToDelete, setItemToDelete] = useState<string | null>();
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     videoFetcher.getVideos().then((response) => {
@@ -36,9 +37,13 @@ function Videos() {
     setShowModal(false);
   };
 
+  const handleSearch = (search: string) => {
+    setQuery(search);
+  };
+
   return (
     <div className="w-full bg-lightgrey">
-      <SearchBar />
+      <SearchBar onSearch={handleSearch} />
       {isLoading ? (
         <div className="text-xl mt-3">Is loading...</div>
       ) : (
@@ -55,6 +60,13 @@ function Videos() {
             </thead>
             <tbody className="rounded-b-[10px]">
               {videos
+                .filter(
+                  (video) =>
+                    video.title.toLowerCase().includes(query.toLowerCase()) ||
+                    video.description
+                      .toLowerCase()
+                      .includes(query.toLowerCase())
+                )
                 .sort((a, b) => (a.title > b.title ? 1 : -1))
                 .map((video) => (
                   <tr

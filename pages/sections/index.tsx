@@ -12,6 +12,7 @@ function Sections() {
   const [sectionType, setSectionType] = useState<string>();
   const [itemToDelete, setItemToDelete] = useState<string | null>();
   const [showModal, setShowModal] = useState(false);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     sectionFetcher.getSections().then((response) => {
@@ -38,9 +39,13 @@ function Sections() {
     setShowModal(false);
   };
 
+  const handleSearch = (search: string) => {
+    setQuery(search);
+  };
+
   return (
     <div className="w-full bg-lightgrey">
-      <SearchBar />
+      <SearchBar onSearch={handleSearch} />
       <SectionSelector />
       <div className="rounded-xl">
         <table className="w-[90%] h-[50px] mt-4 ml-[5%] text-xl border border-black border-1 rounded-[10px] bg-white  drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
@@ -54,6 +59,13 @@ function Sections() {
           </thead>
           <tbody className="rounded-b-[10px]">
             {sections
+              .filter(
+                (section) =>
+                  section.title.toLowerCase().includes(query.toLowerCase()) ||
+                  section.description
+                    .toLowerCase()
+                    .includes(query.toLowerCase())
+              )
               .sort((a, b) => (a.title > b.title ? 1 : -1))
               .map((section) => (
                 <tr
