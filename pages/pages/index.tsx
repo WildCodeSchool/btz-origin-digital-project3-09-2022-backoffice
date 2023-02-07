@@ -12,7 +12,7 @@ export default function index() {
   const [itemToDelete, setItemToDelete] = useState<string | null>();
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
-  const [checked, setChecked] = useState(false);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     pageFetcher.getPages().then((response) => {
@@ -36,13 +36,13 @@ export default function index() {
     setShowModal(false);
   };
 
-  const handleChangeCheckBox = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(e.target.checked);
+  const handleSearch = (search: string) => {
+    setQuery(search);
   };
 
   return (
     <div className="w-full bg-lightgrey">
-      <SearchBar />
+      <SearchBar onSearch={handleSearch} />
       <div className="rounded-xl">
         <table className="w-[90%] h-[50px] mt-[3em] ml-[5%] text-xl border border-black border-1 rounded-[10px] bg-white  drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
           <thead className="h-[50px] rounded-t-[10px]">
@@ -56,6 +56,18 @@ export default function index() {
           </thead>
           <tbody className="rounded-b-[10px]">
             {pages
+              .filter((page) => {
+                if (query === "") {
+                  return page;
+                }
+                if (
+                  page.title &&
+                  page.title.toLowerCase().includes(query.toLowerCase().trim())
+                ) {
+                  return page;
+                }
+                return null;
+              })
               .sort((a, b) =>
                 (a.title as string) > (b.title as string) ? 1 : -1
               )
