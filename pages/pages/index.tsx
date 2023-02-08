@@ -98,7 +98,6 @@ export default function index() {
                     </button>
                   </td>
                   <td className="border text-center ">
-                    {/* <Link href={`${process.env.PROD_URL}/pages/${page.id}`}> */}
                     <a
                       target="_blank"
                       rel="noreferrer"
