@@ -18,17 +18,16 @@ function NewSection() {
   const [nameOfSection, setNameOfSection] = useState<string>("");
   const [categories, setCategories] = useState<TCategory[]>([]);
   const router = useRouter();
+  const [testLocalStorage, setTestLocalStorage] = useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       categoryFetcher.getCategories().then((data) => setCategories(data));
-      if (
-        localStorage.getItem("section") &&
-        localStorage.getItem("sectionName")
-      ) {
-        setTypeOfSection(localStorage.getItem("section") as string);
-        setNameOfSection(localStorage.getItem("sectionName") as string);
-      }
+    }
+    if (localStorage.getItem("section")) {
+      setTypeOfSection(localStorage.getItem("section") as string);
+      setNameOfSection(localStorage.getItem("sectionName") as string);
+      setTestLocalStorage(true);
     }
   }, []);
 
@@ -67,7 +66,7 @@ function NewSection() {
         formData.append("description", data.description);
         formData.append("linkTo", data.linkTo);
         formData.append("file", data.file[0]);
-        axios.post("http://localhost:4000/api/v1/advertisings", formData);
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/advertisings`, formData);
         router.push(`/sections`);
         break;
       default:
@@ -78,10 +77,6 @@ function NewSection() {
     reset();
   };
 
-  if (typeof window === "undefined" || !localStorage.getItem("section")) {
-    return <div>Server side</div>;
-  }
-
   return (
     <div className="w-full h-full flex">
       <form
@@ -91,26 +86,44 @@ function NewSection() {
         <div className="flex flex-col mt-[1.5em] w-[100%] justify-center items-center">
           <label htmlFor="type" className="w-[80%] text-[20px] font-bold">
             Type of section
-            <select
-              id="type"
-              placeholder="Please choose a type of section"
-              className="w-[100%] py-3 px-4 flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
-              {...register("type", { required: true })}
-              onChange={(e) => handleChange(e)}
-              value={`${localStorage.getItem("section")}/${localStorage.getItem(
-                "sectionName"
-              )}`}
-            >
-              <option value="default">Please choose a type of section</option>
-              {sectionsTypes.map((section) => (
+            {testLocalStorage ? (
+              <select
+                id="type"
+                placeholder="Please choose a type of section"
+                className="w-[100%] py-3 px-4 flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
+                {...register("type", { required: true })}
+                onChange={(e) => handleChange(e)}
+                value={`${localStorage.getItem(
+                  "section"
+                )}/${localStorage.getItem("sectionName")}`}
+              >
                 <option
-                  key={section.id}
-                  value={`${section.section}/${section.name}`}
+                  value={`${localStorage.getItem(
+                    "section"
+                  )}/${localStorage.getItem("sectionName")}`}
                 >
-                  {section.name}
+                  {localStorage.getItem("sectionName")}
                 </option>
-              ))}
-            </select>
+              </select>
+            ) : (
+              <select
+                id="type"
+                placeholder="Please choose a type of section"
+                className="w-[100%] py-3 px-4 flex flex-col font-normal bg-white border border-solid border-black border-1 drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]"
+                {...register("type", { required: true })}
+                onChange={(e) => handleChange(e)}
+              >
+                <option value="default">Please choose a type of section</option>
+                {sectionsTypes.map((section) => (
+                  <option
+                    key={section.id}
+                    value={`${section.section}/${section.name}`}
+                  >
+                    {section.name}
+                  </option>
+                ))}
+              </select>
+            )}
             {errors.category && (
               <p className="font-normal text-[#FF0000]">
                 Type of section is required.
