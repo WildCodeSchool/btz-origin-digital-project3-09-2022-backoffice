@@ -58,7 +58,7 @@ const pageFetcher: PageFetcher = {
   updatePageById: async (id: string, data: string) => {
     try {
       await axiosInstance
-        .put<TPage>(`/pages/${id}`, JSON.parse(JSON.stringify({ name: data })))
+        .put<TPage>(`/pages/${id}`, data)
         .then(() => console.log("Update successful", data));
     } catch (err) {
       console.error(err);
