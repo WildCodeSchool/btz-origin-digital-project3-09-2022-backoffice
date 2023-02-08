@@ -13,7 +13,7 @@ export default function Video({ video }: IProps) {
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { data } = await axios.get(
-    `http://localhost:4000/api/v1/videos/${query.id}`
+    `${process.env.NEXT_PUBLIC_API_URL}/${query.id}`
   );
 
   return {
