@@ -248,8 +248,7 @@ function VideoEdit() {
       setShowModal(true);
       return;
     }
-    pageFetcher.deletePageById(id as string);
-    pageFetcher.createPage(page).then(() => router.push("/pages"));
+    pageFetcher.updatePageById(id, page).then(() => router.push("/pages"));
   };
 
   const handleItemToCancel = () => {
