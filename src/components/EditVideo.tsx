@@ -122,12 +122,12 @@ function EditVideo({ video }: IProps) {
                   />
                 </label>
               </div>
-              <div className="container-fields">
+              <div className="container-fields drop-shadow-[0_5px_5px_rgba(0,0,0,0.25)]">
                 <Image
                   src={video.teaserUrl}
                   alt="thumbnail"
-                  width="300"
-                  height="300"
+                  width="250"
+                  height="250"
                 />
               </div>
               <div className="flex flex-col my-[2em] w-[100%] justify-center items-center">

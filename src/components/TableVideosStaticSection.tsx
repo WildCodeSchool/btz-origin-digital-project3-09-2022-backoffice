@@ -73,9 +73,9 @@ export default function TableVideos({
           ),
           title: video.title,
           video: (
-            <video controls className="m-auto" width="250" height="200">
-              <source src={video.teaserUrl} type="video/mp4" />
-              <track src={video.teaserUrl} kind="captions" />
+            <video controls className="m-auto" width="200" height="200">
+              <source src={video.videoUrl} type="video/mp4" />
+              <track src={video.videoUrl} kind="captions" />
             </video>
           ),
         },
