@@ -66,7 +66,7 @@ function NewSection() {
         formData.append("description", data.description);
         formData.append("linkTo", data.linkTo);
         formData.append("file", data.file[0]);
-        axios.post("http://localhost:4000/api/v1/advertisings", formData);
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/advertisings`, formData);
         router.push(`/sections`);
         break;
       default:
