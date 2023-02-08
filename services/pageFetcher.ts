@@ -5,7 +5,7 @@ interface PageFetcher {
   createPage: (data: TNewPage) => Promise<void>;
   getPages: () => Promise<TPage[]>;
   getPageById: (id: string) => Promise<TPage | null>;
-  updatePageById: (id: string, data: string) => Promise<void>;
+  updatePageById: (id: string, data: TNewPage) => Promise<void>;
   deletePageById: (id: string) => Promise<void>;
 }
 
@@ -55,7 +55,7 @@ const pageFetcher: PageFetcher = {
     }
   },
 
-  updatePageById: async (id: string, data: string) => {
+  updatePageById: async (id: string, data: TNewPage) => {
     try {
       await axiosInstance
         .put<TPage>(`/pages/${id}`, data)
