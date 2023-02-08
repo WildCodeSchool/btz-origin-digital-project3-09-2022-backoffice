@@ -155,7 +155,7 @@ export default function SectionItem() {
                 <div className="w-1/2 h-full border-2 border-y-black border-l-black border-r-transparent">
                   <div className="w-full h-full flex flex-col items-center">
                     <div className="w-full sticky top-0 bg-lightgrey font-bold z-10 border-b-transparent drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]">
-                      <p className="py-1 px-4 bl-lightgrey">Informations</p>
+                      <p className="py-2 px-4 bl-lightgrey">Informations</p>
                     </div>
 
                     <div className="container-fields">
@@ -211,7 +211,7 @@ export default function SectionItem() {
                 <div className="w-full h-full border-2 border-black">
                   <div className="w-full h-full flex flex-col items-center">
                     <div className="w-full sticky top-0 bg-lightgrey font-bold z-10 border-b-transparent drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]">
-                      <p className="py-1 px-4 bl-lightgrey">Informations</p>
+                      <p className="py-2 px-4 bl-lightgrey">Informations</p>
                     </div>
 
                     <div className="container-fields">
@@ -286,7 +286,7 @@ export default function SectionItem() {
                 <div className="w-full h-full border-2 border-black ">
                   <div className="w-full h-full flex flex-col items-center">
                     <div className="w-full sticky top-0 bg-lightgrey font-bold z-10 border-b-transparent drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]">
-                      <p className="py-1 px-4 bl-lightgrey">Informations</p>
+                      <p className="py-2 px-4 bl-lightgrey">Informations</p>
                     </div>
 
                     <div className="container-fields">
