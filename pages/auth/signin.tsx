@@ -49,7 +49,10 @@ export default function Signin() {
             Need an account ?
             <ul>
               <li>
-                <Link className="text-text1" href="/signup">
+                <Link
+                  className="text-text1"
+                  href={`${process.env.NEXT_PUBLIC_PROD_URL}/auth/signup/`}
+                >
                   SIGN UP
                 </Link>
               </li>

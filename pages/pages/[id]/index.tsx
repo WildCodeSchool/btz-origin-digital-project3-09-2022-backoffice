@@ -1,7 +1,12 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { TSectionItem, TSection, TSectionRow } from "../../../src/types/types";
+import {
+  TSectionItem,
+  TSection,
+  TSectionRow,
+  TNewPage,
+} from "../../../src/types/types";
 import pageFetcher from "../../../services/pageFetcher";
 import sectionsTypes from "../../../src/types/sectionsTypes";
 import sectionFetcher from "../../../services/sectionFetcher";
@@ -248,8 +253,9 @@ function VideoEdit() {
       setShowModal(true);
       return;
     }
-    pageFetcher.deletePageById(id as string);
-    pageFetcher.createPage(page).then(() => router.push("/pages"));
+    pageFetcher
+      .updatePageById(id as string, page as TNewPage)
+      .then(() => router.push("/pages"));
   };
 
   const handleItemToCancel = () => {
