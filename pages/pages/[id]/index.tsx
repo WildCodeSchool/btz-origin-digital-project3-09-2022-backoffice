@@ -243,13 +243,7 @@ function VideoEdit() {
       pagesSectionsDynamicData,
       pagesAdvertisingsData,
     };
-    if (
-      page.title.length === 0 ||
-      +page.pagesAdvertisingsData.length +
-        +page.pagesSectionsDynamicData.length +
-        +page.pagesSectionsStaticData.length ===
-        0
-    ) {
+    if (page.title.length === 0) {
       setShowModal(true);
       return;
     }
@@ -477,7 +471,7 @@ function VideoEdit() {
       </div>
       {showModal && (
         <ModalAlert
-          message="Please fill the title and at least one section"
+          message="Please fill the title"
           handleDeleteCancelled={handleDeleteCancelled}
         />
       )}

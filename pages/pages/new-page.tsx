@@ -158,13 +158,7 @@ export default function SectionItem() {
       pagesSectionsDynamicData,
       pagesAdvertisingsData,
     };
-    if (
-      page.title === "" ||
-      page.pagesAdvertisingsData.length +
-        page.pagesSectionsDynamicData.length +
-        page.pagesSectionsStaticData.length ===
-        0
-    ) {
+    if (page.title === "") {
       setShowModal(true);
       return;
     }
@@ -389,7 +383,7 @@ export default function SectionItem() {
       </div>
       {showModal && (
         <ModalAlert
-          message="Please fill the title and at least one section"
+          message="Please fill the title"
           handleDeleteCancelled={handleDeleteCancelled}
         />
       )}
